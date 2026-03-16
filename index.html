@@ -55,7 +55,6 @@ body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f
   box-shadow: 0 8px 24px rgba(0,0,0,0.22);
   backdrop-filter: blur(14px); color: #dcecff;
   cursor: pointer;
-  cursor: pointer;
   transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, opacity 0.22s ease;
 }
 .layer-tile:hover { transform: translateX(4px); border-color: rgba(120,190,255,0.5); }
@@ -109,9 +108,7 @@ body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f
   transition: background 0.2s, border-color 0.2s;
 }
 #cp-close:hover { background: rgba(40,80,160,0.6); border-color: rgba(140,200,255,0.6); }
-
 #cp-header { padding: 28px 24px 20px; border-bottom: 1px solid rgba(60,120,220,0.18); }
-#cp-flag { font-size: 48px; line-height: 1; margin-bottom: 10px; }
 #cp-flag { font-size: 48px; line-height: 1; margin-bottom: 10px; }
 #cp-name { font-size: 20px; font-weight: 700; letter-spacing: 2px; color: #7cd4ff; text-transform: uppercase; }
 #cp-subtitle { font-size: 10px; color: rgba(140,180,240,0.55); letter-spacing: 2px; margin-top: 4px; }
@@ -182,10 +179,7 @@ body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f
   animation:cbFadeIn 0.28s cubic-bezier(0.22,0.61,0.36,1);
 }
 #cb-overlay.visible { display:flex; }
-@keyframes cbFadeIn {
-  from { opacity:0; transform:scale(0.97); }
-  to   { opacity:1; transform:scale(1); }
-}
+@keyframes cbFadeIn { from{opacity:0;transform:scale(0.97)} to{opacity:1;transform:scale(1)} }
 #cb-header {
   flex-shrink:0; height:52px; z-index:110;
   background:rgba(4,9,22,0.98); border-bottom:1px solid rgba(60,130,255,0.2);
@@ -204,111 +198,104 @@ body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f
   border:1px solid rgba(80,160,255,0.2); background:rgba(10,20,50,0.6);
   font-size:10px; font-weight:700; letter-spacing:1px;
 }
-.res-icon { font-size:13px; }
-.res-val  { color:#5bf; }
-#cb-back  {
+.res-icon{font-size:13px;} .res-val{color:#5bf;}
+#cb-back {
   padding:6px 14px; border-radius:8px;
   border:1px solid rgba(100,160,255,0.3); background:rgba(20,40,80,0.4);
   color:#7ab4ff; font-size:10px; font-weight:700; letter-spacing:1.5px;
   cursor:pointer; transition:background 0.2s; text-transform:uppercase;
 }
-#cb-back:hover { background:rgba(40,80,160,0.6); }
-#cb-body { flex:1; display:flex; overflow:hidden; min-height:0; }
-#cb-palette {
-  width:272px; flex-shrink:0;
-  background:rgba(4,9,22,0.97); border-right:1px solid rgba(60,130,255,0.15);
-  overflow-y:auto; padding:12px;
-  scrollbar-width:thin; scrollbar-color:rgba(60,120,255,0.3) transparent;
+#cb-back:hover{background:rgba(40,80,160,0.6);}
+#cb-body{flex:1;display:flex;overflow:hidden;min-height:0;}
+#cb-palette{
+  width:272px;flex-shrink:0;background:rgba(4,9,22,0.97);
+  border-right:1px solid rgba(60,130,255,0.15);
+  overflow-y:auto;padding:12px;scrollbar-width:thin;
+  scrollbar-color:rgba(60,120,255,0.3) transparent;
 }
-.palette-section { margin-bottom:14px; }
-.palette-section-title {
-  font-size:8px; font-weight:700; letter-spacing:3px; text-transform:uppercase;
-  color:rgba(100,160,255,0.5); margin-bottom:8px;
-  padding-left:8px; border-left:2px solid currentColor;
+.palette-section{margin-bottom:14px;}
+.palette-section-title{
+  font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(100,160,255,0.5);margin-bottom:8px;
+  padding-left:8px;border-left:2px solid currentColor;
 }
-.section-residential .palette-section-title { color:rgba(0,255,136,0.6); }
-.section-defense     .palette-section-title { color:rgba(200,128,255,0.6); }
-.section-attack      .palette-section-title { color:rgba(255,80,80,0.6); }
-.section-support     .palette-section-title { color:rgba(255,208,80,0.6); }
+.section-residential .palette-section-title{color:rgba(0,255,136,0.6);}
+.section-defense     .palette-section-title{color:rgba(200,128,255,0.6);}
+.section-attack      .palette-section-title{color:rgba(255,80,80,0.6);}
+.section-support     .palette-section-title{color:rgba(255,208,80,0.6);}
 #cb-palette .layer-tile {
-  position:relative; display:grid; grid-template-columns:auto 1fr auto;
-  align-items:center; gap:10px; width:100%; padding:10px 12px;
-  border:1px solid rgba(120,180,255,0.22); border-radius:14px;
+  position:relative;display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:10px;width:100%;padding:10px 12px;
+  border:1px solid rgba(120,180,255,0.22);border-radius:14px;
   background:linear-gradient(135deg,rgba(11,20,36,0.72),rgba(18,39,74,0.34));
-  box-shadow:0 6px 18px rgba(0,0,0,0.22);
-  backdrop-filter:blur(14px); color:#dcecff;
-  cursor:pointer; margin-bottom:6px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.22);backdrop-filter:blur(14px);
+  color:#dcecff;cursor:pointer;margin-bottom:6px;
   transition:transform 0.22s ease,border-color 0.22s ease,background 0.22s ease;
 }
-#cb-palette .layer-tile:hover { transform:translateX(3px); border-color:rgba(120,190,255,0.5); }
-#cb-palette .layer-tile.selected {
+#cb-palette .layer-tile:hover{transform:translateX(3px);border-color:rgba(120,190,255,0.5);}
+#cb-palette .layer-tile.selected{
   border-color:var(--sel-color,#5bf);
   background:linear-gradient(135deg,rgba(20,44,90,0.85),rgba(30,60,110,0.6));
   box-shadow:0 0 16px rgba(90,180,255,0.15);
 }
-.tile-cost {
-  font-size:9px; font-weight:700; color:#5bf; white-space:nowrap;
-  padding:3px 7px; border-radius:999px;
-  border:1px solid rgba(80,160,255,0.2); background:rgba(10,20,60,0.5);
+.tile-cost{
+  font-size:9px;font-weight:700;color:#5bf;white-space:nowrap;
+  padding:3px 7px;border-radius:999px;
+  border:1px solid rgba(80,160,255,0.2);background:rgba(10,20,60,0.5);
 }
-#cb-center {
-  flex:1; position:relative; overflow:hidden;
-  display:flex; align-items:center; justify-content:center;
+#cb-center{
+  flex:1;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
   background:radial-gradient(ellipse at 50% 60%,rgba(12,28,72,0.5) 0%,rgba(4,9,22,0) 70%);
 }
-canvas#cb-canvas { display:block; cursor:crosshair; }
-#cb-info {
-  width:272px; flex-shrink:0;
-  background:rgba(4,9,22,0.97); border-left:1px solid rgba(60,130,255,0.15);
-  padding:12px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;
-  scrollbar-width:thin; scrollbar-color:rgba(60,120,255,0.3) transparent;
+canvas#cb-canvas{display:block;cursor:crosshair;}
+#cb-info{
+  width:272px;flex-shrink:0;background:rgba(4,9,22,0.97);
+  border-left:1px solid rgba(60,130,255,0.15);
+  padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;
+  scrollbar-width:thin;scrollbar-color:rgba(60,120,255,0.3) transparent;
 }
-.info-section-title {
-  font-size:8px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase;
-  color:rgba(100,160,255,0.5); margin-bottom:8px;
-}
-#cb-city-stats { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-.cs-card {
-  padding:10px; border-radius:12px;
-  background:linear-gradient(135deg,rgba(11,20,36,0.72),rgba(18,39,74,0.34));
-  border:1px solid rgba(120,180,255,0.18);
-}
-.cs-val { font-size:18px; font-weight:700; color:#5bf; letter-spacing:1px; }
-.cs-lbl { font-size:8px; color:rgba(140,180,240,0.5); letter-spacing:1.5px; text-transform:uppercase; margin-top:2px; }
-.sel-tile {
-  display:grid; grid-template-columns:auto 1fr; align-items:start; gap:10px; padding:12px;
-  border:1px solid rgba(120,180,255,0.22); border-radius:14px;
-  background:linear-gradient(135deg,rgba(11,20,36,0.72),rgba(18,39,74,0.34));
-}
-.sel-icon  { width:42px; height:42px; display:grid; place-items:center; border-radius:12px; background:rgba(255,255,255,0.08); font-size:22px; }
-.sel-name  { font-size:12px; font-weight:700; letter-spacing:1px; color:#7cd4ff; }
-.sel-desc  { font-size:8px; color:rgba(160,200,240,0.55); letter-spacing:0.8px; line-height:1.6; margin-top:3px; }
-.sel-stats { margin-top:8px; display:grid; gap:3px; }
-.sel-stat  { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid rgba(60,100,200,0.12); font-size:8px; }
-.sel-stat-lbl { color:rgba(140,180,240,0.5); letter-spacing:1px; text-transform:uppercase; }
-.sel-stat-val { color:#8dd4ff; font-weight:700; }
-#cb-demolish {
-  margin-top:8px; width:100%; padding:7px; border-radius:8px;
-  border:1px solid rgba(255,80,80,0.3); background:rgba(80,20,20,0.4);
-  color:#ff7070; font-size:9px; font-weight:700; letter-spacing:1.5px;
-  cursor:pointer; transition:all 0.2s; text-transform:uppercase;
-}
-#cb-demolish:hover { background:rgba(120,30,30,0.6); border-color:rgba(255,80,80,0.6); }
-.log-line  { font-size:8px; color:rgba(140,200,255,0.45); padding:3px 0; border-bottom:1px solid rgba(40,80,160,0.08); letter-spacing:0.4px; }
-.log-ok    { color:rgba(60,220,130,0.7); }
-.log-warn  { color:rgba(255,200,60,0.7); }
-.log-err   { color:rgba(255,80,80,0.7); }
-#cb-tooltip {
-  position:fixed; pointer-events:none; z-index:200;
-  background:rgba(4,10,28,0.96); border:1px solid rgba(80,160,255,0.3);
-  border-radius:8px; padding:6px 10px; font-size:9px; color:#c8d8f0;
-  letter-spacing:0.8px; white-space:nowrap; display:none;
-}
-#cb-sel-panel { display:none; }
+.info-section-title{font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(100,160,255,0.5);margin-bottom:8px;}
+#cb-city-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.cs-card{padding:10px;border-radius:12px;background:linear-gradient(135deg,rgba(11,20,36,0.72),rgba(18,39,74,0.34));border:1px solid rgba(120,180,255,0.18);}
+.cs-val{font-size:18px;font-weight:700;color:#5bf;letter-spacing:1px;}
+.cs-lbl{font-size:8px;color:rgba(140,180,240,0.5);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+.sel-tile{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:10px;padding:12px;border:1px solid rgba(120,180,255,0.22);border-radius:14px;background:linear-gradient(135deg,rgba(11,20,36,0.72),rgba(18,39,74,0.34));}
+.sel-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:rgba(255,255,255,0.08);font-size:22px;}
+.sel-name{font-size:12px;font-weight:700;letter-spacing:1px;color:#7cd4ff;}
+.sel-desc{font-size:8px;color:rgba(160,200,240,0.55);letter-spacing:0.8px;line-height:1.6;margin-top:3px;}
+.sel-stats{margin-top:8px;display:grid;gap:3px;}
+.sel-stat{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(60,100,200,0.12);font-size:8px;}
+.sel-stat-lbl{color:rgba(140,180,240,0.5);letter-spacing:1px;text-transform:uppercase;}
+.sel-stat-val{color:#8dd4ff;font-weight:700;}
+#cb-demolish{margin-top:8px;width:100%;padding:7px;border-radius:8px;border:1px solid rgba(255,80,80,0.3);background:rgba(80,20,20,0.4);color:#ff7070;font-size:9px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
+#cb-demolish:hover{background:rgba(120,30,30,0.6);border-color:rgba(255,80,80,0.6);}
+.log-line{font-size:8px;color:rgba(140,200,255,0.45);padding:3px 0;border-bottom:1px solid rgba(40,80,160,0.08);letter-spacing:0.4px;}
+.log-ok{color:rgba(60,220,130,0.7);} .log-warn{color:rgba(255,200,60,0.7);} .log-err{color:rgba(255,80,80,0.7);}
+#cb-tooltip{position:fixed;pointer-events:none;z-index:200;background:rgba(4,10,28,0.96);border:1px solid rgba(80,160,255,0.3);border-radius:8px;padding:6px 10px;font-size:9px;color:#c8d8f0;letter-spacing:0.8px;white-space:nowrap;display:none;}
+#cb-sel-panel{display:none;}
 
+/* ── GLOBALFACE BUTTON ── */
+#gf-open-btn {
+  position:fixed; top:18px; right:24px; z-index:15;
+  display:flex; align-items:center; gap:8px;
+  padding:8px 16px; border-radius:999px;
+  border:1px solid rgba(0,255,136,0.35); background:rgba(0,40,20,0.6);
+  color:#00ff88; font-family:'Courier New',monospace;
+  font-size:10px; font-weight:700; letter-spacing:2px;
+  cursor:pointer; transition:all 0.2s; backdrop-filter:blur(8px);
+  text-transform:uppercase;
+}
+#gf-open-btn:hover{background:rgba(0,80,40,0.7);border-color:rgba(0,255,136,0.6);box-shadow:0 0 16px rgba(0,255,136,0.2);}
+#gf-iframe-wrap{display:none;}
+#gf-iframe-wrap.visible{display:block;}
+#gf-iframe{position:fixed;inset:0;z-index:110;width:100%;height:100%;border:none;}
 </style>
 </head>
 <body>
+
+<button id="gf-open-btn" onclick="openGF()">🌐 GlobalFace</button>
+<div id="gf-iframe-wrap"><iframe id="gf-iframe" src="social.html"></iframe></div>
 
 <div id="logo">
   <h1>🌍 Data Center <span id="selected-country-name">Kliknij kraj</span></h1>
@@ -395,9 +382,7 @@ canvas#cb-canvas { display:block; cursor:crosshair; }
   <div class="stat"><div class="stat-val" id="s-satellites">0</div><div class="stat-lbl">Satelity</div></div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     CITY BUILDER OVERLAY
-     ══════════════════════════════════════════════ -->
+<!-- CITY BUILDER OVERLAY -->
 <div id="cb-overlay">
 <div id="cb-header">
   <span id="cb-title">🏗 City Builder</span>
@@ -415,855 +400,309 @@ canvas#cb-canvas { display:block; cursor:crosshair; }
 <div id="cb-palette">
   <div class="palette-section section-residential">
     <div class="palette-section-title">🏠 Residential</div>
-    <div class="layer-tile" data-id="hut" style="--sel-color:#00ff88">
-      <span class="tile-emoji">🏠</span>
-      <span class="tile-copy"><span class="tile-title">Barracks</span><span class="tile-meta">+50 pop · kwatery</span></span>
-      <span class="tile-cost">💰80</span>
-    </div>
-    <div class="layer-tile" data-id="apartment" style="--sel-color:#00ff88">
-      <span class="tile-emoji">🏢</span>
-      <span class="tile-copy"><span class="tile-title">Apartment</span><span class="tile-meta">+150 pop · blok</span></span>
-      <span class="tile-cost">💰240</span>
-    </div>
-    <div class="layer-tile" data-id="tower" style="--sel-color:#00ff88">
-      <span class="tile-emoji">🏙️</span>
-      <span class="tile-copy"><span class="tile-title">Tower</span><span class="tile-meta">+500 pop · wieżowiec</span></span>
-      <span class="tile-cost">💰600</span>
-    </div>
-    <div class="layer-tile" data-id="bunker_res" style="--sel-color:#00ff88">
-      <span class="tile-emoji">🔲</span>
-      <span class="tile-copy"><span class="tile-title">Bunker</span><span class="tile-meta">+80 pop · pancerny</span></span>
-      <span class="tile-cost">💰320</span>
-    </div>
+    <div class="layer-tile" data-id="hut" style="--sel-color:#00ff88"><span class="tile-emoji">🏠</span><span class="tile-copy"><span class="tile-title">Barracks</span><span class="tile-meta">+50 pop</span></span><span class="tile-cost">💰80</span></div>
+    <div class="layer-tile" data-id="apartment" style="--sel-color:#00ff88"><span class="tile-emoji">🏢</span><span class="tile-copy"><span class="tile-title">Apartment</span><span class="tile-meta">+150 pop</span></span><span class="tile-cost">💰240</span></div>
+    <div class="layer-tile" data-id="tower" style="--sel-color:#00ff88"><span class="tile-emoji">🏙️</span><span class="tile-copy"><span class="tile-title">Tower</span><span class="tile-meta">+500 pop</span></span><span class="tile-cost">💰600</span></div>
+    <div class="layer-tile" data-id="bunker_res" style="--sel-color:#00ff88"><span class="tile-emoji">🔲</span><span class="tile-copy"><span class="tile-title">Bunker</span><span class="tile-meta">+80 pop</span></span><span class="tile-cost">💰320</span></div>
   </div>
   <div class="palette-section section-defense">
     <div class="palette-section-title">🛡 Defense</div>
-    <div class="layer-tile" data-id="wall" style="--sel-color:#c880ff">
-      <span class="tile-emoji">🧱</span>
-      <span class="tile-copy"><span class="tile-title">Firewall</span><span class="tile-meta">+30 def · węzeł</span></span>
-      <span class="tile-cost">💰120</span>
-    </div>
-    <div class="layer-tile" data-id="radar" style="--sel-color:#c880ff">
-      <span class="tile-emoji">📡</span>
-      <span class="tile-copy"><span class="tile-title">Radar</span><span class="tile-meta">+50 def · wykrywanie</span></span>
-      <span class="tile-cost">💰200</span>
-    </div>
-    <div class="layer-tile" data-id="shield" style="--sel-color:#c880ff">
-      <span class="tile-emoji">🔵</span>
-      <span class="tile-copy"><span class="tile-title">Shield Gen</span><span class="tile-meta">+120 def · obszarowy</span></span>
-      <span class="tile-cost">💰450</span>
-    </div>
-    <div class="layer-tile" data-id="sam" style="--sel-color:#c880ff">
-      <span class="tile-emoji">🚀</span>
-      <span class="tile-copy"><span class="tile-title">SAM Battery</span><span class="tile-meta">+80 def · anty-air</span></span>
-      <span class="tile-cost">💰350</span>
-    </div>
-    <div class="layer-tile" data-id="emp" style="--sel-color:#c880ff">
-      <span class="tile-emoji">⚡</span>
-      <span class="tile-copy"><span class="tile-title">EMP Tower</span><span class="tile-meta">+60 def · zakłóca</span></span>
-      <span class="tile-cost">💰280</span>
-    </div>
+    <div class="layer-tile" data-id="wall" style="--sel-color:#c880ff"><span class="tile-emoji">🧱</span><span class="tile-copy"><span class="tile-title">Firewall</span><span class="tile-meta">+30 def</span></span><span class="tile-cost">💰120</span></div>
+    <div class="layer-tile" data-id="radar" style="--sel-color:#c880ff"><span class="tile-emoji">📡</span><span class="tile-copy"><span class="tile-title">Radar</span><span class="tile-meta">+50 def</span></span><span class="tile-cost">💰200</span></div>
+    <div class="layer-tile" data-id="shield" style="--sel-color:#c880ff"><span class="tile-emoji">🔵</span><span class="tile-copy"><span class="tile-title">Shield Gen</span><span class="tile-meta">+120 def</span></span><span class="tile-cost">💰450</span></div>
+    <div class="layer-tile" data-id="sam" style="--sel-color:#c880ff"><span class="tile-emoji">🚀</span><span class="tile-copy"><span class="tile-title">SAM Battery</span><span class="tile-meta">+80 def</span></span><span class="tile-cost">💰350</span></div>
+    <div class="layer-tile" data-id="emp" style="--sel-color:#c880ff"><span class="tile-emoji">⚡</span><span class="tile-copy"><span class="tile-title">EMP Tower</span><span class="tile-meta">+60 def</span></span><span class="tile-cost">💰280</span></div>
   </div>
   <div class="palette-section section-attack">
     <div class="palette-section-title">⚔ Attack</div>
-    <div class="layer-tile" data-id="turret" style="--sel-color:#ff5050">
-      <span class="tile-emoji">🔫</span>
-      <span class="tile-copy"><span class="tile-title">Pulse Turret</span><span class="tile-meta">+40 atk · bliski</span></span>
-      <span class="tile-cost">💰150</span>
-    </div>
-    <div class="layer-tile" data-id="cannon" style="--sel-color:#ff5050">
-      <span class="tile-emoji">💣</span>
-      <span class="tile-copy"><span class="tile-title">Rail Cannon</span><span class="tile-meta">+90 atk · daleki</span></span>
-      <span class="tile-cost">💰380</span>
-    </div>
-    <div class="layer-tile" data-id="cyber" style="--sel-color:#ff5050">
-      <span class="tile-emoji">💻</span>
-      <span class="tile-copy"><span class="tile-title">Cyber Hub</span><span class="tile-meta">+70 atk · sieciowy</span></span>
-      <span class="tile-cost">💰320</span>
-    </div>
-    <div class="layer-tile" data-id="drone" style="--sel-color:#ff5050">
-      <span class="tile-emoji">🛸</span>
-      <span class="tile-copy"><span class="tile-title">Drone Bay</span><span class="tile-meta">+110 atk · autonomiczne</span></span>
-      <span class="tile-cost">💰500</span>
-    </div>
+    <div class="layer-tile" data-id="turret" style="--sel-color:#ff5050"><span class="tile-emoji">🔫</span><span class="tile-copy"><span class="tile-title">Pulse Turret</span><span class="tile-meta">+40 atk</span></span><span class="tile-cost">💰150</span></div>
+    <div class="layer-tile" data-id="cannon" style="--sel-color:#ff5050"><span class="tile-emoji">💣</span><span class="tile-copy"><span class="tile-title">Rail Cannon</span><span class="tile-meta">+90 atk</span></span><span class="tile-cost">💰380</span></div>
+    <div class="layer-tile" data-id="cyber" style="--sel-color:#ff5050"><span class="tile-emoji">💻</span><span class="tile-copy"><span class="tile-title">Cyber Hub</span><span class="tile-meta">+70 atk</span></span><span class="tile-cost">💰320</span></div>
+    <div class="layer-tile" data-id="drone" style="--sel-color:#ff5050"><span class="tile-emoji">🛸</span><span class="tile-copy"><span class="tile-title">Drone Bay</span><span class="tile-meta">+110 atk</span></span><span class="tile-cost">💰500</span></div>
   </div>
   <div class="palette-section section-support">
     <div class="palette-section-title">🔧 Support</div>
-    <div class="layer-tile" data-id="power" style="--sel-color:#ffd050">
-      <span class="tile-emoji">🔋</span>
-      <span class="tile-copy"><span class="tile-title">Power Plant</span><span class="tile-meta">+300 energii/s</span></span>
-      <span class="tile-cost">💰200</span>
-    </div>
-    <div class="layer-tile" data-id="nuclear_r" style="--sel-color:#ffd050">
-      <span class="tile-emoji">☢️</span>
-      <span class="tile-copy"><span class="tile-title">Micro Reactor</span><span class="tile-meta">+800 energii/s</span></span>
-      <span class="tile-cost">💰700</span>
-    </div>
-    <div class="layer-tile" data-id="intel" style="--sel-color:#ffd050">
-      <span class="tile-emoji">🔭</span>
-      <span class="tile-copy"><span class="tile-title">Intel Station</span><span class="tile-meta">+zasięg widoczności</span></span>
-      <span class="tile-cost">💰260</span>
-    </div>
-    <div class="layer-tile" data-id="medctr" style="--sel-color:#ffd050">
-      <span class="tile-emoji">🏥</span>
-      <span class="tile-copy"><span class="tile-title">Med Center</span><span class="tile-meta">+30 pop · regeneracja</span></span>
-      <span class="tile-cost">💰180</span>
-    </div>
-    <div class="layer-tile" data-id="comms" style="--sel-color:#ffd050">
-      <span class="tile-emoji">📶</span>
-      <span class="tile-copy"><span class="tile-title">Comms Array</span><span class="tile-meta">+sojusznicy · +5cr/s</span></span>
-      <span class="tile-cost">💰340</span>
-    </div>
-    <div class="layer-tile" data-id="market" style="--sel-color:#ffd050">
-      <span class="tile-emoji">📦</span>
-      <span class="tile-copy"><span class="tile-title">Trade Depot</span><span class="tile-meta">+50 kredytów/s</span></span>
-      <span class="tile-cost">💰290</span>
-    </div>
+    <div class="layer-tile" data-id="power" style="--sel-color:#ffd050"><span class="tile-emoji">🔋</span><span class="tile-copy"><span class="tile-title">Power Plant</span><span class="tile-meta">+300 en/s</span></span><span class="tile-cost">💰200</span></div>
+    <div class="layer-tile" data-id="nuclear_r" style="--sel-color:#ffd050"><span class="tile-emoji">☢️</span><span class="tile-copy"><span class="tile-title">Micro Reactor</span><span class="tile-meta">+800 en/s</span></span><span class="tile-cost">💰700</span></div>
+    <div class="layer-tile" data-id="intel" style="--sel-color:#ffd050"><span class="tile-emoji">🔭</span><span class="tile-copy"><span class="tile-title">Intel Station</span><span class="tile-meta">+zasięg</span></span><span class="tile-cost">💰260</span></div>
+    <div class="layer-tile" data-id="medctr" style="--sel-color:#ffd050"><span class="tile-emoji">🏥</span><span class="tile-copy"><span class="tile-title">Med Center</span><span class="tile-meta">+30 pop</span></span><span class="tile-cost">💰180</span></div>
+    <div class="layer-tile" data-id="comms" style="--sel-color:#ffd050"><span class="tile-emoji">📶</span><span class="tile-copy"><span class="tile-title">Comms Array</span><span class="tile-meta">+5 cr/s</span></span><span class="tile-cost">💰340</span></div>
+    <div class="layer-tile" data-id="market" style="--sel-color:#ffd050"><span class="tile-emoji">📦</span><span class="tile-copy"><span class="tile-title">Trade Depot</span><span class="tile-meta">+50 cr/s</span></span><span class="tile-cost">💰290</span></div>
   </div>
-</div><!-- end cb-palette -->
-
-<div id="cb-center">
-  <canvas id="cb-canvas"></canvas>
 </div>
-
+<div id="cb-center"><canvas id="cb-canvas"></canvas></div>
 <div id="cb-info">
   <div>
-    <div class="info-section-title">🏙 Statystyki miasta</div>
+    <div class="info-section-title">🏙 Statystyki</div>
     <div id="cb-city-stats">
       <div class="cs-card"><div class="cs-val" id="cs-buildings">0</div><div class="cs-lbl">Budynki</div></div>
-      <div class="cs-card"><div class="cs-val" id="cs-pop">0</div><div class="cs-lbl">Populacja</div></div>
+      <div class="cs-card"><div class="cs-val" id="cs-pop">0</div><div class="cs-lbl">Pop</div></div>
       <div class="cs-card"><div class="cs-val" id="cs-defense">0</div><div class="cs-lbl">Obrona</div></div>
       <div class="cs-card"><div class="cs-val" id="cs-attack">0</div><div class="cs-lbl">Atak</div></div>
       <div class="cs-card"><div class="cs-val" id="cs-energy">0</div><div class="cs-lbl">Energia/s</div></div>
-      <div class="cs-card"><div class="cs-val" id="cs-cps">0</div><div class="cs-lbl">Kredyty/s</div></div>
+      <div class="cs-card"><div class="cs-val" id="cs-cps">0</div><div class="cs-lbl">Cr/s</div></div>
     </div>
   </div>
   <div id="cb-sel-panel">
     <div class="info-section-title">Wybrany budynek</div>
-    <div class="sel-tile">
-      <div class="sel-icon" id="sel-icon">?</div>
-      <div class="sel-body">
-        <div class="sel-name" id="sel-name">—</div>
-        <div class="sel-desc" id="sel-desc">—</div>
-        <div class="sel-stats" id="sel-stats"></div>
-      </div>
-    </div>
-    <button id="cb-demolish">💥 Wyburz (+50% zwrotu)</button>
+    <div class="sel-tile"><div class="sel-icon" id="sel-icon">?</div><div class="sel-body"><div class="sel-name" id="sel-name">—</div><div class="sel-desc" id="sel-desc">—</div><div class="sel-stats" id="sel-stats"></div></div></div>
+    <button id="cb-demolish">💥 Wyburz (+50%)</button>
   </div>
   <div style="flex:1"></div>
-  <div>
-    <div class="info-section-title">Event Log</div>
-    <div id="cb-log-lines"></div>
-  </div>
-</div><!-- end cb-info -->
-</div><!-- end cb-body -->
-</div><!-- end cb-overlay -->
+  <div><div class="info-section-title">Event Log</div><div id="cb-log-lines"></div></div>
+</div>
+</div>
+</div>
 <div id="cb-tooltip"></div>
 
 <script src="https://unpkg.com/globe.gl@2/dist/globe.gl.min.js"></script>
 <script>
-// ══════════════════════════════════════════════
-//  DATA — CAPITALS
-// ══════════════════════════════════════════════
-const capitals = [
-  { name:'Warszawa',     country:'Polska',         lat:52.23,  lng:21.01,  type:'capital' },
-  { name:'Berlin',       country:'Niemcy',          lat:52.52,  lng:13.40,  type:'capital' },
-  { name:'Paryż',        country:'Francja',         lat:48.85,  lng:2.35,   type:'capital' },
-  { name:'Londyn',       country:'Wielka Brytania', lat:51.51,  lng:-0.13,  type:'capital' },
-  { name:'Madryt',       country:'Hiszpania',       lat:40.42,  lng:-3.70,  type:'capital' },
-  { name:'Rzym',         country:'Włochy',          lat:41.90,  lng:12.50,  type:'capital' },
-  { name:'Moskwa',       country:'Rosja',           lat:55.75,  lng:37.62,  type:'capital' },
-  { name:'Kijów',        country:'Ukraina',         lat:50.45,  lng:30.52,  type:'capital' },
-  { name:'Sztokholm',    country:'Szwecja',         lat:59.33,  lng:18.07,  type:'capital' },
-  { name:'Oslo',         country:'Norwegia',        lat:59.91,  lng:10.75,  type:'capital' },
-  { name:'Helsinki',     country:'Finlandia',       lat:60.17,  lng:24.94,  type:'capital' },
-  { name:'Kopenhaga',    country:'Dania',           lat:55.68,  lng:12.57,  type:'capital' },
-  { name:'Amsterdam',    country:'Holandia',        lat:52.37,  lng:4.90,   type:'capital' },
-  { name:'Bruksela',     country:'Belgia',          lat:50.85,  lng:4.35,   type:'capital' },
-  { name:'Wiedeń',       country:'Austria',         lat:48.21,  lng:16.37,  type:'capital' },
-  { name:'Praga',        country:'Czechy',          lat:50.08,  lng:14.44,  type:'capital' },
-  { name:'Budapeszt',    country:'Węgry',           lat:47.50,  lng:19.04,  type:'capital' },
-  { name:'Bukareszt',    country:'Rumunia',         lat:44.43,  lng:26.10,  type:'capital' },
-  { name:'Ateny',        country:'Grecja',          lat:37.98,  lng:23.73,  type:'capital' },
-  { name:'Lizbona',      country:'Portugalia',      lat:38.72,  lng:-9.14,  type:'capital' },
-  { name:'Waszyngton',   country:'USA',             lat:38.91,  lng:-77.04, type:'capital' },
-  { name:'Ottawa',       country:'Kanada',          lat:45.42,  lng:-75.69, type:'capital' },
-  { name:'Meksyk',       country:'Meksyk',          lat:19.43,  lng:-99.13, type:'capital' },
-  { name:'Brasília',     country:'Brazylia',        lat:-15.78, lng:-47.93, type:'capital' },
-  { name:'Buenos Aires', country:'Argentyna',       lat:-34.61, lng:-58.38, type:'capital' },
-  { name:'Bogota',       country:'Kolumbia',        lat:4.71,   lng:-74.07, type:'capital' },
-  { name:'Lima',         country:'Peru',            lat:-12.05, lng:-77.04, type:'capital' },
-  { name:'Santiago',     country:'Chile',           lat:-33.46, lng:-70.65, type:'capital' },
-  { name:'Kair',         country:'Egipt',           lat:30.06,  lng:31.25,  type:'capital' },
-  { name:'Nairobi',      country:'Kenia',           lat:-1.29,  lng:36.82,  type:'capital' },
-  { name:'Lagos',        country:'Nigeria',         lat:6.45,   lng:3.40,   type:'capital' },
-  { name:'Kapsztad',     country:'RPA',             lat:-33.93, lng:18.42,  type:'capital' },
-  { name:'Addis Abeba',  country:'Etiopia',         lat:9.03,   lng:38.74,  type:'capital' },
-  { name:'Akra',         country:'Ghana',           lat:5.56,   lng:-0.20,  type:'capital' },
-  { name:'Pekin',        country:'Chiny',           lat:39.91,  lng:116.39, type:'capital' },
-  { name:'Tokio',        country:'Japonia',         lat:35.69,  lng:139.69, type:'capital' },
-  { name:'Seul',         country:'Korea Płd.',      lat:37.57,  lng:126.98, type:'capital' },
-  { name:'New Delhi',    country:'Indie',           lat:28.61,  lng:77.21,  type:'capital' },
-  { name:'Islamabad',    country:'Pakistan',        lat:33.72,  lng:73.06,  type:'capital' },
-  { name:'Teheran',      country:'Iran',            lat:35.69,  lng:51.42,  type:'capital' },
-  { name:'Bagdad',       country:'Irak',            lat:33.34,  lng:44.40,  type:'capital' },
-  { name:'Rijad',        country:'Arabia Saudyjska',lat:24.69,  lng:46.72,  type:'capital' },
-  { name:'Ankara',       country:'Turcja',          lat:39.93,  lng:32.85,  type:'capital' },
-  { name:'Tel Awiw',     country:'Izrael',          lat:32.08,  lng:34.78,  type:'capital' },
-  { name:'Bangkok',      country:'Tajlandia',       lat:13.75,  lng:100.52, type:'capital' },
-  { name:'Dżakarta',     country:'Indonezja',       lat:-6.21,  lng:106.85, type:'capital' },
-  { name:'Kuala Lumpur', country:'Malezja',         lat:3.14,   lng:101.69, type:'capital' },
-  { name:'Manila',       country:'Filipiny',        lat:14.60,  lng:120.98, type:'capital' },
-  { name:'Hanoi',        country:'Wietnam',         lat:21.03,  lng:105.85, type:'capital' },
-  { name:'Singapur',     country:'Singapur',        lat:1.35,   lng:103.82, type:'capital' },
-  { name:'Canberra',     country:'Australia',       lat:-35.28, lng:149.13, type:'capital' },
-  { name:'Wellington',   country:'Nowa Zelandia',   lat:-41.29, lng:174.78, type:'capital' },
+const capitals=[
+  {name:'Warszawa',country:'Polska',lat:52.23,lng:21.01,type:'capital'},
+  {name:'Berlin',country:'Niemcy',lat:52.52,lng:13.40,type:'capital'},
+  {name:'Paryż',country:'Francja',lat:48.85,lng:2.35,type:'capital'},
+  {name:'Londyn',country:'Wielka Brytania',lat:51.51,lng:-0.13,type:'capital'},
+  {name:'Madryt',country:'Hiszpania',lat:40.42,lng:-3.70,type:'capital'},
+  {name:'Rzym',country:'Włochy',lat:41.90,lng:12.50,type:'capital'},
+  {name:'Moskwa',country:'Rosja',lat:55.75,lng:37.62,type:'capital'},
+  {name:'Kijów',country:'Ukraina',lat:50.45,lng:30.52,type:'capital'},
+  {name:'Sztokholm',country:'Szwecja',lat:59.33,lng:18.07,type:'capital'},
+  {name:'Oslo',country:'Norwegia',lat:59.91,lng:10.75,type:'capital'},
+  {name:'Helsinki',country:'Finlandia',lat:60.17,lng:24.94,type:'capital'},
+  {name:'Kopenhaga',country:'Dania',lat:55.68,lng:12.57,type:'capital'},
+  {name:'Amsterdam',country:'Holandia',lat:52.37,lng:4.90,type:'capital'},
+  {name:'Bruksela',country:'Belgia',lat:50.85,lng:4.35,type:'capital'},
+  {name:'Wiedeń',country:'Austria',lat:48.21,lng:16.37,type:'capital'},
+  {name:'Praga',country:'Czechy',lat:50.08,lng:14.44,type:'capital'},
+  {name:'Budapeszt',country:'Węgry',lat:47.50,lng:19.04,type:'capital'},
+  {name:'Bukareszt',country:'Rumunia',lat:44.43,lng:26.10,type:'capital'},
+  {name:'Ateny',country:'Grecja',lat:37.98,lng:23.73,type:'capital'},
+  {name:'Lizbona',country:'Portugalia',lat:38.72,lng:-9.14,type:'capital'},
+  {name:'Waszyngton',country:'USA',lat:38.91,lng:-77.04,type:'capital'},
+  {name:'Ottawa',country:'Kanada',lat:45.42,lng:-75.69,type:'capital'},
+  {name:'Meksyk',country:'Meksyk',lat:19.43,lng:-99.13,type:'capital'},
+  {name:'Brasília',country:'Brazylia',lat:-15.78,lng:-47.93,type:'capital'},
+  {name:'Buenos Aires',country:'Argentyna',lat:-34.61,lng:-58.38,type:'capital'},
+  {name:'Kair',country:'Egipt',lat:30.06,lng:31.25,type:'capital'},
+  {name:'Nairobi',country:'Kenia',lat:-1.29,lng:36.82,type:'capital'},
+  {name:'Lagos',country:'Nigeria',lat:6.45,lng:3.40,type:'capital'},
+  {name:'Kapsztad',country:'RPA',lat:-33.93,lng:18.42,type:'capital'},
+  {name:'Pekin',country:'Chiny',lat:39.91,lng:116.39,type:'capital'},
+  {name:'Tokio',country:'Japonia',lat:35.69,lng:139.69,type:'capital'},
+  {name:'Seul',country:'Korea Płd.',lat:37.57,lng:126.98,type:'capital'},
+  {name:'New Delhi',country:'Indie',lat:28.61,lng:77.21,type:'capital'},
+  {name:'Islamabad',country:'Pakistan',lat:33.72,lng:73.06,type:'capital'},
+  {name:'Teheran',country:'Iran',lat:35.69,lng:51.42,type:'capital'},
+  {name:'Bagdad',country:'Irak',lat:33.34,lng:44.40,type:'capital'},
+  {name:'Rijad',country:'Arabia Saudyjska',lat:24.69,lng:46.72,type:'capital'},
+  {name:'Ankara',country:'Turcja',lat:39.93,lng:32.85,type:'capital'},
+  {name:'Tel Awiw',country:'Izrael',lat:32.08,lng:34.78,type:'capital'},
+  {name:'Bangkok',country:'Tajlandia',lat:13.75,lng:100.52,type:'capital'},
+  {name:'Dżakarta',country:'Indonezja',lat:-6.21,lng:106.85,type:'capital'},
+  {name:'Kuala Lumpur',country:'Malezja',lat:3.14,lng:101.69,type:'capital'},
+  {name:'Manila',country:'Filipiny',lat:14.60,lng:120.98,type:'capital'},
+  {name:'Hanoi',country:'Wietnam',lat:21.03,lng:105.85,type:'capital'},
+  {name:'Singapur',country:'Singapur',lat:1.35,lng:103.82,type:'capital'},
+  {name:'Canberra',country:'Australia',lat:-35.28,lng:149.13,type:'capital'},
+  {name:'Wellington',country:'Nowa Zelandia',lat:-41.29,lng:174.78,type:'capital'},
 ];
-const bigCities = [
-  { name:'Nowy Jork',    country:'USA',       lat:40.71,  lng:-74.01,  type:'city', pop:'8.3M' },
-  { name:'Los Angeles',  country:'USA',       lat:34.05,  lng:-118.24, type:'city', pop:'4.0M' },
-  { name:'Chicago',      country:'USA',       lat:41.88,  lng:-87.63,  type:'city', pop:'2.7M' },
-  { name:'Toronto',      country:'Kanada',    lat:43.65,  lng:-79.38,  type:'city', pop:'2.9M' },
-  { name:'São Paulo',    country:'Brazylia',  lat:-23.55, lng:-46.63,  type:'city', pop:'12.3M' },
-  { name:'Rio de Janeiro',country:'Brazylia', lat:-22.91, lng:-43.17,  type:'city', pop:'6.7M' },
-  { name:'Hamburg',      country:'Niemcy',    lat:53.55,  lng:9.99,    type:'city', pop:'1.8M' },
-  { name:'Monachium',    country:'Niemcy',    lat:48.14,  lng:11.58,   type:'city', pop:'1.5M' },
-  { name:'Barcelona',    country:'Hiszpania', lat:41.39,  lng:2.15,    type:'city', pop:'1.6M' },
-  { name:'Mediolan',     country:'Włochy',    lat:45.46,  lng:9.19,    type:'city', pop:'1.4M' },
-  { name:'Manchester',   country:'Wielka Brytania', lat:53.48, lng:-2.24, type:'city', pop:'553K' },
-  { name:'Sankt Petersburg',country:'Rosja',  lat:59.95,  lng:30.32,   type:'city', pop:'5.4M' },
-  { name:'Istanbul',     country:'Turcja',    lat:41.01,  lng:28.95,   type:'city', pop:'15.5M' },
-  { name:'Bombaj',       country:'Indie',     lat:19.08,  lng:72.88,   type:'city', pop:'20.7M' },
-  { name:'Szanghaj',     country:'Chiny',     lat:31.23,  lng:121.47,  type:'city', pop:'24.1M' },
-  { name:'Tokio-miasto', country:'Japonia',   lat:35.68,  lng:139.77,  type:'city', pop:'13.9M' },
-  { name:'Sydney',       country:'Australia', lat:-33.87, lng:151.21,  type:'city', pop:'5.3M' },
-  { name:'Dubaj',        country:'ZEA',       lat:25.20,  lng:55.27,   type:'city', pop:'3.5M' },
-  { name:'Kraków',       country:'Polska',    lat:50.06,  lng:19.94,   type:'city', pop:'780K' },
+const bigCities=[
+  {name:'Nowy Jork',country:'USA',lat:40.71,lng:-74.01,type:'city',pop:'8.3M'},
+  {name:'Los Angeles',country:'USA',lat:34.05,lng:-118.24,type:'city',pop:'4.0M'},
+  {name:'Szanghaj',country:'Chiny',lat:31.23,lng:121.47,type:'city',pop:'24.1M'},
+  {name:'Tokio-miasto',country:'Japonia',lat:35.68,lng:139.77,type:'city',pop:'13.9M'},
+  {name:'Bombaj',country:'Indie',lat:19.08,lng:72.88,type:'city',pop:'20.7M'},
+  {name:'Istanbul',country:'Turcja',lat:41.01,lng:28.95,type:'city',pop:'15.5M'},
+  {name:'São Paulo',country:'Brazylia',lat:-23.55,lng:-46.63,type:'city',pop:'12.3M'},
+  {name:'Kraków',country:'Polska',lat:50.06,lng:19.94,type:'city',pop:'780K'},
+  {name:'Sydney',country:'Australia',lat:-33.87,lng:151.21,type:'city',pop:'5.3M'},
+  {name:'Dubaj',country:'ZEA',lat:25.20,lng:55.27,type:'city',pop:'3.5M'},
 ];
-const liveCameras = [
-  { name:'London CCTV Grid',      country:'Wielka Brytania', lat:51.50, lng:-0.11,  type:'camera', viewers:'1.4k' },
-  { name:'Berlin Traffic Cam',    country:'Niemcy',          lat:52.51, lng:13.37,  type:'camera', viewers:'920' },
-  { name:'Paris Metro Hub',       country:'Francja',         lat:48.86, lng:2.34,   type:'camera', viewers:'1.1k' },
-  { name:'Warsaw Center Cam',     country:'Polska',          lat:52.22, lng:21.02,  type:'camera', viewers:'860' },
-  { name:'Tokyo Crossing Feed',   country:'Japonia',         lat:35.66, lng:139.70, type:'camera', viewers:'3.2k' },
-  { name:'Seoul Skyline Cam',     country:'Korea Płd.',      lat:37.56, lng:126.97, type:'camera', viewers:'1.6k' },
-  { name:'Singapore Port Cam',    country:'Singapur',        lat:1.29,  lng:103.85, type:'camera', viewers:'2.3k' },
-  { name:'Dubai Marina Feed',     country:'ZEA',             lat:25.08, lng:55.14,  type:'camera', viewers:'1.7k' },
-  { name:'Sydney Harbour Cam',    country:'Australia',       lat:-33.86,lng:151.21, type:'camera', viewers:'1.3k' },
-  { name:'New York Street Cam',   country:'USA',             lat:40.72, lng:-74.00, type:'camera', viewers:'2.9k' },
-  { name:'Mumbai Rail Cam',       country:'Indie',           lat:19.07, lng:72.88,  type:'camera', viewers:'1.8k' },
-  { name:'Shanghai Tower Cam',    country:'Chiny',           lat:31.23, lng:121.49, type:'camera', viewers:'2.6k' },
-  { name:'Istanbul Bosphorus Cam',country:'Turcja',          lat:41.04, lng:29.00,  type:'camera', viewers:'1.5k' },
+const liveCameras=[
+  {name:'London CCTV Grid',country:'Wielka Brytania',lat:51.50,lng:-0.11,type:'camera',viewers:'1.4k'},
+  {name:'Warsaw Center Cam',country:'Polska',lat:52.22,lng:21.02,type:'camera',viewers:'860'},
+  {name:'Tokyo Crossing Feed',country:'Japonia',lat:35.66,lng:139.70,type:'camera',viewers:'3.2k'},
+  {name:'New York Street Cam',country:'USA',lat:40.72,lng:-74.00,type:'camera',viewers:'2.9k'},
+  {name:'Shanghai Tower Cam',country:'Chiny',lat:31.23,lng:121.49,type:'camera',viewers:'2.6k'},
+  {name:'Istanbul Bosphorus Cam',country:'Turcja',lat:41.04,lng:29.00,type:'camera',viewers:'1.5k'},
+  {name:'Dubai Marina Feed',country:'ZEA',lat:25.08,lng:55.14,type:'camera',viewers:'1.7k'},
 ];
-const airports = [
-  { name:'JFK',                country:'USA',             lat:40.64, lng:-73.78,  type:'airport' },
-  { name:'LAX',                country:'USA',             lat:33.94, lng:-118.40, type:'airport' },
-  { name:"O'Hare",             country:'USA',             lat:41.98, lng:-87.90,  type:'airport' },
-  { name:'Heathrow',           country:'Wielka Brytania', lat:51.47, lng:-0.45,   type:'airport' },
-  { name:'Charles de Gaulle',  country:'Francja',         lat:49.01, lng:2.55,    type:'airport' },
-  { name:'Berlin Brandenburg', country:'Niemcy',          lat:52.36, lng:13.50,   type:'airport' },
-  { name:'Chopin',             country:'Polska',          lat:52.17, lng:20.97,   type:'airport' },
-  { name:'Narita',             country:'Japonia',         lat:35.77, lng:140.39,  type:'airport' },
-  { name:'Changi',             country:'Singapur',        lat:1.36,  lng:103.99,  type:'airport' },
-  { name:'Dubai Intl',         country:'ZEA',             lat:25.25, lng:55.36,   type:'airport' },
-  { name:'Sydney Kingsford',   country:'Australia',       lat:-33.94,lng:151.18,  type:'airport' },
-  { name:'Istanbul Airport',   country:'Turcja',          lat:41.26, lng:28.74,   type:'airport' },
-  { name:'Delhi IGI',          country:'Indie',           lat:28.56, lng:77.10,   type:'airport' },
-  { name:'Shanghai Pudong',    country:'Chiny',           lat:31.14, lng:121.81,  type:'airport' },
+const airports=[
+  {name:'JFK',country:'USA',lat:40.64,lng:-73.78,type:'airport'},
+  {name:'Heathrow',country:'Wielka Brytania',lat:51.47,lng:-0.45,type:'airport'},
+  {name:'Charles de Gaulle',country:'Francja',lat:49.01,lng:2.55,type:'airport'},
+  {name:'Chopin',country:'Polska',lat:52.17,lng:20.97,type:'airport'},
+  {name:'Narita',country:'Japonia',lat:35.77,lng:140.39,type:'airport'},
+  {name:'Dubai Intl',country:'ZEA',lat:25.25,lng:55.36,type:'airport'},
+  {name:'Shanghai Pudong',country:'Chiny',lat:31.14,lng:121.81,type:'airport'},
+  {name:'Istanbul Airport',country:'Turcja',lat:41.26,lng:28.74,type:'airport'},
 ];
-const militaryBases = [
-  { name:'Ramstein Air Base',  country:'Niemcy',          lat:49.44, lng:7.60,    type:'military', branch:'Air Force' },
-  { name:'RAF Mildenhall',     country:'Wielka Brytania', lat:52.36, lng:0.49,    type:'military', branch:'Air Force' },
-  { name:'Camp Lejeune',       country:'USA',             lat:34.59, lng:-77.36,  type:'military', branch:'Marines' },
-  { name:'Pentagon Area',      country:'USA',             lat:38.87, lng:-77.06,  type:'military', branch:'HQ' },
-  { name:'Camp Humphreys',     country:'Korea Płd.',      lat:36.97, lng:127.03,  type:'military', branch:'Army' },
-  { name:'Yokota Air Base',    country:'Japonia',         lat:35.75, lng:139.35,  type:'military', branch:'Air Force' },
-  { name:'Al Udeid Air Base',  country:'Katar',           lat:25.12, lng:51.31,   type:'military', branch:'Air Force' },
-  { name:'Diego Garcia',       country:'BIOT',            lat:-7.31, lng:72.41,   type:'military', branch:'Navy' },
-  { name:'Lask Air Base',      country:'Polska',          lat:51.55, lng:19.18,   type:'military', branch:'Air Force' },
-  { name:'Sigonella NAS',      country:'Włochy',          lat:37.40, lng:14.92,   type:'military', branch:'Navy' },
-  { name:'Sevastopol Base',    country:'Rosja',           lat:44.62, lng:33.52,   type:'military', branch:'Navy' },
-  { name:'Pearl Harbor',       country:'USA',             lat:21.36, lng:-157.97, type:'military', branch:'Navy' },
+const militaryBases=[
+  {name:'Ramstein Air Base',country:'Niemcy',lat:49.44,lng:7.60,type:'military',branch:'Air Force'},
+  {name:'Pentagon Area',country:'USA',lat:38.87,lng:-77.06,type:'military',branch:'HQ'},
+  {name:'Camp Humphreys',country:'Korea Płd.',lat:36.97,lng:127.03,type:'military',branch:'Army'},
+  {name:'Lask Air Base',country:'Polska',lat:51.55,lng:19.18,type:'military',branch:'Air Force'},
+  {name:'Pearl Harbor',country:'USA',lat:21.36,lng:-157.97,type:'military',branch:'Navy'},
+  {name:'Sevastopol Base',country:'Rosja',lat:44.62,lng:33.52,type:'military',branch:'Navy'},
+  {name:'Diego Garcia',country:'BIOT',lat:-7.31,lng:72.41,type:'military',branch:'Navy'},
 ];
-const navalFleets = [
-  { name:'USS Gerald Ford',        country:'USA',             lat:36.95, lng:-76.33,  type:'naval', class:'Carrier' },
-  { name:'USS Theodore Roosevelt', country:'USA',             lat:32.71, lng:-117.22, type:'naval', class:'Carrier' },
-  { name:'HMS Queen Elizabeth',    country:'Wielka Brytania', lat:50.80, lng:-1.10,   type:'naval', class:'Carrier' },
-  { name:'FS Charles de Gaulle',   country:'Francja',         lat:43.12, lng:5.93,    type:'naval', class:'Carrier' },
-  { name:'Admiral Kuznetsov',      country:'Rosja',           lat:69.01, lng:33.05,   type:'naval', class:'Carrier' },
-  { name:'Liaoning (CV-16)',       country:'Chiny',           lat:39.09, lng:121.72,  type:'naval', class:'Carrier' },
-  { name:'INS Vikrant',            country:'Indie',           lat:15.30, lng:73.80,   type:'naval', class:'Carrier' },
-  { name:'JDS Izumo',              country:'Japonia',         lat:35.44, lng:139.65,  type:'naval', class:'Destroyer' },
-  { name:'ORP Kościuszko',         country:'Polska',          lat:54.52, lng:18.55,   type:'naval', class:'Frigate' },
-  { name:'FGS Bayern',             country:'Niemcy',          lat:54.32, lng:10.15,   type:'naval', class:'Frigate' },
+const navalFleets=[
+  {name:'USS Gerald Ford',country:'USA',lat:36.95,lng:-76.33,type:'naval',class:'Carrier'},
+  {name:'HMS Queen Elizabeth',country:'Wielka Brytania',lat:50.80,lng:-1.10,type:'naval',class:'Carrier'},
+  {name:'Admiral Kuznetsov',country:'Rosja',lat:69.01,lng:33.05,type:'naval',class:'Carrier'},
+  {name:'Liaoning (CV-16)',country:'Chiny',lat:39.09,lng:121.72,type:'naval',class:'Carrier'},
+  {name:'ORP Kościuszko',country:'Polska',lat:54.52,lng:18.55,type:'naval',class:'Frigate'},
 ];
-const nuclearPlants = [
-  { name:'Zaporizhzhia',      country:'Ukraina',         lat:47.51, lng:34.58,   type:'nuclear', mw:5700, status:'offline' },
-  { name:'Bruce Nuclear',     country:'Kanada',          lat:44.33, lng:-81.60,  type:'nuclear', mw:6384, status:'active' },
-  { name:'Paluel',            country:'Francja',         lat:49.86, lng:0.63,    type:'nuclear', mw:5320, status:'active' },
-  { name:'Isar',              country:'Niemcy',          lat:48.61, lng:12.29,   type:'nuclear', mw:1475, status:'offline' },
-  { name:'Paks',              country:'Węgry',           lat:46.57, lng:18.86,   type:'nuclear', mw:1902, status:'active' },
-  { name:'Rovno',             country:'Ukraina',         lat:51.34, lng:25.89,   type:'nuclear', mw:2835, status:'active' },
-  { name:'Sosnoviy Bor',      country:'Rosja',           lat:59.88, lng:29.06,   type:'nuclear', mw:4000, status:'active' },
-  { name:'Bushehr',           country:'Iran',            lat:28.83, lng:50.89,   type:'nuclear', mw:1000, status:'active' },
-  { name:'Qinshan',           country:'Chiny',           lat:30.44, lng:120.96,  type:'nuclear', mw:6620, status:'active' },
-  { name:'Kori',              country:'Korea Płd.',      lat:35.33, lng:129.28,  type:'nuclear', mw:3137, status:'active' },
-  { name:'Tarapur',           country:'Indie',           lat:19.83, lng:72.72,   type:'nuclear', mw:1400, status:'active' },
-  { name:'Palo Verde',        country:'USA',             lat:33.39, lng:-112.86, type:'nuclear', mw:3937, status:'active' },
-  { name:'Sizewell B',        country:'Wielka Brytania', lat:52.21, lng:1.62,    type:'nuclear', mw:1188, status:'active' },
-  { name:'Cernavoda',         country:'Rumunia',         lat:44.32, lng:28.06,   type:'nuclear', mw:1413, status:'active' },
+const nuclearPlants=[
+  {name:'Zaporizhzhia',country:'Ukraina',lat:47.51,lng:34.58,type:'nuclear',mw:5700,status:'offline'},
+  {name:'Paluel',country:'Francja',lat:49.86,lng:0.63,type:'nuclear',mw:5320,status:'active'},
+  {name:'Palo Verde',country:'USA',lat:33.39,lng:-112.86,type:'nuclear',mw:3937,status:'active'},
+  {name:'Qinshan',country:'Chiny',lat:30.44,lng:120.96,type:'nuclear',mw:6620,status:'active'},
+  {name:'Kori',country:'Korea Płd.',lat:35.33,lng:129.28,type:'nuclear',mw:3137,status:'active'},
+  {name:'Sosnoviy Bor',country:'Rosja',lat:59.88,lng:29.06,type:'nuclear',mw:4000,status:'active'},
+  {name:'Bushehr',country:'Iran',lat:28.83,lng:50.89,type:'nuclear',mw:1000,status:'active'},
+  {name:'Sizewell B',country:'Wielka Brytania',lat:52.21,lng:1.62,type:'nuclear',mw:1188,status:'active'},
 ];
-const satellites = [
-  { name:'ISS',             country:'USA',   lat:51.60, lng:0.00,    type:'satellite', orbit:'LEO', alt:408 },
-  { name:'GPS Block III-1', country:'USA',   lat:55.00, lng:-120.00, type:'satellite', orbit:'MEO', alt:20200 },
-  { name:'GPS Block III-2', country:'USA',   lat:55.00, lng:-60.00,  type:'satellite', orbit:'MEO', alt:20200 },
-  { name:'GPS Block III-3', country:'USA',   lat:55.00, lng:60.00,   type:'satellite', orbit:'MEO', alt:20200 },
-  { name:'Starlink L1',     country:'USA',   lat:53.00, lng:-90.00,  type:'satellite', orbit:'LEO', alt:550 },
-  { name:'Starlink L2',     country:'USA',   lat:53.00, lng:30.00,   type:'satellite', orbit:'LEO', alt:550 },
-  { name:'Starlink L3',     country:'USA',   lat:53.00, lng:150.00,  type:'satellite', orbit:'LEO', alt:550 },
-  { name:'Sentinel-6',      country:'ESA',   lat:66.00, lng:50.00,   type:'satellite', orbit:'LEO', alt:1336 },
-  { name:'Galileo-27',      country:'ESA',   lat:56.00, lng:20.00,   type:'satellite', orbit:'MEO', alt:23222 },
-  { name:'BeiDou-3 M1',     country:'Chiny', lat:55.00, lng:80.00,   type:'satellite', orbit:'MEO', alt:21528 },
-  { name:'BeiDou-3 M2',     country:'Chiny', lat:55.00, lng:160.00,  type:'satellite', orbit:'MEO', alt:21528 },
-  { name:'GLONASS-K1',      country:'Rosja', lat:64.80, lng:-30.00,  type:'satellite', orbit:'MEO', alt:19130 },
-  { name:'GLONASS-K2',      country:'Rosja', lat:64.80, lng:90.00,   type:'satellite', orbit:'MEO', alt:19130 },
-  { name:'Intelsat 39',     country:'USA',   lat:0.00,  lng:-62.00,  type:'satellite', orbit:'GEO', alt:35786 },
-  { name:'Türksat 5B',      country:'Turcja',lat:0.00,  lng:42.00,   type:'satellite', orbit:'GEO', alt:35786 },
-  { name:'Yamal-402',       country:'Rosja', lat:0.00,  lng:55.00,   type:'satellite', orbit:'GEO', alt:35786 },
+const satellites=[
+  {name:'ISS',country:'USA',lat:51.60,lng:0.00,type:'satellite',orbit:'LEO',alt:408},
+  {name:'GPS Block III-1',country:'USA',lat:55.00,lng:-120.00,type:'satellite',orbit:'MEO',alt:20200},
+  {name:'GPS Block III-2',country:'USA',lat:55.00,lng:-60.00,type:'satellite',orbit:'MEO',alt:20200},
+  {name:'Starlink L1',country:'USA',lat:53.00,lng:-90.00,type:'satellite',orbit:'LEO',alt:550},
+  {name:'Starlink L2',country:'USA',lat:53.00,lng:30.00,type:'satellite',orbit:'LEO',alt:550},
+  {name:'Galileo-27',country:'ESA',lat:56.00,lng:20.00,type:'satellite',orbit:'MEO',alt:23222},
+  {name:'BeiDou-3 M1',country:'Chiny',lat:55.00,lng:80.00,type:'satellite',orbit:'MEO',alt:21528},
+  {name:'GLONASS-K1',country:'Rosja',lat:64.80,lng:-30.00,type:'satellite',orbit:'MEO',alt:19130},
+  {name:'Intelsat 39',country:'USA',lat:0.00,lng:-62.00,type:'satellite',orbit:'GEO',alt:35786},
+  {name:'Türksat 5B',country:'Turcja',lat:0.00,lng:42.00,type:'satellite',orbit:'GEO',alt:35786},
 ];
-const layerConfig = {
-  camera:    { emoji:'📹', color:'#ff7a59', pointRadius:0.34, pointAltitude:0.018, labelAltitude:0.055, data:liveCameras },
-  capital:   { emoji:'🏛️', color:'#00ff88', pointRadius:0.45, pointAltitude:0.015, labelAltitude:0.050, data:capitals },
-  city:      { emoji:'🏙️', color:'#ff5f5f', pointRadius:0.30, pointAltitude:0.010, labelAltitude:0.042, data:bigCities },
-  airport:   { emoji:'🛫', color:'#4cd6ff', pointRadius:0.28, pointAltitude:0.012, labelAltitude:0.048, data:airports },
-  satellite: { emoji:'🛰️', color:'#a0d8ff', pointRadius:0.22, pointAltitude:0.040, labelAltitude:0.060, data:satellites },
-  military:  { emoji:'⚓',  color:'#c880ff', pointRadius:0.32, pointAltitude:0.016, labelAltitude:0.052, data:militaryBases },
-  naval:     { emoji:'🌊', color:'#6080ff', pointRadius:0.30, pointAltitude:0.014, labelAltitude:0.050, data:navalFleets },
-  nuclear:   { emoji:'☢️', color:'#ffd050', pointRadius:0.28, pointAltitude:0.015, labelAltitude:0.048, data:nuclearPlants },
+const layerConfig={
+  camera:   {emoji:'📹',color:'#ff7a59',pointRadius:0.34,pointAltitude:0.018,labelAltitude:0.055,data:liveCameras},
+  capital:  {emoji:'🏛️',color:'#00ff88',pointRadius:0.45,pointAltitude:0.015,labelAltitude:0.050,data:capitals},
+  city:     {emoji:'🏙️',color:'#ff5f5f',pointRadius:0.30,pointAltitude:0.010,labelAltitude:0.042,data:bigCities},
+  airport:  {emoji:'🛫',color:'#4cd6ff',pointRadius:0.28,pointAltitude:0.012,labelAltitude:0.048,data:airports},
+  satellite:{emoji:'🛰️',color:'#a0d8ff',pointRadius:0.22,pointAltitude:0.040,labelAltitude:0.060,data:satellites},
+  military: {emoji:'⚓', color:'#c880ff',pointRadius:0.32,pointAltitude:0.016,labelAltitude:0.052,data:militaryBases},
+  naval:    {emoji:'🌊',color:'#6080ff',pointRadius:0.30,pointAltitude:0.014,labelAltitude:0.050,data:navalFleets},
+  nuclear:  {emoji:'☢️',color:'#ffd050',pointRadius:0.28,pointAltitude:0.015,labelAltitude:0.048,data:nuclearPlants},
 };
-const layerState = { camera:true, capital:true, city:true, airport:true, satellite:true, military:true, naval:true, nuclear:true };
-const allDataPoints = [...capitals,...bigCities,...liveCameras,...airports,...militaryBases,...navalFleets,...nuclearPlants,...satellites];
-const satOrbitArcs = satellites.map((s,i)=>({
-  id:`orbit-${i}`, startLat:s.lat, startLng:s.lng-60, endLat:s.lat, endLng:s.lng+60,
-  altitude:Math.min(0.25,0.04+(s.alt/40000)*0.22), duration:3200+i*180,
-  color:['rgba(160,216,255,0.55)','rgba(100,180,255,0.15)'], isSatOrbit:true,
-}));
-
-// ── DOM
-const cpPanel=document.getElementById('country-panel'), cpClose=document.getElementById('cp-close');
-const cpFlag=document.getElementById('cp-flag'), cpName=document.getElementById('cp-name');
-const cpSubtitle=document.getElementById('cp-subtitle'), cpDetails=document.getElementById('cp-details');
-const cpStatEls={
-  capitals:document.getElementById('cp-s-capitals'), cities:document.getElementById('cp-s-cities'),
-  cameras:document.getElementById('cp-s-cams'),      airports:document.getElementById('cp-s-airports'),
-  military:document.getElementById('cp-s-military'), naval:document.getElementById('cp-s-naval'),
-  nuclear:document.getElementById('cp-s-nuclear'),   satellites:document.getElementById('cp-s-satellites'),
-};
+const layerState={camera:true,capital:true,city:true,airport:true,satellite:true,military:true,naval:true,nuclear:true};
+const allDataPoints=[...capitals,...bigCities,...liveCameras,...airports,...militaryBases,...navalFleets,...nuclearPlants,...satellites];
+const satOrbitArcs=satellites.map((s,i)=>({id:`orbit-${i}`,startLat:s.lat,startLng:s.lng-60,endLat:s.lat,endLng:s.lng+60,altitude:Math.min(0.25,0.04+(s.alt/40000)*0.22),duration:3200+i*180,color:['rgba(160,216,255,0.55)','rgba(100,180,255,0.15)'],isSatOrbit:true}));
+const cpPanel=document.getElementById('country-panel'),cpClose=document.getElementById('cp-close');
+const cpFlag=document.getElementById('cp-flag'),cpName=document.getElementById('cp-name');
+const cpSubtitle=document.getElementById('cp-subtitle'),cpDetails=document.getElementById('cp-details');
+const cpStatEls={capitals:document.getElementById('cp-s-capitals'),cities:document.getElementById('cp-s-cities'),cameras:document.getElementById('cp-s-cams'),airports:document.getElementById('cp-s-airports'),military:document.getElementById('cp-s-military'),naval:document.getElementById('cp-s-naval'),nuclear:document.getElementById('cp-s-nuclear'),satellites:document.getElementById('cp-s-satellites')};
 const selCountryEl=document.getElementById('selected-country-name');
 const sendFlightBtn=document.getElementById('send-flight-btn');
 const airportStatusEl=document.getElementById('airport-send-status');
-const statsBar={
-  capitals:document.getElementById('s-capitals'), cities:document.getElementById('s-cities'),
-  cameras:document.getElementById('s-cams'),      airports:document.getElementById('s-airports'),
-  military:document.getElementById('s-military'), naval:document.getElementById('s-naval'),
-  nuclear:document.getElementById('s-nuclear'),   satellites:document.getElementById('s-satellites'),
-};
-const flagMap={
-  'Polska':'🇵🇱','USA':'🇺🇸','Niemcy':'🇩🇪','Francja':'🇫🇷','Wielka Brytania':'🇬🇧',
-  'Hiszpania':'🇪🇸','Włochy':'🇮🇹','Rosja':'🇷🇺','Ukraina':'🇺🇦','Szwecja':'🇸🇪',
-  'Norwegia':'🇳🇴','Finlandia':'🇫🇮','Dania':'🇩🇰','Holandia':'🇳🇱','Belgia':'🇧🇪',
-  'Austria':'🇦🇹','Czechy':'🇨🇿','Węgry':'🇭🇺','Rumunia':'🇷🇴','Grecja':'🇬🇷',
-  'Portugalia':'🇵🇹','Kanada':'🇨🇦','Meksyk':'🇲🇽','Brazylia':'🇧🇷','Argentyna':'🇦🇷',
-  'Kolumbia':'🇨🇴','Peru':'🇵🇪','Chile':'🇨🇱','Egipt':'🇪🇬','Kenia':'🇰🇪',
-  'Nigeria':'🇳🇬','RPA':'🇿🇦','Etiopia':'🇪🇹','Ghana':'🇬🇭','Chiny':'🇨🇳',
-  'Japonia':'🇯🇵','Korea Płd.':'🇰🇷','Indie':'🇮🇳','Pakistan':'🇵🇰','Iran':'🇮🇷',
-  'Irak':'🇮🇶','Arabia Saudyjska':'🇸🇦','Turcja':'🇹🇷','Izrael':'🇮🇱','Tajlandia':'🇹🇭',
-  'Indonezja':'🇮🇩','Malezja':'🇲🇾','Filipiny':'🇵🇭','Wietnam':'🇻🇳','Singapur':'🇸🇬',
-  'Australia':'🇦🇺','Nowa Zelandia':'🇳🇿','ZEA':'🇦🇪','Bułgaria':'🇧🇬',
-};
-const countryAliases=new Map([
-  ['poland','Polska'],['germany','Niemcy'],['france','Francja'],['united kingdom','Wielka Brytania'],
-  ['uk','Wielka Brytania'],['spain','Hiszpania'],['italy','Włochy'],['russia','Rosja'],
-  ['russian federation','Rosja'],['ukraine','Ukraina'],['sweden','Szwecja'],['norway','Norwegia'],
-  ['finland','Finlandia'],['denmark','Dania'],['netherlands','Holandia'],['belgium','Belgia'],
-  ['austria','Austria'],['czechia','Czechy'],['czech republic','Czechy'],['hungary','Węgry'],
-  ['romania','Rumunia'],['greece','Grecja'],['portugal','Portugalia'],
-  ['united states of america','USA'],['united states','USA'],['usa','USA'],
-  ['canada','Kanada'],['mexico','Meksyk'],['brazil','Brazylia'],['argentina','Argentyna'],
-  ['colombia','Kolumbia'],['peru','Peru'],['chile','Chile'],['egypt','Egipt'],
-  ['kenya','Kenia'],['nigeria','Nigeria'],['south africa','RPA'],['ethiopia','Etiopia'],
-  ['ghana','Ghana'],['china','Chiny'],['japan','Japonia'],['south korea','Korea Płd.'],
-  ['republic of korea','Korea Płd.'],['india','Indie'],['pakistan','Pakistan'],['iran','Iran'],
-  ['iraq','Irak'],['saudi arabia','Arabia Saudyjska'],['turkey','Turcja'],['israel','Izrael'],
-  ['thailand','Tajlandia'],['indonesia','Indonezja'],['malaysia','Malezja'],
-  ['philippines','Filipiny'],['vietnam','Wietnam'],['singapore','Singapur'],
-  ['australia','Australia'],['new zealand','Nowa Zelandia'],['united arab emirates','ZEA'],
-  ['bulgaria','Bułgaria'],
-  ['polska','Polska'],['niemcy','Niemcy'],['francja','Francja'],['wielka brytania','Wielka Brytania'],
-  ['hiszpania','Hiszpania'],['rosja','Rosja'],['ukraina','Ukraina'],['szwecja','Szwecja'],
-  ['norwegia','Norwegia'],['finlandia','Finlandia'],['dania','Dania'],['holandia','Holandia'],
-  ['czechy','Czechy'],['wegry','Węgry'],['rumunia','Rumunia'],['grecja','Grecja'],
-  ['kanada','Kanada'],['meksyk','Meksyk'],['brazylia','Brazylia'],['chiny','Chiny'],
-  ['japonia','Japonia'],['indie','Indie'],['singapur','Singapur'],
-]);
+const statsBar={capitals:document.getElementById('s-capitals'),cities:document.getElementById('s-cities'),cameras:document.getElementById('s-cams'),airports:document.getElementById('s-airports'),military:document.getElementById('s-military'),naval:document.getElementById('s-naval'),nuclear:document.getElementById('s-nuclear'),satellites:document.getElementById('s-satellites')};
+const flagMap={'Polska':'🇵🇱','USA':'🇺🇸','Niemcy':'🇩🇪','Francja':'🇫🇷','Wielka Brytania':'🇬🇧','Hiszpania':'🇪🇸','Włochy':'🇮🇹','Rosja':'🇷🇺','Ukraina':'🇺🇦','Szwecja':'🇸🇪','Norwegia':'🇳🇴','Finlandia':'🇫🇮','Dania':'🇩🇰','Holandia':'🇳🇱','Belgia':'🇧🇪','Austria':'🇦🇹','Czechy':'🇨🇿','Węgry':'🇭🇺','Rumunia':'🇷🇴','Grecja':'🇬🇷','Portugalia':'🇵🇹','Kanada':'🇨🇦','Meksyk':'🇲🇽','Brazylia':'🇧🇷','Argentyna':'🇦🇷','Egipt':'🇪🇬','Kenia':'🇰🇪','Nigeria':'🇳🇬','RPA':'🇿🇦','Chiny':'🇨🇳','Japonia':'🇯🇵','Korea Płd.':'🇰🇷','Indie':'🇮🇳','Pakistan':'🇵🇰','Iran':'🇮🇷','Irak':'🇮🇶','Arabia Saudyjska':'🇸🇦','Turcja':'🇹🇷','Izrael':'🇮🇱','Tajlandia':'🇹🇭','Indonezja':'🇮🇩','Malezja':'🇲🇾','Filipiny':'🇵🇭','Wietnam':'🇻🇳','Singapur':'🇸🇬','Australia':'🇦🇺','Nowa Zelandia':'🇳🇿','ZEA':'🇦🇪'};
+const countryAliases=new Map([['poland','Polska'],['germany','Niemcy'],['france','Francja'],['united kingdom','Wielka Brytania'],['uk','Wielka Brytania'],['spain','Hiszpania'],['italy','Włochy'],['russia','Rosja'],['russian federation','Rosja'],['ukraine','Ukraina'],['sweden','Szwecja'],['norway','Norwegia'],['finland','Finlandia'],['denmark','Dania'],['netherlands','Holandia'],['belgium','Belgia'],['austria','Austria'],['czechia','Czechy'],['czech republic','Czechy'],['hungary','Węgry'],['romania','Rumunia'],['greece','Grecja'],['portugal','Portugalia'],['united states of america','USA'],['united states','USA'],['usa','USA'],['canada','Kanada'],['mexico','Meksyk'],['brazil','Brazylia'],['argentina','Argentyna'],['egypt','Egipt'],['kenya','Kenia'],['nigeria','Nigeria'],['south africa','RPA'],['china','Chiny'],['japan','Japonia'],['south korea','Korea Płd.'],['republic of korea','Korea Płd.'],['india','Indie'],['pakistan','Pakistan'],['iran','Iran'],['iraq','Irak'],['saudi arabia','Arabia Saudyjska'],['turkey','Turcja'],['israel','Izrael'],['thailand','Tajlandia'],['indonesia','Indonezja'],['malaysia','Malezja'],['philippines','Filipiny'],['vietnam','Wietnam'],['singapore','Singapur'],['australia','Australia'],['new zealand','Nowa Zelandia'],['united arab emirates','ZEA'],['polska','Polska'],['niemcy','Niemcy'],['francja','Francja'],['rosja','Rosja'],['ukraina','Ukraina'],['chiny','Chiny'],['japonia','Japonia'],['indie','Indie'],['turcja','Turcja'],['izrael','Izrael']]);
 let countryFeatures=[],selectedCountryKey='',selectedCountryLabel='',sendModeActive=false;
 const activeFlights=[],activeLandings=[];
 const flightOrigin={lat:39.50,lng:-98.35};
-
-// ══════════════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════════════
 function toRadians(v){return v*Math.PI/180;}
-function normalizeCountryKey(v){
-  return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-zA-Z0-9]+/g,' ').trim().toLowerCase();
-}
+function normalizeCountryKey(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,' ').trim().toLowerCase();}
 function canonicalCountryName(v){const k=normalizeCountryKey(v);return countryAliases.get(k)||v||'Nieznany kraj';}
 function getFeatureCountryKey(f){return normalizeCountryKey(canonicalCountryName(f?.properties?.ADMIN||f?.properties?.name||''));}
 function isSelectedFeature(f){return Boolean(selectedCountryKey)&&getFeatureCountryKey(f)===selectedCountryKey;}
-function getAngularDistance(la,lna,lb,lnb){
-  const a1=toRadians(la),a2=toRadians(lb),dl=toRadians(lna-lnb);
-  return Math.acos(Math.min(1,Math.max(-1,Math.sin(a1)*Math.sin(a2)+Math.cos(a1)*Math.cos(a2)*Math.cos(dl))));
-}
+function getAngularDistance(la,lna,lb,lnb){const a1=toRadians(la),a2=toRadians(lb),dl=toRadians(lna-lnb);return Math.acos(Math.min(1,Math.max(-1,Math.sin(a1)*Math.sin(a2)+Math.cos(a1)*Math.cos(a2)*Math.cos(dl))));}
 function getVisiblePoints(){return Object.entries(layerConfig).filter(([k])=>layerState[k]).flatMap(([,c])=>c.data);}
-function getCountryPoints(label){
-  const key=normalizeCountryKey(label);
-  return allDataPoints.filter(p=>normalizeCountryKey(canonicalCountryName(p.country))===key);
-}
-function flattenCoords(coords,out){
-  if(!Array.isArray(coords)||!coords.length)return;
-  if(typeof coords[0]==='number'){out.push({lng:coords[0],lat:coords[1]});return;}
-  coords.forEach(c=>flattenCoords(c,out));
-}
-function getFeatureCenter(feature){
-  const pts=[];flattenCoords(feature?.geometry?.coordinates,pts);if(!pts.length)return null;
-  const s=pts.reduce((a,p)=>{a.lat+=p.lat;a.lng+=p.lng;return a;},{lat:0,lng:0});
-  return{lat:s.lat/pts.length,lng:s.lng/pts.length};
-}
-function pointLabel(d){
-  const cfg=layerConfig[d.type];
-  let extra='';
-  if(d.pop) extra=` · ${d.pop}`;
-  else if(d.viewers) extra=` · ${d.viewers} widzów`;
-  else if(d.branch) extra=` · ${d.branch}`;
-  else if(d.class)  extra=` · ${d.class}`;
-  else if(d.mw)    extra=` · ${d.mw} MW`;
-  else if(d.orbit) extra=` · ${d.orbit} ${d.alt}km`;
-  const hint=d.type==='capital'?' — 🏗 Kliknij aby budować':'';
-  return `<div style="background:rgba(5,10,30,0.92);border:1px solid ${cfg.color};padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:11px;color:#c8d8f0;"><b style="color:${cfg.color}">${cfg.emoji} ${d.name}</b><br><span style="color:rgba(150,180,220,0.7);font-size:9px">${d.country}${extra}${hint}</span></div>`;
-}
-
-// ══════════════════════════════════════════════
-//  GLOBE
-// ══════════════════════════════════════════════
+function getCountryPoints(label){const key=normalizeCountryKey(label);return allDataPoints.filter(p=>normalizeCountryKey(canonicalCountryName(p.country))===key);}
+function flattenCoords(coords,out){if(!Array.isArray(coords)||!coords.length)return;if(typeof coords[0]==='number'){out.push({lng:coords[0],lat:coords[1]});return;}coords.forEach(c=>flattenCoords(c,out));}
+function getFeatureCenter(feature){const pts=[];flattenCoords(feature?.geometry?.coordinates,pts);if(!pts.length)return null;const s=pts.reduce((a,p)=>{a.lat+=p.lat;a.lng+=p.lng;return a;},{lat:0,lng:0});return{lat:s.lat/pts.length,lng:s.lng/pts.length};}
+function pointLabel(d){const cfg=layerConfig[d.type];let extra='';if(d.pop)extra=` · ${d.pop}`;else if(d.viewers)extra=` · ${d.viewers}`;else if(d.branch)extra=` · ${d.branch}`;else if(d.class)extra=` · ${d.class}`;else if(d.mw)extra=` · ${d.mw}MW`;else if(d.orbit)extra=` · ${d.orbit}`;const hint=d.type==='capital'?' 🏗':'';return`<div style="background:rgba(5,10,30,0.92);border:1px solid ${cfg.color};padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:11px;color:#c8d8f0;"><b style="color:${cfg.color}">${cfg.emoji} ${d.name}${hint}</b><br><span style="color:rgba(150,180,220,0.7);font-size:9px">${d.country}${extra}</span></div>`;}
 const globe=Globe()(document.getElementById('globe-container'))
   .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
   .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
   .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
   .showAtmosphere(true).atmosphereColor('#3a8aff').atmosphereAltitude(0.18)
-  .polygonsData([])
-  .polygonCapColor(f=>isSelectedFeature(f)?'rgba(61,164,255,0.42)':'rgba(30,60,120,0.3)')
+  .polygonsData([]).polygonCapColor(f=>isSelectedFeature(f)?'rgba(61,164,255,0.42)':'rgba(30,60,120,0.3)')
   .polygonSideColor(f=>isSelectedFeature(f)?'rgba(38,111,222,0.28)':'rgba(20,40,100,0.15)')
   .polygonStrokeColor(f=>isSelectedFeature(f)?'rgba(160,228,255,0.95)':'rgba(80,160,255,0.45)')
   .polygonAltitude(f=>isSelectedFeature(f)?0.025:0.008)
   .polygonLabel(({properties:d})=>`<div style="background:rgba(5,10,30,0.92);border:1px solid rgba(80,160,255,0.4);padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:12px;color:#c8d8f0;"><b style="color:#5bf">${canonicalCountryName(d.ADMIN||d.name||'')}</b></div>`)
   .onPolygonClick(f=>selectCountry(f))
-  .pointsData([]).pointLat('lat').pointLng('lng')
-  .pointAltitude(d=>layerConfig[d.type].pointAltitude)
-  .pointRadius(d=>layerConfig[d.type].pointRadius)
-  .pointColor(d=>layerConfig[d.type].color)
-  .pointResolution(12).pointLabel(pointLabel)
-  .htmlElementsData([]).htmlLat('lat').htmlLng('lng')
-  .htmlAltitude(d=>layerConfig[d.type].pointAltitude+layerConfig[d.type].labelAltitude)
-  .htmlElement(d=>{const el=document.createElement('div');el.className='globe-emoji';el.textContent=layerConfig[d.type].emoji;d._emojiElement=el;return el;})
-  .arcsData([]).arcStartLat('startLat').arcStartLng('startLng').arcEndLat('endLat').arcEndLng('endLng')
-  .arcColor('color').arcAltitude('altitude')
-  .arcStroke(d=>d.isSatOrbit?0.4:0.85).arcDashLength(d=>d.isSatOrbit?0.18:0.52)
-  .arcDashGap(d=>d.isSatOrbit?0.82:1.4).arcDashInitialGap(()=>Math.random())
-  .arcDashAnimateTime(d=>d.duration)
-  .ringsData([]).ringLat('lat').ringLng('lng').ringColor(d=>d.color)
-  .ringMaxRadius(d=>d.maxRadius).ringPropagationSpeed(d=>d.speed).ringRepeatPeriod(600);
-
-globe.controls().autoRotate=true;
-globe.controls().autoRotateSpeed=0.4;
-globe.controls().enableDamping=true;
+  .pointsData([]).pointLat('lat').pointLng('lng').pointAltitude(d=>layerConfig[d.type].pointAltitude).pointRadius(d=>layerConfig[d.type].pointRadius).pointColor(d=>layerConfig[d.type].color).pointResolution(12).pointLabel(pointLabel)
+  .htmlElementsData([]).htmlLat('lat').htmlLng('lng').htmlAltitude(d=>layerConfig[d.type].pointAltitude+layerConfig[d.type].labelAltitude).htmlElement(d=>{const el=document.createElement('div');el.className='globe-emoji';el.textContent=layerConfig[d.type].emoji;d._emojiElement=el;return el;})
+  .arcsData([]).arcStartLat('startLat').arcStartLng('startLng').arcEndLat('endLat').arcEndLng('endLng').arcColor('color').arcAltitude('altitude').arcStroke(d=>d.isSatOrbit?0.4:0.85).arcDashLength(d=>d.isSatOrbit?0.18:0.52).arcDashGap(d=>d.isSatOrbit?0.82:1.4).arcDashInitialGap(()=>Math.random()).arcDashAnimateTime(d=>d.duration)
+  .ringsData([]).ringLat('lat').ringLng('lng').ringColor(d=>d.color).ringMaxRadius(d=>d.maxRadius).ringPropagationSpeed(d=>d.speed).ringRepeatPeriod(600);
+globe.controls().autoRotate=true;globe.controls().autoRotateSpeed=0.4;globe.controls().enableDamping=true;
 globe.pointOfView({lat:20,lng:15,altitude:2.0});
 function resize(){globe.width(window.innerWidth).height(window.innerHeight);}
 window.addEventListener('resize',resize);resize();
-
-function updateEmojiScale(){
-  const pov=globe.pointOfView();
-  const altF=Math.max(0.82,Math.min(1.15,1.16-((pov.altitude??2)-2)*0.08));
-  getVisiblePoints().forEach(p=>{
-    if(!p._emojiElement)return;
-    const angle=getAngularDistance(p.lat,p.lng,pov.lat,pov.lng);
-    const vis=Math.max(0,Math.cos(angle));
-    p._emojiElement.style.setProperty('--emoji-scale',((0.5+vis*0.7)*altF).toFixed(3));
-    p._emojiElement.style.setProperty('--emoji-opacity',(0.18+vis*0.82).toFixed(3));
-  });
-}
+function updateEmojiScale(){const pov=globe.pointOfView();const altF=Math.max(0.82,Math.min(1.15,1.16-((pov.altitude??2)-2)*0.08));getVisiblePoints().forEach(p=>{if(!p._emojiElement)return;const angle=getAngularDistance(p.lat,p.lng,pov.lat,pov.lng);const vis=Math.max(0,Math.cos(angle));p._emojiElement.style.setProperty('--emoji-scale',((0.5+vis*0.7)*altF).toFixed(3));p._emojiElement.style.setProperty('--emoji-opacity',(0.18+vis*0.82).toFixed(3));});}
 (function loop(){updateEmojiScale();requestAnimationFrame(loop);})();
-
-function updateLayers(){
-  const pts=getVisiblePoints();
-  globe.pointsData(pts);globe.htmlElementsData(pts);
-  globe.arcsData([...(layerState.satellite?satOrbitArcs:[]),...activeFlights]);
-  syncLayerButtons();requestAnimationFrame(updateEmojiScale);updateStatsBar();
-}
-function syncLayerButtons(){
-  document.querySelectorAll('#layer-panel .layer-tile').forEach(btn=>{
-    const k=btn.dataset.layer,on=layerState[k];
-    btn.classList.toggle('is-off',!on);btn.classList.toggle('is-on',on);
-    btn.setAttribute('aria-pressed',String(on));
-    const s=btn.querySelector('.tile-state');if(s)s.textContent=on?'ON':'OFF';
-  });
-}
-function updateStatsBar(){
-  statsBar.capitals.textContent  =layerState.capital   ?capitals.length:0;
-  statsBar.cities.textContent    =layerState.city       ?bigCities.length:0;
-  statsBar.cameras.textContent   =layerState.camera     ?liveCameras.length:0;
-  statsBar.airports.textContent  =layerState.airport    ?airports.length:0;
-  statsBar.military.textContent  =layerState.military   ?militaryBases.length:0;
-  statsBar.naval.textContent     =layerState.naval      ?navalFleets.length:0;
-  statsBar.nuclear.textContent   =layerState.nuclear    ?nuclearPlants.length:0;
-  statsBar.satellites.textContent=layerState.satellite  ?satellites.length:0;
-}
-
-function buildSection(title,items,fn){
-  if(!items.length)return'';
-  return`<div class="cp-section"><div class="cp-section-title">${title}</div>${items.map(fn).join('')}</div>`;
-}
-function openCountryPanel(label){
-  const pts=getCountryPoints(label);
-  cpFlag.textContent=flagMap[label]||'🌐';cpName.textContent=label;
-  cpSubtitle.textContent=`${pts.length} obiektów w bazie danych`;
-  cpStatEls.capitals.textContent  =pts.filter(p=>p.type==='capital').length;
-  cpStatEls.cities.textContent    =pts.filter(p=>p.type==='city').length;
-  cpStatEls.cameras.textContent   =pts.filter(p=>p.type==='camera').length;
-  cpStatEls.airports.textContent  =pts.filter(p=>p.type==='airport').length;
-  cpStatEls.military.textContent  =pts.filter(p=>p.type==='military').length;
-  cpStatEls.naval.textContent     =pts.filter(p=>p.type==='naval').length;
-  cpStatEls.nuclear.textContent   =pts.filter(p=>p.type==='nuclear').length;
-  cpStatEls.satellites.textContent=pts.filter(p=>p.type==='satellite').length;
-  const caps=pts.filter(p=>p.type==='capital');
-  let html='';
-  if(caps.length){
-    const safe=label.replace(/'/g,"\\'");
-    html+=`<div class="cp-builder-hint" onclick="openCityBuilder('${safe}')">🏗️ &nbsp;<b>City Builder</b> — kliknij stolicę lub tutaj aby budować w ${label}</div>`;
-  }
-  html+=buildSection('📹 KAMERY',pts.filter(p=>p.type==='camera'),p=>`<div class="cp-item"><span class="cp-item-icon">📹</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-live">LIVE ${p.viewers}</span></div>`);
-  html+=buildSection('🛫 LOTNISKA',pts.filter(p=>p.type==='airport'),p=>`<div class="cp-item"><span class="cp-item-icon">🛫</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-active">ACTIVE</span></div>`);
-  html+=buildSection('⚓ BAZY',pts.filter(p=>p.type==='military'),p=>`<div class="cp-item"><span class="cp-item-icon">⚓</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-military">${p.branch}</span></div>`);
-  html+=buildSection('🌊 FLOTA',pts.filter(p=>p.type==='naval'),p=>`<div class="cp-item"><span class="cp-item-icon">🌊</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-naval">${p.class}</span></div>`);
-  html+=buildSection('☢️ REAKTORY',pts.filter(p=>p.type==='nuclear'),p=>`<div class="cp-item"><span class="cp-item-icon">☢️</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-nuclear">${p.status==='active'?'ONLINE':'OFFLINE'} ${p.mw}MW</span></div>`);
-  html+=buildSection('🛰️ SATELITY',pts.filter(p=>p.type==='satellite'),p=>`<div class="cp-item"><span class="cp-item-icon">🛰️</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-orbit">${p.orbit} ${p.alt}km</span></div>`);
-  if(!html)html='<div class="cp-section"><p class="cp-empty">Brak szczegółowych danych.</p></div>';
-  cpDetails.innerHTML=html;cpPanel.classList.add('visible');
-}
+function updateLayers(){const pts=getVisiblePoints();globe.pointsData(pts);globe.htmlElementsData(pts);globe.arcsData([...(layerState.satellite?satOrbitArcs:[]),...activeFlights]);syncLayerButtons();requestAnimationFrame(updateEmojiScale);updateStatsBar();}
+function syncLayerButtons(){document.querySelectorAll('#layer-panel .layer-tile').forEach(btn=>{const k=btn.dataset.layer,on=layerState[k];btn.classList.toggle('is-off',!on);btn.classList.toggle('is-on',on);btn.setAttribute('aria-pressed',String(on));const s=btn.querySelector('.tile-state');if(s)s.textContent=on?'ON':'OFF';});}
+function updateStatsBar(){statsBar.capitals.textContent=layerState.capital?capitals.length:0;statsBar.cities.textContent=layerState.city?bigCities.length:0;statsBar.cameras.textContent=layerState.camera?liveCameras.length:0;statsBar.airports.textContent=layerState.airport?airports.length:0;statsBar.military.textContent=layerState.military?militaryBases.length:0;statsBar.naval.textContent=layerState.naval?navalFleets.length:0;statsBar.nuclear.textContent=layerState.nuclear?nuclearPlants.length:0;statsBar.satellites.textContent=layerState.satellite?satellites.length:0;}
+function buildSection(title,items,fn){if(!items.length)return'';return`<div class="cp-section"><div class="cp-section-title">${title}</div>${items.map(fn).join('')}</div>`;}
+function openCountryPanel(label){const pts=getCountryPoints(label);cpFlag.textContent=flagMap[label]||'🌐';cpName.textContent=label;cpSubtitle.textContent=`${pts.length} obiektów`;cpStatEls.capitals.textContent=pts.filter(p=>p.type==='capital').length;cpStatEls.cities.textContent=pts.filter(p=>p.type==='city').length;cpStatEls.cameras.textContent=pts.filter(p=>p.type==='camera').length;cpStatEls.airports.textContent=pts.filter(p=>p.type==='airport').length;cpStatEls.military.textContent=pts.filter(p=>p.type==='military').length;cpStatEls.naval.textContent=pts.filter(p=>p.type==='naval').length;cpStatEls.nuclear.textContent=pts.filter(p=>p.type==='nuclear').length;cpStatEls.satellites.textContent=pts.filter(p=>p.type==='satellite').length;
+const caps=pts.filter(p=>p.type==='capital');let html='';
+if(caps.length){const safe=label.replace(/'/g,"\\'");html+=`<div class="cp-builder-hint" onclick="openCityBuilder('${safe}')">🏗️ City Builder — kliknij stolicę lub tutaj</div>`;}
+html+=buildSection('📹 KAMERY',pts.filter(p=>p.type==='camera'),p=>`<div class="cp-item"><span class="cp-item-icon">📹</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-live">LIVE ${p.viewers}</span></div>`);
+html+=buildSection('🛫 LOTNISKA',pts.filter(p=>p.type==='airport'),p=>`<div class="cp-item"><span class="cp-item-icon">🛫</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-active">ACTIVE</span></div>`);
+html+=buildSection('⚓ BAZY',pts.filter(p=>p.type==='military'),p=>`<div class="cp-item"><span class="cp-item-icon">⚓</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-military">${p.branch}</span></div>`);
+html+=buildSection('🌊 FLOTA',pts.filter(p=>p.type==='naval'),p=>`<div class="cp-item"><span class="cp-item-icon">🌊</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-naval">${p.class}</span></div>`);
+html+=buildSection('☢️ REAKTORY',pts.filter(p=>p.type==='nuclear'),p=>`<div class="cp-item"><span class="cp-item-icon">☢️</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-nuclear">${p.status==='active'?'ONLINE':'OFFLINE'} ${p.mw}MW</span></div>`);
+html+=buildSection('🛰️ SATELITY',pts.filter(p=>p.type==='satellite'),p=>`<div class="cp-item"><span class="cp-item-icon">🛰️</span><span class="cp-item-name">${p.name}</span><span class="cp-item-tag tag-orbit">${p.orbit}</span></div>`);
+if(!html)html='<div class="cp-section"><p class="cp-empty">Brak danych.</p></div>';
+cpDetails.innerHTML=html;cpPanel.classList.add('visible');}
 function closeCountryPanel(){cpPanel.classList.remove('visible');}
-cpClose.addEventListener('click',()=>{
-  closeCountryPanel();selectedCountryKey='';selectedCountryLabel='';
-  selCountryEl.textContent='Kliknij kraj';refreshCountryHighlight();
-});
+cpClose.addEventListener('click',()=>{closeCountryPanel();selectedCountryKey='';selectedCountryLabel='';selCountryEl.textContent='Kliknij kraj';refreshCountryHighlight();});
 function refreshCountryHighlight(){globe.polygonsData(countryFeatures);}
-function selectCountry(feature){
-  if(!feature)return;
-  const clickedKey=getFeatureCountryKey(feature);
-  const clickedLabel=canonicalCountryName(feature.properties?.ADMIN||feature.properties?.name||'');
-  if(sendModeActive){
-    selectedCountryKey=clickedKey;selectedCountryLabel=clickedLabel;
-    selCountryEl.textContent=clickedLabel;refreshCountryHighlight();
-    sendFlightToCountry(feature);return;
-  }
-  if(selectedCountryKey===clickedKey){
-    selectedCountryKey='';selectedCountryLabel='';
-    selCountryEl.textContent='Kliknij kraj';closeCountryPanel();
-  }else{
-    selectedCountryKey=clickedKey;selectedCountryLabel=clickedLabel;
-    selCountryEl.textContent=clickedLabel;openCountryPanel(clickedLabel);
-  }
-  refreshCountryHighlight();
-}
-function setSendMode(active){
-  sendModeActive=active;
-  sendFlightBtn.classList.toggle('is-active',active);
-  sendFlightBtn.textContent=active?'Target':'Send';
-  airportStatusEl.textContent=active?'Kliknij kraj docelowy':'Tryb standardowy';
-}
-function addLandingEffect(dest){
-  const ring={id:`l-${Date.now()}`,lat:dest.lat,lng:dest.lng,maxRadius:4.5,speed:2.6,
-    color:t=>`rgba(126,233,255,${Math.max(0,0.72*(1-t))})`};
-  activeLandings.push(ring);globe.ringsData([...activeLandings]);
-  setTimeout(()=>{const i=activeLandings.findIndex(r=>r.id===ring.id);
-    if(i!==-1){activeLandings.splice(i,1);globe.ringsData([...activeLandings]);}},1700);
-}
-function sendFlightToCountry(feature){
-  const dest=getFeatureCenter(feature);if(!dest){setSendMode(false);return;}
-  const flight={id:`f-${Date.now()}`,startLat:flightOrigin.lat,startLng:flightOrigin.lng,
-    endLat:dest.lat,endLng:dest.lng,altitude:0.31,duration:2600,color:['#74dcff','#ffffff']};
-  activeFlights.push(flight);
-  globe.arcsData([...(layerState.satellite?satOrbitArcs:[]),...activeFlights]);
-  setTimeout(()=>{const i=activeFlights.findIndex(f=>f.id===flight.id);
-    if(i!==-1){activeFlights.splice(i,1);
-      globe.arcsData([...(layerState.satellite?satOrbitArcs:[]),...activeFlights]);
-      addLandingEffect(dest);}},flight.duration+120);
-  setSendMode(false);
-}
-document.querySelectorAll('#layer-panel .layer-tile').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    const k=btn.dataset.layer;layerState[k]=!layerState[k];
-    if(k==='airport'&&!layerState[k])setSendMode(false);updateLayers();
-  });
-  btn.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&btn.tagName!=='BUTTON'){e.preventDefault();btn.click();}});
-});
-sendFlightBtn.addEventListener('click',e=>{
-  e.stopPropagation();
-  if(!layerState.airport){layerState.airport=true;updateLayers();}
-  setSendMode(!sendModeActive);
-});
+function selectCountry(feature){if(!feature)return;const clickedKey=getFeatureCountryKey(feature);const clickedLabel=canonicalCountryName(feature.properties?.ADMIN||feature.properties?.name||'');if(sendModeActive){selectedCountryKey=clickedKey;selectedCountryLabel=clickedLabel;selCountryEl.textContent=clickedLabel;refreshCountryHighlight();sendFlightToCountry(feature);return;}if(selectedCountryKey===clickedKey){selectedCountryKey='';selectedCountryLabel='';selCountryEl.textContent='Kliknij kraj';closeCountryPanel();}else{selectedCountryKey=clickedKey;selectedCountryLabel=clickedLabel;selCountryEl.textContent=clickedLabel;openCountryPanel(clickedLabel);}refreshCountryHighlight();}
+function setSendMode(active){sendModeActive=active;sendFlightBtn.classList.toggle('is-active',active);sendFlightBtn.textContent=active?'Target':'Send';airportStatusEl.textContent=active?'Kliknij kraj docelowy':'Tryb standardowy';}
+function addLandingEffect(dest){const ring={id:`l-${Date.now()}`,lat:dest.lat,lng:dest.lng,maxRadius:4.5,speed:2.6,color:t=>`rgba(126,233,255,${Math.max(0,0.72*(1-t))})`};activeLandings.push(ring);globe.ringsData([...activeLandings]);setTimeout(()=>{const i=activeLandings.findIndex(r=>r.id===ring.id);if(i!==-1){activeLandings.splice(i,1);globe.ringsData([...activeLandings]);}},1700);}
+function sendFlightToCountry(feature){const dest=getFeatureCenter(feature);if(!dest){setSendMode(false);return;}const flight={id:`f-${Date.now()}`,startLat:flightOrigin.lat,startLng:flightOrigin.lng,endLat:dest.lat,endLng:dest.lng,altitude:0.31,duration:2600,color:['#74dcff','#ffffff']};activeFlights.push(flight);globe.arcsData([...(layerState.satellite?satOrbitArcs:[]),...activeFlights]);setTimeout(()=>{const i=activeFlights.findIndex(f=>f.id===flight.id);if(i!==-1){activeFlights.splice(i,1);globe.arcsData([...(layerState.satellite?satOrbitArcs:[]),...activeFlights]);addLandingEffect(dest);}},flight.duration+120);setSendMode(false);}
+document.querySelectorAll('#layer-panel .layer-tile').forEach(btn=>{btn.addEventListener('click',()=>{const k=btn.dataset.layer;layerState[k]=!layerState[k];if(k==='airport'&&!layerState[k])setSendMode(false);updateLayers();});btn.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&btn.tagName!=='BUTTON'){e.preventDefault();btn.click();}});});
+sendFlightBtn.addEventListener('click',e=>{e.stopPropagation();if(!layerState.airport){layerState.airport=true;updateLayers();}setSendMode(!sendModeActive);});
 
-// ══════════════════════════════════════════════
-//  CITY BUILDER
-// ══════════════════════════════════════════════
-const BUILDINGS={
-  hut:      {name:'Barracks',         icon:'🏠',color:'#00ff88',cost:80, pop:50, def:0,  atk:0,  energy:0,  cps:0,  w:1,h:1,desc:'Podstawowe kwatery.'},
-  apartment:{name:'Apartment Block',  icon:'🏢',color:'#00cc66',cost:240,pop:150,def:0,  atk:0,  energy:2,  cps:0,  w:2,h:2,desc:'Blok mieszkalny.'},
-  tower:    {name:'Residential Tower',icon:'🏙️',color:'#00ffaa',cost:600,pop:500,def:0,  atk:0,  energy:5,  cps:10, w:2,h:3,desc:'Wieżowiec. Centrum ops.'},
-  bunker_res:{name:'Underground Bunker',icon:'🔲',color:'#88ffcc',cost:320,pop:80,def:20, atk:0,  energy:0,  cps:0,  w:2,h:1,desc:'Bunkier podziemny.'},
-  wall:     {name:'Firewall Node',    icon:'🧱',color:'#c880ff',cost:120,pop:0,  def:30, atk:0,  energy:0,  cps:0,  w:1,h:1,desc:'Węzeł zapory.'},
-  radar:    {name:'Radar Tower',      icon:'📡',color:'#a060ee',cost:200,pop:0,  def:50, atk:0,  energy:0,  cps:0,  w:1,h:2,desc:'Wieża radarowa.'},
-  shield:   {name:'Shield Generator', icon:'🔵',color:'#8844dd',cost:450,pop:0,  def:120,atk:0,  energy:-30,cps:0,  w:2,h:2,desc:'Generator pola.'},
-  sam:      {name:'SAM Battery',      icon:'🚀',color:'#bb66ff',cost:350,pop:0,  def:80, atk:20, energy:0,  cps:0,  w:2,h:1,desc:'Bateria rakiet.'},
-  emp:      {name:'EMP Tower',        icon:'⚡', color:'#dd88ff',cost:280,pop:0,  def:60, atk:30, energy:-20,cps:0,  w:1,h:2,desc:'EMP - zakłóca.'},
-  turret:   {name:'Pulse Turret',     icon:'🔫',color:'#ff5050',cost:150,pop:0,  def:0,  atk:40, energy:0,  cps:0,  w:1,h:1,desc:'Działko. Bliski zasięg.'},
-  cannon:   {name:'Rail Cannon',      icon:'💣',color:'#ff3030',cost:380,pop:0,  def:0,  atk:90, energy:-40,cps:0,  w:2,h:2,desc:'Armata szynowa.'},
-  cyber:    {name:'Cyber Hub',        icon:'💻',color:'#ff7070',cost:320,pop:0,  def:0,  atk:70, energy:-25,cps:0,  w:2,h:1,desc:'Centrum cyberataków.'},
-  drone:    {name:'Drone Bay',        icon:'🛸',color:'#ff4444',cost:500,pop:0,  def:20, atk:110,energy:-50,cps:0,  w:2,h:2,desc:'Hangar dronów.'},
-  power:    {name:'Power Plant',      icon:'🔋',color:'#ffd050',cost:200,pop:0,  def:0,  atk:0,  energy:300,cps:0,  w:2,h:2,desc:'Elektrownia.'},
-  nuclear_r:{name:'Micro Reactor',   icon:'☢️', color:'#ffaa00',cost:700,pop:0,  def:0,  atk:0,  energy:800,cps:0,  w:2,h:2,desc:'Minireaktor jądrowy.'},
-  intel:    {name:'Intel Station',    icon:'🔭',color:'#ffe070',cost:260,pop:0,  def:30, atk:20, energy:-10,cps:0,  w:1,h:2,desc:'Stacja wywiadowcza.'},
-  medctr:   {name:'Med Center',       icon:'🏥',color:'#ffdd88',cost:180,pop:30, def:0,  atk:0,  energy:0,  cps:0,  w:2,h:1,desc:'Centrum medyczne.'},
-  comms:    {name:'Comms Array',      icon:'📶',color:'#ffc040',cost:340,pop:0,  def:10, atk:10, energy:-15,cps:5,  w:2,h:2,desc:'Sieć komunikacyjna.'},
-  market:   {name:'Trade Depot',      icon:'📦',color:'#ffbb30',cost:290,pop:20, def:0,  atk:0,  energy:0,  cps:50, w:2,h:1,desc:'Magazyn handlowy.'},
-};
+// ── CITY BUILDER
+const BUILDINGS={hut:{name:'Barracks',icon:'🏠',color:'#00ff88',cost:80,pop:50,def:0,atk:0,energy:0,cps:0,w:1,h:1,desc:'Podstawowe kwatery.'},apartment:{name:'Apartment Block',icon:'🏢',color:'#00cc66',cost:240,pop:150,def:0,atk:0,energy:2,cps:0,w:2,h:2,desc:'Blok mieszkalny.'},tower:{name:'Residential Tower',icon:'🏙️',color:'#00ffaa',cost:600,pop:500,def:0,atk:0,energy:5,cps:10,w:2,h:3,desc:'Wieżowiec.'},bunker_res:{name:'Underground Bunker',icon:'🔲',color:'#88ffcc',cost:320,pop:80,def:20,atk:0,energy:0,cps:0,w:2,h:1,desc:'Bunkier.'},wall:{name:'Firewall Node',icon:'🧱',color:'#c880ff',cost:120,pop:0,def:30,atk:0,energy:0,cps:0,w:1,h:1,desc:'Zapora.'},radar:{name:'Radar Tower',icon:'📡',color:'#a060ee',cost:200,pop:0,def:50,atk:0,energy:0,cps:0,w:1,h:2,desc:'Radar.'},shield:{name:'Shield Generator',icon:'🔵',color:'#8844dd',cost:450,pop:0,def:120,atk:0,energy:-30,cps:0,w:2,h:2,desc:'Pole ochronne.'},sam:{name:'SAM Battery',icon:'🚀',color:'#bb66ff',cost:350,pop:0,def:80,atk:20,energy:0,cps:0,w:2,h:1,desc:'Rakiety.'},emp:{name:'EMP Tower',icon:'⚡',color:'#dd88ff',cost:280,pop:0,def:60,atk:30,energy:-20,cps:0,w:1,h:2,desc:'EMP.'},turret:{name:'Pulse Turret',icon:'🔫',color:'#ff5050',cost:150,pop:0,def:0,atk:40,energy:0,cps:0,w:1,h:1,desc:'Działko.'},cannon:{name:'Rail Cannon',icon:'💣',color:'#ff3030',cost:380,pop:0,def:0,atk:90,energy:-40,cps:0,w:2,h:2,desc:'Armata.'},cyber:{name:'Cyber Hub',icon:'💻',color:'#ff7070',cost:320,pop:0,def:0,atk:70,energy:-25,cps:0,w:2,h:1,desc:'Cyber.'},drone:{name:'Drone Bay',icon:'🛸',color:'#ff4444',cost:500,pop:0,def:20,atk:110,energy:-50,cps:0,w:2,h:2,desc:'Drony.'},power:{name:'Power Plant',icon:'🔋',color:'#ffd050',cost:200,pop:0,def:0,atk:0,energy:300,cps:0,w:2,h:2,desc:'Elektrownia.'},nuclear_r:{name:'Micro Reactor',icon:'☢️',color:'#ffaa00',cost:700,pop:0,def:0,atk:0,energy:800,cps:0,w:2,h:2,desc:'Reaktor.'},intel:{name:'Intel Station',icon:'🔭',color:'#ffe070',cost:260,pop:0,def:30,atk:20,energy:-10,cps:0,w:1,h:2,desc:'Wywiad.'},medctr:{name:'Med Center',icon:'🏥',color:'#ffdd88',cost:180,pop:30,def:0,atk:0,energy:0,cps:0,w:2,h:1,desc:'Med.'},comms:{name:'Comms Array',icon:'📶',color:'#ffc040',cost:340,pop:0,def:10,atk:10,energy:-15,cps:5,w:2,h:2,desc:'Łączność.'},market:{name:'Trade Depot',icon:'📦',color:'#ffbb30',cost:290,pop:20,def:0,atk:0,energy:0,cps:50,w:2,h:1,desc:'Handel.'}};
 const COLS=18,ROWS=14,CELL=52,ISO_Y=0.5;
-let cbCredits=5000,cbEnergy=1200;
-let cbSelectedBuild=null,cbSelectedCell=null,cbPlaced=[],cbHoverCell=null;
-const cbCanvas=document.getElementById('cb-canvas');
-const cbCtx=cbCanvas.getContext('2d');
-const cbTooltip=document.getElementById('cb-tooltip');
-
-function openCityBuilder(countryLabel){
-  document.getElementById('cb-country').textContent=countryLabel;
-  cbReset();
-  document.getElementById('cb-overlay').classList.add('visible');
-  setTimeout(cbResizeCanvas,50);
-}
+let cbCredits=5000,cbEnergy=1200,cbSelectedBuild=null,cbSelectedCell=null,cbPlaced=[],cbHoverCell=null;
+const cbCanvas=document.getElementById('cb-canvas'),cbCtx=cbCanvas.getContext('2d'),cbTooltip=document.getElementById('cb-tooltip');
+function openCityBuilder(countryLabel){document.getElementById('cb-country').textContent=countryLabel;cbReset();document.getElementById('cb-overlay').classList.add('visible');setTimeout(cbResizeCanvas,50);}
 function closeCityBuilder(){document.getElementById('cb-overlay').classList.remove('visible');}
 document.getElementById('cb-back').addEventListener('click',closeCityBuilder);
-
-globe.onPointClick(d=>{
-  if(d.type!=='capital')return;
-  if(!selectedCountryKey)return;
-  if(normalizeCountryKey(canonicalCountryName(d.country))!==selectedCountryKey)return;
-  openCityBuilder(selectedCountryLabel);
-});
-
-// ── ISO / DRAW
-function cbIsoPos(col,row){
-  const cx=cbCanvas.width/2,cy=cbCanvas.height/2-(ROWS*CELL*ISO_Y)/4;
-  return{x:cx+(col-row)*(CELL/2),y:cy+(col+row)*(CELL/2)*ISO_Y};
-}
-function cbScreenToCell(sx,sy){
-  const cx=cbCanvas.width/2,cy=cbCanvas.height/2-(ROWS*CELL*ISO_Y)/4;
-  const dx=sx-cx,dy=(sy-cy)/ISO_Y;
-  const col=Math.floor((dx/(CELL/2)+dy/(CELL/2))/2);
-  const row=Math.floor((dy/(CELL/2)-dx/(CELL/2))/2);
-  if(col<0||col>=COLS||row<0||row>=ROWS)return null;
-  return{col,row};
-}
-function cbOccupied(col,row){
-  return cbPlaced.find(p=>col>=p.col&&col<p.col+p.def.w&&row>=p.row&&row<p.row+p.def.h);
-}
-function cbHexAlpha(hex,a){
-  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  return`rgba(${r},${g},${b},${a})`;
-}
-function cbDrawTile(c,r){
-  const{x,y}=cbIsoPos(c,r),hw=CELL/2,hh=CELL/2*ISO_Y;
-  const wouldPlace=cbHoverCell&&cbSelectedBuild&&
-    c>=cbHoverCell.col&&c<cbHoverCell.col+BUILDINGS[cbSelectedBuild].w&&
-    r>=cbHoverCell.row&&r<cbHoverCell.row+BUILDINGS[cbSelectedBuild].h;
-  const occ=cbOccupied(c,r);
-  let fill='rgba(14,30,70,0.55)',stroke='rgba(40,90,200,0.28)';
-  if(wouldPlace){fill=occ?'rgba(200,30,30,0.35)':'rgba(30,180,100,0.28)';stroke=occ?'rgba(255,60,60,0.6)':'rgba(80,255,160,0.5)';}
-  else if(cbHoverCell&&cbHoverCell.col===c&&cbHoverCell.row===r&&!cbSelectedBuild){fill='rgba(30,60,140,0.7)';stroke='rgba(100,180,255,0.5)';}
-  cbCtx.beginPath();
-  cbCtx.moveTo(x,y-hh);cbCtx.lineTo(x+hw,y);cbCtx.lineTo(x,y+hh);cbCtx.lineTo(x-hw,y);cbCtx.closePath();
-  cbCtx.fillStyle=fill;cbCtx.fill();cbCtx.strokeStyle=stroke;cbCtx.lineWidth=1;cbCtx.stroke();
-}
-function cbDrawBuilding(p){
-  const d=p.def,{x,y}=cbIsoPos(p.col+(d.w-1)/2,p.row+(d.h-1)/2);
-  const hw=CELL/2*d.w,hh=CELL/2*ISO_Y*d.h,bh=Math.max(1,d.h)*26;
-  const isSel=cbSelectedCell&&cbSelectedCell.col===p.col&&cbSelectedCell.row===p.row;
-  const c=d.color;
-  // left face
-  cbCtx.beginPath();
-  cbCtx.moveTo(x-hw,y);cbCtx.lineTo(x-hw,y-bh);cbCtx.lineTo(x,y-hh-bh);cbCtx.lineTo(x,y-hh);cbCtx.closePath();
-  cbCtx.fillStyle=cbHexAlpha(c,0.2);cbCtx.fill();
-  cbCtx.strokeStyle=cbHexAlpha(c,0.45);cbCtx.lineWidth=1;cbCtx.stroke();
-  // right face
-  cbCtx.beginPath();
-  cbCtx.moveTo(x,y-hh);cbCtx.lineTo(x,y-hh-bh);cbCtx.lineTo(x+hw,y-bh);cbCtx.lineTo(x+hw,y);cbCtx.closePath();
-  cbCtx.fillStyle=cbHexAlpha(c,0.30);cbCtx.fill();
-  cbCtx.strokeStyle=cbHexAlpha(c,0.45);cbCtx.lineWidth=1;cbCtx.stroke();
-  // top face
-  cbCtx.beginPath();
-  cbCtx.moveTo(x,y-hh-bh);cbCtx.lineTo(x-hw,y-bh);cbCtx.lineTo(x,y+hh-bh);cbCtx.lineTo(x+hw,y-bh);cbCtx.closePath();
-  cbCtx.fillStyle=cbHexAlpha(c,0.55);cbCtx.fill();
-  if(isSel){cbCtx.shadowColor=c;cbCtx.shadowBlur=20;}
-  cbCtx.strokeStyle=isSel?c:cbHexAlpha(c,0.65);cbCtx.lineWidth=isSel?2:1;cbCtx.stroke();
-  cbCtx.shadowBlur=0;
-  // icon
-  cbCtx.font=`${16+d.w*4}px serif`;
-  cbCtx.textAlign='center';cbCtx.textBaseline='middle';
-  cbCtx.fillText(d.icon,x,y-hh-bh-12);
-}
-function cbRender(){
-  cbCtx.clearRect(0,0,cbCanvas.width,cbCanvas.height);
-  const g=cbCtx.createRadialGradient(cbCanvas.width/2,cbCanvas.height/2,0,cbCanvas.width/2,cbCanvas.height/2,cbCanvas.width*0.55);
-  g.addColorStop(0,'rgba(12,28,72,0.3)');g.addColorStop(1,'rgba(4,9,22,0)');
-  cbCtx.fillStyle=g;cbCtx.fillRect(0,0,cbCanvas.width,cbCanvas.height);
-  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)cbDrawTile(c,r);
-  [...cbPlaced].sort((a,b)=>(a.col+a.row)-(b.col+b.row)).forEach(cbDrawBuilding);
-}
-function cbResizeCanvas(){
-  const wrap=document.getElementById('cb-center');
-  cbCanvas.width=wrap.clientWidth;cbCanvas.height=wrap.clientHeight;
-  cbRender();
-}
-window.addEventListener('resize',()=>{
-  resize(); // globe resize
-  if(document.getElementById('cb-overlay').classList.contains('visible'))cbResizeCanvas();
-});
-
-cbCanvas.addEventListener('mousemove',e=>{
-  const r=cbCanvas.getBoundingClientRect();
-  cbHoverCell=cbScreenToCell(e.clientX-r.left,e.clientY-r.top);
-  if(cbHoverCell){
-    const occ=cbOccupied(cbHoverCell.col,cbHoverCell.row);
-    if(occ&&!cbSelectedBuild){
-      cbTooltip.textContent=`${occ.def.icon} ${occ.def.name}`;
-      cbTooltip.style.display='block';
-      cbTooltip.style.left=(e.clientX+12)+'px';
-      cbTooltip.style.top=(e.clientY-28)+'px';
-    }else{cbTooltip.style.display='none';}
-  }else{cbTooltip.style.display='none';}
-  cbRender();
-});
+globe.onPointClick(d=>{if(d.type!=='capital')return;if(!selectedCountryKey)return;if(normalizeCountryKey(canonicalCountryName(d.country))!==selectedCountryKey)return;openCityBuilder(selectedCountryLabel);});
+function cbIsoPos(col,row){const cx=cbCanvas.width/2,cy=cbCanvas.height/2-(ROWS*CELL*ISO_Y)/4;return{x:cx+(col-row)*(CELL/2),y:cy+(col+row)*(CELL/2)*ISO_Y};}
+function cbScreenToCell(sx,sy){const cx=cbCanvas.width/2,cy=cbCanvas.height/2-(ROWS*CELL*ISO_Y)/4;const dx=sx-cx,dy=(sy-cy)/ISO_Y;const col=Math.floor((dx/(CELL/2)+dy/(CELL/2))/2);const row=Math.floor((dy/(CELL/2)-dx/(CELL/2))/2);if(col<0||col>=COLS||row<0||row>=ROWS)return null;return{col,row};}
+function cbOccupied(col,row){return cbPlaced.find(p=>col>=p.col&&col<p.col+p.def.w&&row>=p.row&&row<p.row+p.def.h);}
+function cbHexAlpha(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
+function cbDrawTile(c,r){const{x,y}=cbIsoPos(c,r),hw=CELL/2,hh=CELL/2*ISO_Y;const wouldPlace=cbHoverCell&&cbSelectedBuild&&c>=cbHoverCell.col&&c<cbHoverCell.col+BUILDINGS[cbSelectedBuild].w&&r>=cbHoverCell.row&&r<cbHoverCell.row+BUILDINGS[cbSelectedBuild].h;const occ=cbOccupied(c,r);let fill='rgba(14,30,70,0.55)',stroke='rgba(40,90,200,0.28)';if(wouldPlace){fill=occ?'rgba(200,30,30,0.35)':'rgba(30,180,100,0.28)';stroke=occ?'rgba(255,60,60,0.6)':'rgba(80,255,160,0.5)';}else if(cbHoverCell&&cbHoverCell.col===c&&cbHoverCell.row===r&&!cbSelectedBuild){fill='rgba(30,60,140,0.7)';stroke='rgba(100,180,255,0.5)';}cbCtx.beginPath();cbCtx.moveTo(x,y-hh);cbCtx.lineTo(x+hw,y);cbCtx.lineTo(x,y+hh);cbCtx.lineTo(x-hw,y);cbCtx.closePath();cbCtx.fillStyle=fill;cbCtx.fill();cbCtx.strokeStyle=stroke;cbCtx.lineWidth=1;cbCtx.stroke();}
+function cbDrawBuilding(p){const d=p.def,{x,y}=cbIsoPos(p.col+(d.w-1)/2,p.row+(d.h-1)/2),hw=CELL/2*d.w,hh=CELL/2*ISO_Y*d.h,bh=Math.max(1,d.h)*26,isSel=cbSelectedCell&&cbSelectedCell.col===p.col&&cbSelectedCell.row===p.row,c=d.color;cbCtx.beginPath();cbCtx.moveTo(x-hw,y);cbCtx.lineTo(x-hw,y-bh);cbCtx.lineTo(x,y-hh-bh);cbCtx.lineTo(x,y-hh);cbCtx.closePath();cbCtx.fillStyle=cbHexAlpha(c,0.2);cbCtx.fill();cbCtx.strokeStyle=cbHexAlpha(c,0.45);cbCtx.lineWidth=1;cbCtx.stroke();cbCtx.beginPath();cbCtx.moveTo(x,y-hh);cbCtx.lineTo(x,y-hh-bh);cbCtx.lineTo(x+hw,y-bh);cbCtx.lineTo(x+hw,y);cbCtx.closePath();cbCtx.fillStyle=cbHexAlpha(c,0.30);cbCtx.fill();cbCtx.strokeStyle=cbHexAlpha(c,0.45);cbCtx.lineWidth=1;cbCtx.stroke();cbCtx.beginPath();cbCtx.moveTo(x,y-hh-bh);cbCtx.lineTo(x-hw,y-bh);cbCtx.lineTo(x,y+hh-bh);cbCtx.lineTo(x+hw,y-bh);cbCtx.closePath();cbCtx.fillStyle=cbHexAlpha(c,0.55);cbCtx.fill();if(isSel){cbCtx.shadowColor=c;cbCtx.shadowBlur=20;}cbCtx.strokeStyle=isSel?c:cbHexAlpha(c,0.65);cbCtx.lineWidth=isSel?2:1;cbCtx.stroke();cbCtx.shadowBlur=0;cbCtx.font=`${16+d.w*4}px serif`;cbCtx.textAlign='center';cbCtx.textBaseline='middle';cbCtx.fillText(d.icon,x,y-hh-bh-12);}
+function cbRender(){cbCtx.clearRect(0,0,cbCanvas.width,cbCanvas.height);const g=cbCtx.createRadialGradient(cbCanvas.width/2,cbCanvas.height/2,0,cbCanvas.width/2,cbCanvas.height/2,cbCanvas.width*0.55);g.addColorStop(0,'rgba(12,28,72,0.3)');g.addColorStop(1,'rgba(4,9,22,0)');cbCtx.fillStyle=g;cbCtx.fillRect(0,0,cbCanvas.width,cbCanvas.height);for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)cbDrawTile(c,r);[...cbPlaced].sort((a,b)=>(a.col+a.row)-(b.col+b.row)).forEach(cbDrawBuilding);}
+function cbResizeCanvas(){const wrap=document.getElementById('cb-center');cbCanvas.width=wrap.clientWidth;cbCanvas.height=wrap.clientHeight;cbRender();}
+window.addEventListener('resize',()=>{resize();if(document.getElementById('cb-overlay').classList.contains('visible'))cbResizeCanvas();});
+cbCanvas.addEventListener('mousemove',e=>{const r=cbCanvas.getBoundingClientRect();cbHoverCell=cbScreenToCell(e.clientX-r.left,e.clientY-r.top);if(cbHoverCell){const occ=cbOccupied(cbHoverCell.col,cbHoverCell.row);if(occ&&!cbSelectedBuild){cbTooltip.textContent=`${occ.def.icon} ${occ.def.name}`;cbTooltip.style.display='block';cbTooltip.style.left=(e.clientX+12)+'px';cbTooltip.style.top=(e.clientY-28)+'px';}else{cbTooltip.style.display='none';}}else{cbTooltip.style.display='none';}cbRender();});
 cbCanvas.addEventListener('mouseleave',()=>{cbHoverCell=null;cbTooltip.style.display='none';cbRender();});
-cbCanvas.addEventListener('click',e=>{
-  const r=cbCanvas.getBoundingClientRect();
-  const cell=cbScreenToCell(e.clientX-r.left,e.clientY-r.top);
-  if(!cell)return;
-  if(cbSelectedBuild){cbTryPlace(cell.col,cell.row,cbSelectedBuild);}
-  else{
-    const occ=cbOccupied(cell.col,cell.row);
-    if(occ){cbSelectedCell={col:occ.col,row:occ.row};cbShowSelPanel(occ);}
-    else{cbSelectedCell=null;cbHideSelPanel();}
-    cbRender();
-  }
-});
+cbCanvas.addEventListener('click',e=>{const r=cbCanvas.getBoundingClientRect();const cell=cbScreenToCell(e.clientX-r.left,e.clientY-r.top);if(!cell)return;if(cbSelectedBuild){cbTryPlace(cell.col,cell.row,cbSelectedBuild);}else{const occ=cbOccupied(cell.col,cell.row);if(occ){cbSelectedCell={col:occ.col,row:occ.row};cbShowSelPanel(occ);}else{cbSelectedCell=null;cbHideSelPanel();}cbRender();}});
 cbCanvas.addEventListener('contextmenu',e=>{e.preventDefault();cbDeselBuild();cbRender();});
-function cbTryPlace(col,row,id){
-  const def=BUILDINGS[id];
-  if(cbCredits<def.cost){cbAddLog(`Brak kredytów (${def.cost} wymagane)`,'warn');return;}
-  if(col+def.w>COLS||row+def.h>ROWS){cbAddLog('Poza granicami!','err');return;}
-  for(let dc=0;dc<def.w;dc++)for(let dr=0;dr<def.h;dr++)
-    if(cbOccupied(col+dc,row+dr)){cbAddLog('Pole zajęte!','err');return;}
-  cbCredits-=def.cost;
-  cbPlaced.push({id,col,row,def});
-  cbAddLog(`Zbudowano: ${def.icon} ${def.name}`,'ok');
-  cbUpdateStats();cbRender();
-}
-document.getElementById('cb-demolish').addEventListener('click',()=>{
-  if(!cbSelectedCell)return;
-  const idx=cbPlaced.findIndex(p=>p.col===cbSelectedCell.col&&p.row===cbSelectedCell.row);
-  if(idx===-1)return;
-  const p=cbPlaced[idx],refund=Math.floor(p.def.cost*0.5);
-  cbCredits+=refund;cbPlaced.splice(idx,1);
-  cbAddLog(`Wyburzono: ${p.def.icon} ${p.def.name} (+${refund}cr)`,'warn');
-  cbSelectedCell=null;cbHideSelPanel();cbUpdateStats();cbRender();
-});
-document.querySelectorAll('#cb-palette .layer-tile').forEach(tile=>{
-  tile.addEventListener('click',()=>{
-    const id=tile.dataset.id;
-    if(cbSelectedBuild===id){cbDeselBuild();return;}
-    cbDeselBuild();cbSelectedBuild=id;tile.classList.add('selected');
-    cbSelectedCell=null;cbHideSelPanel();cbRender();
-  });
-});
-function cbDeselBuild(){
-  cbSelectedBuild=null;
-  document.querySelectorAll('#cb-palette .layer-tile').forEach(t=>t.classList.remove('selected'));
-}
-function cbShowSelPanel(p){
-  const d=p.def;
-  document.getElementById('cb-sel-panel').style.display='block';
-  document.getElementById('sel-icon').textContent=d.icon;
-  document.getElementById('sel-name').textContent=d.name;
-  document.getElementById('sel-desc').textContent=d.desc;
-  const stats=[
-    d.pop    ?['Populacja',`+${d.pop}`]  :null,
-    d.def    ?['Obrona',   `+${d.def}`]  :null,
-    d.atk    ?['Atak',     `+${d.atk}`]  :null,
-    d.energy ?['Energia/s',`${d.energy>0?'+':''}${d.energy}`]:null,
-    d.cps    ?['Kredyty/s',`+${d.cps}`]  :null,
-  ].filter(Boolean);
-  document.getElementById('sel-stats').innerHTML=
-    stats.map(([l,v])=>`<div class="sel-stat"><span class="sel-stat-lbl">${l}</span><span class="sel-stat-val">${v}</span></div>`).join('');
-}
+function cbTryPlace(col,row,id){const def=BUILDINGS[id];if(cbCredits<def.cost){cbAddLog(`Brak kredytów (${def.cost} wymagane)`,'warn');return;}if(col+def.w>COLS||row+def.h>ROWS){cbAddLog('Poza granicami!','err');return;}for(let dc=0;dc<def.w;dc++)for(let dr=0;dr<def.h;dr++)if(cbOccupied(col+dc,row+dr)){cbAddLog('Pole zajęte!','err');return;}cbCredits-=def.cost;cbPlaced.push({id,col,row,def});cbAddLog(`Zbudowano: ${def.icon} ${def.name}`,'ok');cbUpdateStats();cbRender();}
+document.getElementById('cb-demolish').addEventListener('click',()=>{if(!cbSelectedCell)return;const idx=cbPlaced.findIndex(p=>p.col===cbSelectedCell.col&&p.row===cbSelectedCell.row);if(idx===-1)return;const p=cbPlaced[idx],refund=Math.floor(p.def.cost*0.5);cbCredits+=refund;cbPlaced.splice(idx,1);cbAddLog(`Wyburzono: ${p.def.icon} ${p.def.name} (+${refund}cr)`,'warn');cbSelectedCell=null;cbHideSelPanel();cbUpdateStats();cbRender();});
+document.querySelectorAll('#cb-palette .layer-tile').forEach(tile=>{tile.addEventListener('click',()=>{const id=tile.dataset.id;if(cbSelectedBuild===id){cbDeselBuild();return;}cbDeselBuild();cbSelectedBuild=id;tile.classList.add('selected');cbSelectedCell=null;cbHideSelPanel();cbRender();});});
+function cbDeselBuild(){cbSelectedBuild=null;document.querySelectorAll('#cb-palette .layer-tile').forEach(t=>t.classList.remove('selected'));}
+function cbShowSelPanel(p){const d=p.def;document.getElementById('cb-sel-panel').style.display='block';document.getElementById('sel-icon').textContent=d.icon;document.getElementById('sel-name').textContent=d.name;document.getElementById('sel-desc').textContent=d.desc;const stats=[d.pop?['Pop',`+${d.pop}`]:null,d.def?['Def',`+${d.def}`]:null,d.atk?['Atk',`+${d.atk}`]:null,d.energy?['En/s',`${d.energy>0?'+':''}${d.energy}`]:null,d.cps?['Cr/s',`+${d.cps}`]:null].filter(Boolean);document.getElementById('sel-stats').innerHTML=stats.map(([l,v])=>`<div class="sel-stat"><span class="sel-stat-lbl">${l}</span><span class="sel-stat-val">${v}</span></div>`).join('');}
 function cbHideSelPanel(){document.getElementById('cb-sel-panel').style.display='none';}
-function cbUpdateStats(){
-  let pop=0,def=0,atk=0,eng=0,cps=0;
-  cbPlaced.forEach(p=>{pop+=p.def.pop;def+=p.def.def;atk+=p.def.atk;eng+=p.def.energy;cps+=p.def.cps;});
-  document.getElementById('cs-buildings').textContent=cbPlaced.length;
-  document.getElementById('cs-pop').textContent=pop;
-  document.getElementById('cs-defense').textContent=def;
-  document.getElementById('cs-attack').textContent=atk;
-  document.getElementById('cs-energy').textContent=eng;
-  document.getElementById('cs-cps').textContent=cps;
-  document.getElementById('res-pop').textContent=pop;
-  document.getElementById('res-defense').textContent=def;
-  document.getElementById('res-attack').textContent=atk;
-  document.getElementById('res-energy').textContent=cbEnergy+eng;
-  document.getElementById('res-credits').textContent=Math.floor(cbCredits);
-}
-function cbAddLog(msg,type=''){
-  const ts=new Date().toTimeString().slice(0,8);
-  const el=document.createElement('div');
-  el.className=`log-line${type?' log-'+type:''}`;
-  el.textContent=`[${ts}] ${msg}`;
-  const lines=document.getElementById('cb-log-lines');
-  lines.prepend(el);
-  while(lines.children.length>12)lines.removeChild(lines.lastChild);
-}
-setInterval(()=>{
-  let cps=0;cbPlaced.forEach(p=>cps+=p.def.cps);cbCredits+=cps;
-  document.getElementById('res-credits').textContent=Math.floor(cbCredits);
-},1000);
-function cbReset(){
-  cbPlaced=[];cbSelectedBuild=null;cbSelectedCell=null;cbHoverCell=null;
-  cbCredits=5000;cbEnergy=1200;
-  cbDeselBuild();cbHideSelPanel();
-  document.getElementById('cb-log-lines').innerHTML='';
-  cbUpdateStats();
-  cbAddLog('System zainicjalizowany.','ok');
-}
+function cbUpdateStats(){let pop=0,def=0,atk=0,eng=0,cps=0;cbPlaced.forEach(p=>{pop+=p.def.pop;def+=p.def.def;atk+=p.def.atk;eng+=p.def.energy;cps+=p.def.cps;});document.getElementById('cs-buildings').textContent=cbPlaced.length;document.getElementById('cs-pop').textContent=pop;document.getElementById('cs-defense').textContent=def;document.getElementById('cs-attack').textContent=atk;document.getElementById('cs-energy').textContent=eng;document.getElementById('cs-cps').textContent=cps;document.getElementById('res-pop').textContent=pop;document.getElementById('res-defense').textContent=def;document.getElementById('res-attack').textContent=atk;document.getElementById('res-energy').textContent=cbEnergy+eng;document.getElementById('res-credits').textContent=Math.floor(cbCredits);}
+function cbAddLog(msg,type=''){const ts=new Date().toTimeString().slice(0,8);const el=document.createElement('div');el.className=`log-line${type?' log-'+type:''}`;el.textContent=`[${ts}] ${msg}`;const lines=document.getElementById('cb-log-lines');lines.prepend(el);while(lines.children.length>12)lines.removeChild(lines.lastChild);}
+setInterval(()=>{let cps=0;cbPlaced.forEach(p=>cps+=p.def.cps);cbCredits+=cps;document.getElementById('res-credits').textContent=Math.floor(cbCredits);},1000);
+function cbReset(){cbPlaced=[];cbSelectedBuild=null;cbSelectedCell=null;cbHoverCell=null;cbCredits=5000;cbEnergy=1200;cbDeselBuild();cbHideSelPanel();document.getElementById('cb-log-lines').innerHTML='';cbUpdateStats();cbAddLog('System zainicjalizowany.','ok');}
 
-// ══════════════════════════════════════════════
-//  BOOT
-// ══════════════════════════════════════════════
+// ── GLOBALFACE
+const gfIframeWrap=document.getElementById('gf-iframe-wrap');
+const gfIframe=document.getElementById('gf-iframe');
+function openGF(){
+  gfIframeWrap.classList.add('visible');
+  const country=selectedCountryLabel||null;
+  try{gfIframe.contentWindow.openGlobalFace(country);}
+  catch(e){gfIframe.onload=()=>{try{gfIframe.contentWindow.openGlobalFace(country);}catch(e2){}};}
+}
+window.addEventListener('message',e=>{if(e.data==='gf-close')gfIframeWrap.classList.remove('visible');});
+
+// ── BOOT
 updateLayers();
 fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
   .then(r=>r.json())
