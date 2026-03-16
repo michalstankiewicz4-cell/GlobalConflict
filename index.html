@@ -127,6 +127,34 @@ body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f
 .layer-tile[data-layer="camera"] .tile-emoji { box-shadow: inset 0 0 0 1px rgba(255, 122, 89, 0.25); }
 .layer-tile[data-layer="capital"] .tile-emoji { box-shadow: inset 0 0 0 1px rgba(0, 255, 136, 0.25); }
 .layer-tile[data-layer="city"] .tile-emoji { box-shadow: inset 0 0 0 1px rgba(255, 95, 95, 0.25); }
+.layer-tile[data-layer="airport"] .tile-emoji { box-shadow: inset 0 0 0 1px rgba(76, 214, 255, 0.3); }
+
+.tile-action-btn {
+  margin-top: 6px;
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(128, 220, 255, 0.45);
+  background: rgba(54, 132, 168, 0.28);
+  color: #bfefff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.tile-action-btn:hover {
+  background: rgba(74, 168, 214, 0.42);
+  border-color: rgba(140, 224, 255, 0.8);
+}
+
+.tile-action-btn.is-active {
+  background: rgba(64, 219, 153, 0.22);
+  border-color: rgba(90, 255, 194, 0.8);
+  color: #c8ffe9;
+}
 
 .globe-emoji {
   font-size: 16.8px;
@@ -195,6 +223,15 @@ body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f
     </span>
     <span class="tile-state">ON</span>
   </button>
+  <div class="layer-tile is-on" data-layer="airport" role="button" tabindex="0" aria-pressed="true">
+    <span class="tile-emoji">🛫</span>
+    <span class="tile-copy">
+      <span class="tile-title">Airports</span>
+      <span class="tile-meta" id="airport-send-status">Tryb standardowy</span>
+      <button class="tile-action-btn" id="send-flight-btn" type="button">Send</button>
+    </span>
+    <span class="tile-state">ON</span>
+  </div>
 </div>
 
 <div id="globe-container"></div>
@@ -203,7 +240,7 @@ body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f
   <div class="stat"><div class="stat-val" id="s-capitals">0</div><div class="stat-lbl">Stolice</div></div>
   <div class="stat"><div class="stat-val" id="s-cities">0</div><div class="stat-lbl">Miasta</div></div>
   <div class="stat"><div class="stat-val" id="s-cams">0</div><div class="stat-lbl">Kamery</div></div>
-  <div class="stat"><div class="stat-val" id="s-total">0</div><div class="stat-lbl">Punkty łącznie</div></div>
+  <div class="stat"><div class="stat-val" id="s-airports">0</div><div class="stat-lbl">Lotniska</div></div>
 </div>
 
 <script src="https://unpkg.com/globe.gl@2/dist/globe.gl.min.js"></script>
@@ -323,18 +360,44 @@ const liveCameras = [
   { name:'Istanbul Bosphorus Cam', country:'Turcja', lat:41.04, lng:29.00, type:'camera', viewers:'1.5k', status:'LIVE' },
 ];
 
+const airports = [
+  { name:'JFK', country:'USA', lat:40.64, lng:-73.78, type:'airport' },
+  { name:'LAX', country:'USA', lat:33.94, lng:-118.40, type:'airport' },
+  { name:'O Hare', country:'USA', lat:41.98, lng:-87.90, type:'airport' },
+  { name:'Heathrow', country:'Wielka Brytania', lat:51.47, lng:-0.45, type:'airport' },
+  { name:'Charles de Gaulle', country:'Francja', lat:49.01, lng:2.55, type:'airport' },
+  { name:'Berlin Brandenburg', country:'Niemcy', lat:52.36, lng:13.50, type:'airport' },
+  { name:'Chopin', country:'Polska', lat:52.17, lng:20.97, type:'airport' },
+  { name:'Narita', country:'Japonia', lat:35.77, lng:140.39, type:'airport' },
+  { name:'Incheon', country:'Korea Płd.', lat:37.46, lng:126.44, type:'airport' },
+  { name:'Changi', country:'Singapur', lat:1.36, lng:103.99, type:'airport' },
+  { name:'Dubai Intl', country:'ZEA', lat:25.25, lng:55.36, type:'airport' },
+  { name:'Haneda', country:'Japonia', lat:35.55, lng:139.78, type:'airport' },
+  { name:'Sydney Kingsford', country:'Australia', lat:-33.94, lng:151.18, type:'airport' },
+  { name:'Istanbul Airport', country:'Turcja', lat:41.26, lng:28.74, type:'airport' },
+  { name:'Toronto Pearson', country:'Kanada', lat:43.68, lng:-79.63, type:'airport' },
+  { name:'Mexico City Intl', country:'Meksyk', lat:19.44, lng:-99.07, type:'airport' },
+  { name:'Sao Paulo Guarulhos', country:'Brazylia', lat:-23.43, lng:-46.47, type:'airport' },
+  { name:'Johannesburg OR Tambo', country:'RPA', lat:-26.13, lng:28.24, type:'airport' },
+  { name:'Delhi IGI', country:'Indie', lat:28.56, lng:77.10, type:'airport' },
+  { name:'Shanghai Pudong', country:'Chiny', lat:31.14, lng:121.81, type:'airport' },
+];
+
 const layerState = {
   camera: true,
   capital: true,
   city: true,
+  airport: true,
 };
 
 const selectedCountryNameElement = document.getElementById('selected-country-name');
+const sendFlightButton = document.getElementById('send-flight-btn');
+const airportSendStatusElement = document.getElementById('airport-send-status');
 const countryStatsElements = {
   capitals: document.getElementById('s-capitals'),
   cities: document.getElementById('s-cities'),
   cameras: document.getElementById('s-cams'),
-  total: document.getElementById('s-total'),
+  airports: document.getElementById('s-airports'),
 };
 
 const countryAliasEntries = [
@@ -446,10 +509,14 @@ const countryAliasEntries = [
 ];
 
 const countryAliases = new Map(countryAliasEntries);
-const allDataPoints = [...capitals, ...bigCities, ...liveCameras];
+const allDataPoints = [...capitals, ...bigCities, ...liveCameras, ...airports];
 let countryFeatures = [];
-let selectedCountryKey = '';
-let selectedCountryLabel = 'Kliknij kraj';
+let selectedCountryKey = normalizeCountryKey('USA');
+let selectedCountryLabel = 'USA';
+let sendModeActive = false;
+const activeFlights = [];
+const activeLandings = [];
+const flightOrigin = { lat: 39.50, lng: -98.35 };
 
 const layerConfig = {
   camera: {
@@ -481,6 +548,16 @@ const layerConfig = {
     labelAltitude: 0.042,
     labelSize: 0.9,
     data: bigCities,
+  },
+  airport: {
+    label: 'Airport',
+    emoji: '🛫',
+    color: '#4cd6ff',
+    pointRadius: 0.28,
+    pointAltitude: 0.012,
+    labelAltitude: 0.048,
+    labelSize: 0.88,
+    data: airports,
   },
 };
 
@@ -520,6 +597,25 @@ const globe = Globe()(document.getElementById('globe-container'))
     d._emojiElement = emoji;
     return emoji;
   })
+  .arcsData([])
+  .arcStartLat('startLat')
+  .arcStartLng('startLng')
+  .arcEndLat('endLat')
+  .arcEndLng('endLng')
+  .arcColor(d => d.color)
+  .arcAltitude(d => d.altitude)
+  .arcStroke(0.85)
+  .arcDashLength(0.52)
+  .arcDashGap(1.4)
+  .arcDashInitialGap(() => Math.random())
+  .arcDashAnimateTime(d => d.duration)
+  .ringsData([])
+  .ringLat('lat')
+  .ringLng('lng')
+  .ringColor(d => d.color)
+  .ringMaxRadius(d => d.maxRadius)
+  .ringPropagationSpeed(d => d.speed)
+  .ringRepeatPeriod(600)
   .pointLabel(d => `
     <div style="background:rgba(5,10,30,0.92);border:1px solid ${layerConfig[d.type].color};padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:11px;color:#c8d8f0;">
       <b style="color:${layerConfig[d.type].color}">${layerConfig[d.type].emoji} ${d.name}</b><br>
@@ -608,16 +704,111 @@ function updateCountryStats() {
   const capitalsCount = countryPoints.filter(point => point.type === 'capital').length;
   const citiesCount = countryPoints.filter(point => point.type === 'city').length;
   const camerasCount = countryPoints.filter(point => point.type === 'camera').length;
+  const airportsCount = countryPoints.filter(point => point.type === 'airport').length;
 
   countryStatsElements.capitals.textContent = capitalsCount.toLocaleString('pl-PL');
   countryStatsElements.cities.textContent = citiesCount.toLocaleString('pl-PL');
   countryStatsElements.cameras.textContent = camerasCount.toLocaleString('pl-PL');
-  countryStatsElements.total.textContent = countryPoints.length.toLocaleString('pl-PL');
+  countryStatsElements.airports.textContent = airportsCount.toLocaleString('pl-PL');
   selectedCountryNameElement.textContent = selectedCountryLabel;
 }
 
 function refreshCountryHighlight() {
   globe.polygonsData(countryFeatures);
+}
+
+function setSendMode(active) {
+  sendModeActive = active;
+  sendFlightButton.classList.toggle('is-active', active);
+  sendFlightButton.textContent = active ? 'Target' : 'Send';
+  airportSendStatusElement.textContent = active ? 'Kliknij kraj docelowy' : 'Tryb standardowy';
+}
+
+function flattenCoordinates(coords, out) {
+  if (!Array.isArray(coords) || coords.length === 0) {
+    return;
+  }
+
+  if (typeof coords[0] === 'number') {
+    out.push({ lng: coords[0], lat: coords[1] });
+    return;
+  }
+
+  coords.forEach(entry => flattenCoordinates(entry, out));
+}
+
+function getFeatureCenter(feature) {
+  const points = [];
+  flattenCoordinates(feature?.geometry?.coordinates, points);
+  if (!points.length) {
+    return null;
+  }
+
+  const sum = points.reduce((acc, point) => {
+    acc.lat += point.lat;
+    acc.lng += point.lng;
+    return acc;
+  }, { lat: 0, lng: 0 });
+
+  return {
+    lat: sum.lat / points.length,
+    lng: sum.lng / points.length,
+  };
+}
+
+function addLandingEffect(destination) {
+  const landing = {
+    id: `${Date.now()}-${Math.random()}`,
+    lat: destination.lat,
+    lng: destination.lng,
+    maxRadius: 4.5,
+    speed: 2.6,
+    color: t => `rgba(126, 233, 255, ${Math.max(0, 0.72 * (1 - t))})`,
+  };
+
+  activeLandings.push(landing);
+  globe.ringsData([...activeLandings]);
+
+  setTimeout(() => {
+    const landingIndex = activeLandings.findIndex(item => item.id === landing.id);
+    if (landingIndex !== -1) {
+      activeLandings.splice(landingIndex, 1);
+      globe.ringsData([...activeLandings]);
+    }
+  }, 1700);
+}
+
+function sendFlightToCountry(feature) {
+  const destination = getFeatureCenter(feature);
+  if (!destination) {
+    setSendMode(false);
+    return;
+  }
+
+  const flight = {
+    id: `${Date.now()}-${Math.random()}`,
+    startLat: flightOrigin.lat,
+    startLng: flightOrigin.lng,
+    endLat: destination.lat,
+    endLng: destination.lng,
+    altitude: 0.31,
+    duration: 2600,
+    color: ['#74dcff', '#ffffff'],
+  };
+
+  activeFlights.push(flight);
+  globe.arcsData([...activeFlights]);
+
+  setTimeout(() => {
+    const flightIndex = activeFlights.findIndex(item => item.id === flight.id);
+    if (flightIndex !== -1) {
+      activeFlights.splice(flightIndex, 1);
+      globe.arcsData([...activeFlights]);
+      addLandingEffect(destination);
+    }
+  }, flight.duration + 120);
+
+  setSendMode(false);
 }
 
 function selectCountry(feature) {
@@ -627,6 +818,15 @@ function selectCountry(feature) {
 
   const clickedKey = getFeatureCountryKey(feature);
   const clickedLabel = canonicalCountryName(feature.properties?.ADMIN || feature.properties?.name || '');
+
+  if (sendModeActive) {
+    selectedCountryKey = clickedKey;
+    selectedCountryLabel = clickedLabel;
+    updateCountryStats();
+    refreshCountryHighlight();
+    sendFlightToCountry(feature);
+    return;
+  }
 
   if (selectedCountryKey === clickedKey) {
     selectedCountryKey = '';
@@ -663,8 +863,27 @@ layerButtons.forEach(button => {
   button.addEventListener('click', () => {
     const layerKey = button.dataset.layer;
     layerState[layerKey] = !layerState[layerKey];
+    if (layerKey === 'airport' && !layerState[layerKey]) {
+      setSendMode(false);
+    }
     updateLayers();
   });
+
+  button.addEventListener('keydown', event => {
+    if ((event.key === 'Enter' || event.key === ' ') && button.tagName !== 'BUTTON') {
+      event.preventDefault();
+      button.click();
+    }
+  });
+});
+
+sendFlightButton.addEventListener('click', event => {
+  event.stopPropagation();
+  if (!layerState.airport) {
+    layerState.airport = true;
+    updateLayers();
+  }
+  setSendMode(!sendModeActive);
 });
 
 updateLayers();
