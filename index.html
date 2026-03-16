@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>WorldCam — Global Surveillance Network</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f0; overflow: hidden; height: 100vh; display: flex; }
+
+#sidebar {
+  width: 300px; min-width: 300px;
+  background: rgba(5,10,20,0.96);
+  border-right: 1px solid rgba(40,80,160,0.3);
+  display: flex; flex-direction: column;
+  z-index: 10;
+}
+
+#logo { padding: 18px 20px 14px; border-bottom: 1px solid rgba(40,80,160,0.2); }
+#logo h1 { font-size: 20px; font-weight: 700; letter-spacing: 2px; color: #5bf; text-transform: uppercase; }
+#logo p { font-size: 10px; color: rgba(100,160,220,0.6); letter-spacing: 3px; margin-top: 2px; text-transform: uppercase; }
+
+.menu-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(40,80,160,0.15);
+  cursor: pointer; transition: background 0.15s; position: relative;
+}
+.menu-item:hover { background: rgba(40,100,200,0.1); }
+.menu-item.active { background: rgba(40,100,200,0.18); border-left: 2px solid #5bf; }
+
+.menu-icon {
+  width: 36px; height: 36px;
+  background: rgba(30,60,120,0.5);
+  border: 1px solid rgba(40,80,160,0.4);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.menu-text h3 { font-size: 13px; color: #c8d8f0; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.menu-text p { font-size: 10px; color: rgba(100,150,200,0.7); margin-top: 2px; }
+
+.live-badge {
+  position: absolute; right: 16px;
+  background: rgba(255,60,60,0.15); border: 1px solid rgba(255,60,60,0.4);
+  color: #f66; font-size: 9px; letter-spacing: 2px; padding: 2px 6px;
+  border-radius: 3px; text-transform: uppercase;
+}
+.count-badge {
+  position: absolute; right: 16px;
+  background: rgba(40,100,200,0.2); border: 1px solid rgba(40,100,200,0.4);
+  color: #5bf; font-size: 10px; padding: 2px 8px; border-radius: 10px;
+}
+
+#globe-area { flex: 1; position: relative; overflow: hidden; }
+#globe-container { width: 100%; height: 100%; }
+
+#stats-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(5,10,20,0.85);
+  border-top: 1px solid rgba(40,80,160,0.3);
+  display: flex; padding: 8px 20px; gap: 32px;
+  backdrop-filter: blur(4px);
+}
+.stat { display: flex; flex-direction: column; gap: 1px; }
+.stat-val { font-size: 16px; color: #5bf; font-weight: 700; letter-spacing: 1px; }
+.stat-lbl { font-size: 9px; color: rgba(100,150,200,0.5); letter-spacing: 2px; text-transform: uppercase; }
+
+/* CAMERA PANEL */
+#cam-panel {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(5,10,20,0.97);
+  display: none; flex-direction: column; z-index: 20;
+}
+#cam-panel.open { display: flex; }
+
+#cam-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 24px; border-bottom: 1px solid rgba(40,80,160,0.3);
+}
+#cam-header h2 { font-size: 14px; color: #5bf; letter-spacing: 3px; text-transform: uppercase; }
+#cam-close {
+  width: 32px; height: 32px; background: rgba(40,80,160,0.2);
+  border: 1px solid rgba(40,80,160,0.4); color: #5bf; cursor: pointer;
+  border-radius: 6px; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+#cam-close:hover { background: rgba(40,80,160,0.4); }
+
+#cam-filters {
+  display: flex; gap: 8px; padding: 12px 24px;
+  border-bottom: 1px solid rgba(40,80,160,0.15); flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 5px 12px; background: rgba(20,40,80,0.5);
+  border: 1px solid rgba(40,80,160,0.3); color: rgba(100,150,200,0.8);
+  font-family: 'Courier New', monospace; font-size: 10px;
+  letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+  border-radius: 4px; transition: all 0.15s;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: rgba(40,100,200,0.25); border-color: rgba(80,160,255,0.5); color: #5bf;
+}
+
+#cam-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px; padding: 16px 24px; overflow-y: auto; flex: 1;
+}
+.cam-card {
+  background: rgba(10,20,40,0.8); border: 1px solid rgba(40,80,160,0.3);
+  border-radius: 8px; overflow: hidden; cursor: pointer; transition: border-color 0.15s;
+}
+.cam-card:hover { border-color: rgba(80,160,255,0.6); }
+.cam-preview { width: 100%; height: 160px; position: relative; overflow: hidden; }
+.cam-preview canvas { width: 100%; height: 100%; }
+.cam-status {
+  position: absolute; top: 8px; right: 8px;
+  display: flex; align-items: center; gap: 4px;
+  background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 3px;
+}
+.dot-live { width: 6px; height: 6px; border-radius: 50%; background: #f44; animation: blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+.cam-info { padding: 10px 12px; }
+.cam-info h4 { font-size: 12px; color: #c8d8f0; letter-spacing: 1px; }
+.cam-info p { font-size: 10px; color: rgba(100,150,200,0.6); margin-top: 3px; }
+.cam-meta { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(40,80,160,0.15); }
+.cam-tag { font-size: 9px; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 1px; }
+.tag-traffic { background: rgba(255,180,40,0.15); color: #fa0; border: 1px solid rgba(255,180,40,0.3); }
+.tag-nature  { background: rgba(40,200,100,0.15); color: #4d4; border: 1px solid rgba(40,200,100,0.3); }
+.tag-urban   { background: rgba(100,140,255,0.15); color: #88f; border: 1px solid rgba(100,140,255,0.3); }
+.tag-beach   { background: rgba(40,180,220,0.15); color: #4cf; border: 1px solid rgba(40,180,220,0.3); }
+.tag-airport { background: rgba(200,100,255,0.15); color: #c8f; border: 1px solid rgba(200,100,255,0.3); }
+.tag-square  { background: rgba(255,100,100,0.15); color: #f88; border: 1px solid rgba(255,100,100,0.3); }
+.cam-viewers { font-size: 10px; color: rgba(100,150,200,0.5); }
+
+#tooltip {
+  position: absolute; background: rgba(5,10,30,0.92);
+  border: 1px solid rgba(80,160,255,0.4); padding: 6px 12px;
+  border-radius: 6px; font-size: 11px; color: #c8d8f0;
+  pointer-events: none; display: none; z-index: 30;
+}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div id="logo">
+    <h1>🌍 WorldCam</h1>
+    <p>Global Surveillance Network</p>
+  </div>
+  <div class="menu-item active">
+    <div class="menu-icon">🌐</div>
+    <div class="menu-text"><h3>Widok Globu 3D</h3><p>Interaktywna planeta — kliknij kraj</p></div>
+  </div>
+  <div class="menu-item" onclick="openCamPanel('all')">
+    <div class="menu-icon">📹</div>
+    <div class="menu-text"><h3>Kamery Świata</h3><p>Live feeds z całego globu</p></div>
+    <span class="live-badge">LIVE</span>
+  </div>
+  <div class="menu-item" onclick="openCamPanel('traffic')">
+    <div class="menu-icon">🚦</div>
+    <div class="menu-text"><h3>Ruch Drogowy</h3><p>Skrzyżowania i autostrady</p></div>
+    <span class="count-badge">847</span>
+  </div>
+  <div class="menu-item" onclick="openCamPanel('nature')">
+    <div class="menu-icon">🏔</div>
+    <div class="menu-text"><h3>Przyroda & Pogoda</h3><p>Parki, szczyty, oceany</p></div>
+    <span class="count-badge">312</span>
+  </div>
+  <div class="menu-item" onclick="openCamPanel('urban')">
+    <div class="menu-icon">🏙</div>
+    <div class="menu-text"><h3>Miasta & Place</h3><p>Centra, rynki, panoramy</p></div>
+    <span class="count-badge">1.2k</span>
+  </div>
+  <div class="menu-item" onclick="openCamPanel('beach')">
+    <div class="menu-icon">🏖</div>
+    <div class="menu-text"><h3>Plaże & Porty</h3><p>Wybrzeża i mariny</p></div>
+    <span class="count-badge">203</span>
+  </div>
+  <div class="menu-item" onclick="openCamPanel('airport')">
+    <div class="menu-icon">✈</div>
+    <div class="menu-text"><h3>Lotniska & Stacje</h3><p>Hale i wieże kontrolne</p></div>
+    <span class="count-badge">156</span>
+  </div>
+  <div style="flex:1"></div>
+  <div style="padding:12px 20px;border-top:1px solid rgba(40,80,160,0.2);font-size:9px;color:rgba(100,150,200,0.4);letter-spacing:1px;">
+    © 2026 WorldCam v2.0.0
+  </div>
+</div>
+
+<div id="globe-area">
+  <div id="globe-container"></div>
+  <div id="stats-bar">
+    <div class="stat"><div class="stat-val" id="s-cams">2,847</div><div class="stat-lbl">Aktywne kamery</div></div>
+    <div class="stat"><div class="stat-val" id="s-countries">94</div><div class="stat-lbl">Krajów</div></div>
+    <div class="stat"><div class="stat-val" id="s-viewers">18.4k</div><div class="stat-lbl">Widzów online</div></div>
+    <div class="stat"><div class="stat-val" id="s-alerts">3</div><div class="stat-lbl">Alerty</div></div>
+  </div>
+  <div id="tooltip"></div>
+
+  <div id="cam-panel">
+    <div id="cam-header">
+      <h2>📹 Kamery Świata — LIVE</h2>
+      <div id="cam-close" onclick="closeCamPanel()">✕</div>
+    </div>
+    <div id="cam-filters">
+      <button class="filter-btn active" onclick="filterCams('all',this)">Wszystkie</button>
+      <button class="filter-btn" onclick="filterCams('traffic',this)">🚦 Ruch</button>
+      <button class="filter-btn" onclick="filterCams('nature',this)">🏔 Przyroda</button>
+      <button class="filter-btn" onclick="filterCams('urban',this)">🏙 Miasta</button>
+      <button class="filter-btn" onclick="filterCams('beach',this)">🏖 Plaże</button>
+      <button class="filter-btn" onclick="filterCams('airport',this)">✈ Lotniska</button>
+    </div>
+    <div id="cam-grid"></div>
+  </div>
+</div>
+
+<!-- Globe.gl via CDN -->
+<script src="https://unpkg.com/globe.gl@2/dist/globe.gl.min.js"></script>
+<script>
+const cameras = [
+  { id:1,  name:'Times Square, NYC',       loc:'USA',        tag:'urban',   viewers:2841, lat:40.75,  lng:-73.98  },
+  { id:2,  name:'Tower Bridge, London',    loc:'UK',         tag:'urban',   viewers:1203, lat:51.50,  lng:-0.07   },
+  { id:3,  name:'Shibuya Crossing',        loc:'Japonia',    tag:'traffic', viewers:3102, lat:35.65,  lng:139.70  },
+  { id:4,  name:'Eiffel Tower Esplanade',  loc:'Francja',    tag:'square',  viewers:987,  lat:48.85,  lng:2.29    },
+  { id:5,  name:'Bondi Beach',             loc:'Australia',  tag:'beach',   viewers:654,  lat:-33.89, lng:151.27  },
+  { id:6,  name:'Autostrada A1, Warszawa', loc:'Polska',     tag:'traffic', viewers:421,  lat:52.23,  lng:21.01   },
+  { id:7,  name:'Mount Fuji Cam',          loc:'Japonia',    tag:'nature',  viewers:1876, lat:35.36,  lng:138.73  },
+  { id:8,  name:'Niagara Falls',           loc:'Kanada/USA', tag:'nature',  viewers:2340, lat:43.08,  lng:-79.07  },
+  { id:9,  name:'Dubai Marina',            loc:'ZEA',        tag:'urban',   viewers:892,  lat:25.08,  lng:55.14   },
+  { id:10, name:'Copacabana Beach',        loc:'Brazylia',   tag:'beach',   viewers:1102, lat:-22.97, lng:-43.18  },
+  { id:11, name:'CDG Airport Terminal 2',  loc:'Francja',    tag:'airport', viewers:334,  lat:49.01,  lng:2.55    },
+  { id:12, name:'Colosseum, Roma',         loc:'Włochy',     tag:'square',  viewers:763,  lat:41.89,  lng:12.49   },
+  { id:13, name:'Highway 101, LA',         loc:'USA',        tag:'traffic', viewers:1421, lat:34.05,  lng:-118.25 },
+  { id:14, name:'Norwegian Fjord',         loc:'Norwegia',   tag:'nature',  viewers:892,  lat:60.47,  lng:6.00    },
+  { id:15, name:'Bangkok Suvarnabhumi',    loc:'Tajlandia',  tag:'airport', viewers:521,  lat:13.69,  lng:100.75  },
+  { id:16, name:'Sydney Harbour',          loc:'Australia',  tag:'urban',   viewers:1544, lat:-33.85, lng:151.21  },
+];
+
+// --- Build Globe ---
+const container = document.getElementById('globe-container');
+
+const globe = Globe()(container)
+  .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+  .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+  .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+  .showAtmosphere(true)
+  .atmosphereColor('#3a8aff')
+  .atmosphereAltitude(0.18)
+  // Country polygons from GeoJSON
+  .polygonsData([])
+  .polygonCapColor(() => 'rgba(30,60,120,0.35)')
+  .polygonSideColor(() => 'rgba(20,40,100,0.2)')
+  .polygonStrokeColor(() => 'rgba(80,160,255,0.5)')
+  .polygonLabel(({ properties: d }) => `
+    <div style="background:rgba(5,10,30,0.9);border:1px solid rgba(80,160,255,0.4);padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:12px;color:#c8d8f0;">
+      <b style="color:#5bf">${d.ADMIN || d.name}</b>
+    </div>
+  `)
+  // Camera points
+  .pointsData(cameras)
+  .pointLat('lat')
+  .pointLng('lng')
+  .pointColor(() => '#ff4444')
+  .pointAltitude(0.01)
+  .pointRadius(0.4)
+  .pointLabel(d => `
+    <div style="background:rgba(5,10,30,0.9);border:1px solid rgba(80,160,255,0.4);padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:11px;color:#c8d8f0;">
+      📹 <b>${d.name}</b><br>
+      <span style="color:rgba(100,150,200,0.7);font-size:9px">${d.loc} · ${d.viewers.toLocaleString()} widzów</span>
+    </div>
+  `)
+  .onPointClick(d => openCamPanel('all'));
+
+// Load country borders GeoJSON
+fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
+  .then(r => r.json())
+  .then(data => {
+    globe.polygonsData(data.features);
+  })
+  .catch(() => {
+    // fallback: no polygons, globe still works
+  });
+
+// Auto-rotate
+globe.controls().autoRotate = true;
+globe.controls().autoRotateSpeed = 0.5;
+globe.controls().enableDamping = true;
+
+// Resize
+function resizeGlobe() {
+  const area = document.getElementById('globe-area');
+  globe.width(area.offsetWidth).height(area.offsetHeight);
+}
+window.addEventListener('resize', resizeGlobe);
+resizeGlobe();
+
+// Initial camera position
+globe.pointOfView({ lat: 20, lng: 10, altitude: 2.2 });
+
+// --- Camera Panel ---
+const camColors = {
+  traffic:['#1a1200','#2d2100'],
+  nature: ['#001a08','#002d12'],
+  urban:  ['#00081a','#001030'],
+  beach:  ['#001a22','#002d38'],
+  airport:['#100020','#1e0035'],
+  square: ['#1a0008','#2d0012'],
+};
+
+function drawCamPreview(cvs, cam) {
+  const c = cvs.getContext('2d');
+  const W = cvs.width, H = cvs.height;
+  const cols = camColors[cam.tag] || camColors.urban;
+  const grd = c.createLinearGradient(0,0,W,H);
+  grd.addColorStop(0,cols[0]); grd.addColorStop(1,cols[1]);
+  c.fillStyle = grd; c.fillRect(0,0,W,H);
+  const t = Date.now()/1000;
+  if (['traffic','urban','square'].includes(cam.tag)) {
+    for (let i=0;i<8;i++) {
+      const x=((t*(20+i*7)+i*40)%(W+20))-10, y=H*0.5+(i%3-1)*20;
+      c.beginPath(); c.arc(x,y,2,0,Math.PI*2);
+      c.fillStyle=i%2===0?'rgba(255,240,180,0.8)':'rgba(255,80,80,0.8)'; c.fill();
+    }
+    c.fillStyle='rgba(0,0,0,0.4)';
+    for (let i=0;i<6;i++) c.fillRect(i*(W/5),H-40-(i*23)%60,30+(i*17)%40,40+(i*23)%60);
+  } else if (cam.tag==='nature') {
+    c.fillStyle='rgba(40,80,40,0.3)'; c.fillRect(0,H*0.6,W,H*0.4);
+  } else if (cam.tag==='beach') {
+    for (let w=0;w<4;w++) {
+      const wy=H*0.4+w*20+Math.sin(t*0.5+w)*4;
+      c.beginPath(); c.moveTo(0,wy);
+      for (let x=0;x<W;x+=10) c.lineTo(x,wy+Math.sin(x*0.05+t+w)*6);
+      c.lineTo(W,H); c.lineTo(0,H);
+      c.fillStyle=`rgba(0,80,120,${0.2+w*0.05})`; c.fill();
+    }
+  } else if (cam.tag==='airport') {
+    for (let i=0;i<12;i++) {
+      c.beginPath(); c.arc(i*(W/11),H*0.7,3,0,Math.PI*2);
+      c.fillStyle='rgba(255,200,0,0.6)'; c.fill();
+    }
+  }
+  for (let y=0;y<H;y+=3) { c.fillStyle='rgba(0,0,0,0.08)'; c.fillRect(0,y,W,1); }
+  c.font='9px Courier New'; c.fillStyle='rgba(0,255,100,0.7)';
+  c.fillText(new Date().toTimeString().slice(0,8),6,H-8);
+}
+
+function buildCamGrid(filter) {
+  const grid = document.getElementById('cam-grid');
+  const filtered = filter==='all' ? cameras : cameras.filter(c=>c.tag===filter);
+  grid.innerHTML = '';
+  const tagLabels = {traffic:'Ruch',nature:'Przyroda',urban:'Miasto',beach:'Plaża',airport:'Lotnisko',square:'Plac'};
+  for (const cam of filtered) {
+    const card = document.createElement('div');
+    card.className = 'cam-card';
+    card.innerHTML = `
+      <div class="cam-preview">
+        <canvas width="280" height="160"></canvas>
+        <div class="cam-status"><div class="dot-live"></div><span style="color:#f66;font-size:9px">LIVE</span></div>
+      </div>
+      <div class="cam-info">
+        <h4>${cam.name}</h4><p>${cam.loc}</p>
+        <div class="cam-meta">
+          <span class="cam-tag tag-${cam.tag}">${tagLabels[cam.tag]}</span>
+          <span class="cam-viewers">👁 ${cam.viewers.toLocaleString()}</span>
+        </div>
+      </div>`;
+    const cvs = card.querySelector('canvas');
+    drawCamPreview(cvs, cam);
+    setInterval(() => drawCamPreview(cvs, cam), 1000);
+    grid.appendChild(card);
+  }
+}
+
+function openCamPanel(filter) {
+  document.getElementById('cam-panel').classList.add('open');
+  buildCamGrid(filter);
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.filter-btn').classList.add('active');
+}
+function closeCamPanel() { document.getElementById('cam-panel').classList.remove('open'); }
+function filterCams(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildCamGrid(filter);
+}
+
+// Stats animation
+setInterval(() => {
+  document.getElementById('s-cams').textContent = (2847+Math.floor(Math.random()*10-4)).toLocaleString();
+  document.getElementById('s-viewers').textContent = ((18400+Math.floor(Math.random()*200-100))/1000).toFixed(1)+'k';
+}, 3000);
+</script>
+</body>
+</html>
