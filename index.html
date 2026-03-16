@@ -2,394 +2,694 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>WorldCam — Global Surveillance Network</title>
+<title>Data Center — Global Surveillance Network</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f0; overflow: hidden; height: 100vh; display: flex; }
-
-#sidebar {
-  width: 300px; min-width: 300px;
-  background: rgba(5,10,20,0.96);
-  border-right: 1px solid rgba(40,80,160,0.3);
-  display: flex; flex-direction: column;
-  z-index: 10;
-}
-
-#logo { padding: 18px 20px 14px; border-bottom: 1px solid rgba(40,80,160,0.2); }
-#logo h1 { font-size: 20px; font-weight: 700; letter-spacing: 2px; color: #5bf; text-transform: uppercase; }
-#logo p { font-size: 10px; color: rgba(100,160,220,0.6); letter-spacing: 3px; margin-top: 2px; text-transform: uppercase; }
-
-.menu-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 20px;
-  border-bottom: 1px solid rgba(40,80,160,0.15);
-  cursor: pointer; transition: background 0.15s; position: relative;
-}
-.menu-item:hover { background: rgba(40,100,200,0.1); }
-.menu-item.active { background: rgba(40,100,200,0.18); border-left: 2px solid #5bf; }
-
-.menu-icon {
-  width: 36px; height: 36px;
-  background: rgba(30,60,120,0.5);
-  border: 1px solid rgba(40,80,160,0.4);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; flex-shrink: 0;
-}
-.menu-text h3 { font-size: 13px; color: #c8d8f0; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-.menu-text p { font-size: 10px; color: rgba(100,150,200,0.7); margin-top: 2px; }
-
-.live-badge {
-  position: absolute; right: 16px;
-  background: rgba(255,60,60,0.15); border: 1px solid rgba(255,60,60,0.4);
-  color: #f66; font-size: 9px; letter-spacing: 2px; padding: 2px 6px;
-  border-radius: 3px; text-transform: uppercase;
-}
-.count-badge {
-  position: absolute; right: 16px;
-  background: rgba(40,100,200,0.2); border: 1px solid rgba(40,100,200,0.4);
-  color: #5bf; font-size: 10px; padding: 2px 8px; border-radius: 10px;
-}
-
-#globe-area { flex: 1; position: relative; overflow: hidden; }
-#globe-container { width: 100%; height: 100%; }
+body { background: #050a14; font-family: 'Courier New', monospace; color: #c8d8f0; overflow: hidden; height: 100vh; }
+#globe-container { width: 100vw; height: 100vh; }
 
 #stats-bar {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  background: rgba(5,10,20,0.85);
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(5,10,20,0.80);
   border-top: 1px solid rgba(40,80,160,0.3);
-  display: flex; padding: 8px 20px; gap: 32px;
-  backdrop-filter: blur(4px);
+  display: flex; padding: 8px 28px; gap: 36px;
+  backdrop-filter: blur(6px); z-index: 10;
 }
 .stat { display: flex; flex-direction: column; gap: 1px; }
 .stat-val { font-size: 16px; color: #5bf; font-weight: 700; letter-spacing: 1px; }
 .stat-lbl { font-size: 9px; color: rgba(100,150,200,0.5); letter-spacing: 2px; text-transform: uppercase; }
 
-/* CAMERA PANEL */
-#cam-panel {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(5,10,20,0.97);
-  display: none; flex-direction: column; z-index: 20;
+#logo {
+  position: fixed; top: 18px; left: 24px; z-index: 10;
 }
-#cam-panel.open { display: flex; }
+#logo h1 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #5bf;
+  text-transform: uppercase;
+}
+#logo p  { font-size: 10px; color: rgba(100,160,220,0.5); letter-spacing: 3px; margin-top: 2px; text-transform: uppercase; }
 
-#cam-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 24px; border-bottom: 1px solid rgba(40,80,160,0.3);
-}
-#cam-header h2 { font-size: 14px; color: #5bf; letter-spacing: 3px; text-transform: uppercase; }
-#cam-close {
-  width: 32px; height: 32px; background: rgba(40,80,160,0.2);
-  border: 1px solid rgba(40,80,160,0.4); color: #5bf; cursor: pointer;
-  border-radius: 6px; font-size: 16px;
-  display: flex; align-items: center; justify-content: center;
-}
-#cam-close:hover { background: rgba(40,80,160,0.4); }
-
-#cam-filters {
-  display: flex; gap: 8px; padding: 12px 24px;
-  border-bottom: 1px solid rgba(40,80,160,0.15); flex-wrap: wrap;
-}
-.filter-btn {
-  padding: 5px 12px; background: rgba(20,40,80,0.5);
-  border: 1px solid rgba(40,80,160,0.3); color: rgba(100,150,200,0.8);
-  font-family: 'Courier New', monospace; font-size: 10px;
-  letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
-  border-radius: 4px; transition: all 0.15s;
-}
-.filter-btn:hover, .filter-btn.active {
-  background: rgba(40,100,200,0.25); border-color: rgba(80,160,255,0.5); color: #5bf;
+#selected-country-name {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 6px 12px;
+  border: 1px solid rgba(115, 190, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(8, 18, 32, 0.62);
+  color: rgba(225, 241, 255, 0.9);
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  text-transform: none;
 }
 
-#cam-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px; padding: 16px 24px; overflow-y: auto; flex: 1;
+#layer-panel {
+  position: fixed; top: 92px; left: 24px; z-index: 10;
+  display: grid; gap: 12px;
+  width: min(280px, calc(100vw - 48px));
 }
-.cam-card {
-  background: rgba(10,20,40,0.8); border: 1px solid rgba(40,80,160,0.3);
-  border-radius: 8px; overflow: hidden; cursor: pointer; transition: border-color 0.15s;
-}
-.cam-card:hover { border-color: rgba(80,160,255,0.6); }
-.cam-preview { width: 100%; height: 160px; position: relative; overflow: hidden; }
-.cam-preview canvas { width: 100%; height: 100%; }
-.cam-status {
-  position: absolute; top: 8px; right: 8px;
-  display: flex; align-items: center; gap: 4px;
-  background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 3px;
-}
-.dot-live { width: 6px; height: 6px; border-radius: 50%; background: #f44; animation: blink 1s infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-.cam-info { padding: 10px 12px; }
-.cam-info h4 { font-size: 12px; color: #c8d8f0; letter-spacing: 1px; }
-.cam-info p { font-size: 10px; color: rgba(100,150,200,0.6); margin-top: 3px; }
-.cam-meta { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(40,80,160,0.15); }
-.cam-tag { font-size: 9px; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 1px; }
-.tag-traffic { background: rgba(255,180,40,0.15); color: #fa0; border: 1px solid rgba(255,180,40,0.3); }
-.tag-nature  { background: rgba(40,200,100,0.15); color: #4d4; border: 1px solid rgba(40,200,100,0.3); }
-.tag-urban   { background: rgba(100,140,255,0.15); color: #88f; border: 1px solid rgba(100,140,255,0.3); }
-.tag-beach   { background: rgba(40,180,220,0.15); color: #4cf; border: 1px solid rgba(40,180,220,0.3); }
-.tag-airport { background: rgba(200,100,255,0.15); color: #c8f; border: 1px solid rgba(200,100,255,0.3); }
-.tag-square  { background: rgba(255,100,100,0.15); color: #f88; border: 1px solid rgba(255,100,100,0.3); }
-.cam-viewers { font-size: 10px; color: rgba(100,150,200,0.5); }
+.layer-tile {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(120, 180, 255, 0.24);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(11, 20, 36, 0.72), rgba(18, 39, 74, 0.34));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(14px);
+  color: #dcecff;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, opacity 0.25s ease;
+}
 
-#tooltip {
-  position: absolute; background: rgba(5,10,30,0.92);
-  border: 1px solid rgba(80,160,255,0.4); padding: 6px 12px;
-  border-radius: 6px; font-size: 11px; color: #c8d8f0;
-  pointer-events: none; display: none; z-index: 30;
+.layer-tile:hover {
+  transform: translateX(4px);
+  border-color: rgba(120, 190, 255, 0.5);
+}
+
+.layer-tile.is-off {
+  opacity: 0.58;
+  background: linear-gradient(135deg, rgba(8, 14, 24, 0.5), rgba(10, 22, 40, 0.24));
+}
+
+.tile-emoji {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 22px;
+}
+
+.tile-copy {
+  display: grid;
+  gap: 3px;
+  text-align: left;
+}
+
+.tile-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.tile-meta {
+  font-size: 10px;
+  color: rgba(185, 214, 255, 0.68);
+  letter-spacing: 1.2px;
+}
+
+.tile-state {
+  min-width: 52px;
+  padding: 7px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.layer-tile[data-layer="camera"] .tile-emoji { box-shadow: inset 0 0 0 1px rgba(255, 122, 89, 0.25); }
+.layer-tile[data-layer="capital"] .tile-emoji { box-shadow: inset 0 0 0 1px rgba(0, 255, 136, 0.25); }
+.layer-tile[data-layer="city"] .tile-emoji { box-shadow: inset 0 0 0 1px rgba(255, 95, 95, 0.25); }
+
+.globe-emoji {
+  font-size: 16.8px;
+  line-height: 1;
+  filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.35));
+  transform: translate(-50%, -50%) scale(var(--emoji-scale, 1));
+  transform-origin: center;
+  opacity: var(--emoji-opacity, 1);
+  user-select: none;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 760px) {
+  #logo { left: 16px; top: 14px; }
+  #layer-panel {
+    top: auto;
+    bottom: 78px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+
+  .layer-tile {
+    padding: 12px 14px;
+    grid-template-columns: auto 1fr auto;
+  }
+
+  #stats-bar {
+    padding: 8px 14px;
+    gap: 18px;
+    overflow-x: auto;
+  }
 }
 </style>
 </head>
 <body>
 
-<div id="sidebar">
-  <div id="logo">
-    <h1>🌍 WorldCam</h1>
-    <p>Global Surveillance Network</p>
-  </div>
-  <div class="menu-item active">
-    <div class="menu-icon">🌐</div>
-    <div class="menu-text"><h3>Widok Globu 3D</h3><p>Interaktywna planeta — kliknij kraj</p></div>
-  </div>
-  <div class="menu-item" onclick="openCamPanel('all')">
-    <div class="menu-icon">📹</div>
-    <div class="menu-text"><h3>Kamery Świata</h3><p>Live feeds z całego globu</p></div>
-    <span class="live-badge">LIVE</span>
-  </div>
-  <div class="menu-item" onclick="openCamPanel('traffic')">
-    <div class="menu-icon">🚦</div>
-    <div class="menu-text"><h3>Ruch Drogowy</h3><p>Skrzyżowania i autostrady</p></div>
-    <span class="count-badge">847</span>
-  </div>
-  <div class="menu-item" onclick="openCamPanel('nature')">
-    <div class="menu-icon">🏔</div>
-    <div class="menu-text"><h3>Przyroda & Pogoda</h3><p>Parki, szczyty, oceany</p></div>
-    <span class="count-badge">312</span>
-  </div>
-  <div class="menu-item" onclick="openCamPanel('urban')">
-    <div class="menu-icon">🏙</div>
-    <div class="menu-text"><h3>Miasta & Place</h3><p>Centra, rynki, panoramy</p></div>
-    <span class="count-badge">1.2k</span>
-  </div>
-  <div class="menu-item" onclick="openCamPanel('beach')">
-    <div class="menu-icon">🏖</div>
-    <div class="menu-text"><h3>Plaże & Porty</h3><p>Wybrzeża i mariny</p></div>
-    <span class="count-badge">203</span>
-  </div>
-  <div class="menu-item" onclick="openCamPanel('airport')">
-    <div class="menu-icon">✈</div>
-    <div class="menu-text"><h3>Lotniska & Stacje</h3><p>Hale i wieże kontrolne</p></div>
-    <span class="count-badge">156</span>
-  </div>
-  <div style="flex:1"></div>
-  <div style="padding:12px 20px;border-top:1px solid rgba(40,80,160,0.2);font-size:9px;color:rgba(100,150,200,0.4);letter-spacing:1px;">
-    © 2026 WorldCam v2.0.0
-  </div>
+<div id="logo">
+  <h1>🌍 Data Center <span id="selected-country-name">Kliknij kraj</span></h1>
+  <p>Global Surveillance Network</p>
 </div>
 
-<div id="globe-area">
-  <div id="globe-container"></div>
-  <div id="stats-bar">
-    <div class="stat"><div class="stat-val" id="s-cams">2,847</div><div class="stat-lbl">Aktywne kamery</div></div>
-    <div class="stat"><div class="stat-val" id="s-countries">94</div><div class="stat-lbl">Krajów</div></div>
-    <div class="stat"><div class="stat-val" id="s-viewers">18.4k</div><div class="stat-lbl">Widzów online</div></div>
-    <div class="stat"><div class="stat-val" id="s-alerts">3</div><div class="stat-lbl">Alerty</div></div>
-  </div>
-  <div id="tooltip"></div>
-
-  <div id="cam-panel">
-    <div id="cam-header">
-      <h2>📹 Kamery Świata — LIVE</h2>
-      <div id="cam-close" onclick="closeCamPanel()">✕</div>
-    </div>
-    <div id="cam-filters">
-      <button class="filter-btn active" onclick="filterCams('all',this)">Wszystkie</button>
-      <button class="filter-btn" onclick="filterCams('traffic',this)">🚦 Ruch</button>
-      <button class="filter-btn" onclick="filterCams('nature',this)">🏔 Przyroda</button>
-      <button class="filter-btn" onclick="filterCams('urban',this)">🏙 Miasta</button>
-      <button class="filter-btn" onclick="filterCams('beach',this)">🏖 Plaże</button>
-      <button class="filter-btn" onclick="filterCams('airport',this)">✈ Lotniska</button>
-    </div>
-    <div id="cam-grid"></div>
-  </div>
+<div id="layer-panel">
+  <button class="layer-tile is-on" data-layer="camera" type="button" aria-pressed="true">
+    <span class="tile-emoji">📹</span>
+    <span class="tile-copy">
+      <span class="tile-title">Camera</span>
+      <span class="tile-meta">Warstwa kamer live</span>
+    </span>
+    <span class="tile-state">ON</span>
+  </button>
+  <button class="layer-tile is-on" data-layer="capital" type="button" aria-pressed="true">
+    <span class="tile-emoji">🏛️</span>
+    <span class="tile-copy">
+      <span class="tile-title">Capital</span>
+      <span class="tile-meta">Stolice i centra państwowe</span>
+    </span>
+    <span class="tile-state">ON</span>
+  </button>
+  <button class="layer-tile is-on" data-layer="city" type="button" aria-pressed="true">
+    <span class="tile-emoji">🏙️</span>
+    <span class="tile-copy">
+      <span class="tile-title">City</span>
+      <span class="tile-meta">Największe aglomeracje</span>
+    </span>
+    <span class="tile-state">ON</span>
+  </button>
 </div>
 
-<!-- Globe.gl via CDN -->
+<div id="globe-container"></div>
+
+<div id="stats-bar">
+  <div class="stat"><div class="stat-val" id="s-capitals">0</div><div class="stat-lbl">Stolice</div></div>
+  <div class="stat"><div class="stat-val" id="s-cities">0</div><div class="stat-lbl">Miasta</div></div>
+  <div class="stat"><div class="stat-val" id="s-cams">0</div><div class="stat-lbl">Kamery</div></div>
+  <div class="stat"><div class="stat-val" id="s-total">0</div><div class="stat-lbl">Punkty łącznie</div></div>
+</div>
+
 <script src="https://unpkg.com/globe.gl@2/dist/globe.gl.min.js"></script>
 <script>
-const cameras = [
-  { id:1,  name:'Times Square, NYC',       loc:'USA',        tag:'urban',   viewers:2841, lat:40.75,  lng:-73.98  },
-  { id:2,  name:'Tower Bridge, London',    loc:'UK',         tag:'urban',   viewers:1203, lat:51.50,  lng:-0.07   },
-  { id:3,  name:'Shibuya Crossing',        loc:'Japonia',    tag:'traffic', viewers:3102, lat:35.65,  lng:139.70  },
-  { id:4,  name:'Eiffel Tower Esplanade',  loc:'Francja',    tag:'square',  viewers:987,  lat:48.85,  lng:2.29    },
-  { id:5,  name:'Bondi Beach',             loc:'Australia',  tag:'beach',   viewers:654,  lat:-33.89, lng:151.27  },
-  { id:6,  name:'Autostrada A1, Warszawa', loc:'Polska',     tag:'traffic', viewers:421,  lat:52.23,  lng:21.01   },
-  { id:7,  name:'Mount Fuji Cam',          loc:'Japonia',    tag:'nature',  viewers:1876, lat:35.36,  lng:138.73  },
-  { id:8,  name:'Niagara Falls',           loc:'Kanada/USA', tag:'nature',  viewers:2340, lat:43.08,  lng:-79.07  },
-  { id:9,  name:'Dubai Marina',            loc:'ZEA',        tag:'urban',   viewers:892,  lat:25.08,  lng:55.14   },
-  { id:10, name:'Copacabana Beach',        loc:'Brazylia',   tag:'beach',   viewers:1102, lat:-22.97, lng:-43.18  },
-  { id:11, name:'CDG Airport Terminal 2',  loc:'Francja',    tag:'airport', viewers:334,  lat:49.01,  lng:2.55    },
-  { id:12, name:'Colosseum, Roma',         loc:'Włochy',     tag:'square',  viewers:763,  lat:41.89,  lng:12.49   },
-  { id:13, name:'Highway 101, LA',         loc:'USA',        tag:'traffic', viewers:1421, lat:34.05,  lng:-118.25 },
-  { id:14, name:'Norwegian Fjord',         loc:'Norwegia',   tag:'nature',  viewers:892,  lat:60.47,  lng:6.00    },
-  { id:15, name:'Bangkok Suvarnabhumi',    loc:'Tajlandia',  tag:'airport', viewers:521,  lat:13.69,  lng:100.75  },
-  { id:16, name:'Sydney Harbour',          loc:'Australia',  tag:'urban',   viewers:1544, lat:-33.85, lng:151.21  },
+
+const capitals = [
+  { name:'Warszawa',     country:'Polska',         lat:52.23,  lng:21.01,  type:'capital' },
+  { name:'Berlin',       country:'Niemcy',          lat:52.52,  lng:13.40,  type:'capital' },
+  { name:'Paryż',        country:'Francja',         lat:48.85,  lng:2.35,   type:'capital' },
+  { name:'Londyn',       country:'Wielka Brytania', lat:51.51,  lng:-0.13,  type:'capital' },
+  { name:'Madryt',       country:'Hiszpania',       lat:40.42,  lng:-3.70,  type:'capital' },
+  { name:'Rzym',         country:'Włochy',          lat:41.90,  lng:12.50,  type:'capital' },
+  { name:'Moskwa',       country:'Rosja',           lat:55.75,  lng:37.62,  type:'capital' },
+  { name:'Kijów',        country:'Ukraina',         lat:50.45,  lng:30.52,  type:'capital' },
+  { name:'Sztokholm',    country:'Szwecja',         lat:59.33,  lng:18.07,  type:'capital' },
+  { name:'Oslo',         country:'Norwegia',        lat:59.91,  lng:10.75,  type:'capital' },
+  { name:'Helsinki',     country:'Finlandia',       lat:60.17,  lng:24.94,  type:'capital' },
+  { name:'Kopenhaga',    country:'Dania',           lat:55.68,  lng:12.57,  type:'capital' },
+  { name:'Amsterdam',    country:'Holandia',        lat:52.37,  lng:4.90,   type:'capital' },
+  { name:'Bruksela',     country:'Belgia',          lat:50.85,  lng:4.35,   type:'capital' },
+  { name:'Wiedeń',       country:'Austria',         lat:48.21,  lng:16.37,  type:'capital' },
+  { name:'Praga',        country:'Czechy',          lat:50.08,  lng:14.44,  type:'capital' },
+  { name:'Budapeszt',    country:'Węgry',           lat:47.50,  lng:19.04,  type:'capital' },
+  { name:'Bukareszt',    country:'Rumunia',         lat:44.43,  lng:26.10,  type:'capital' },
+  { name:'Ateny',        country:'Grecja',          lat:37.98,  lng:23.73,  type:'capital' },
+  { name:'Lizbona',      country:'Portugalia',      lat:38.72,  lng:-9.14,  type:'capital' },
+  { name:'Waszyngton',   country:'USA',             lat:38.91,  lng:-77.04, type:'capital' },
+  { name:'Ottawa',       country:'Kanada',          lat:45.42,  lng:-75.69, type:'capital' },
+  { name:'Meksyk',       country:'Meksyk',          lat:19.43,  lng:-99.13, type:'capital' },
+  { name:'Brasília',     country:'Brazylia',        lat:-15.78, lng:-47.93, type:'capital' },
+  { name:'Buenos Aires', country:'Argentyna',       lat:-34.61, lng:-58.38, type:'capital' },
+  { name:'Bogota',       country:'Kolumbia',        lat:4.71,   lng:-74.07, type:'capital' },
+  { name:'Lima',         country:'Peru',            lat:-12.05, lng:-77.04, type:'capital' },
+  { name:'Santiago',     country:'Chile',           lat:-33.46, lng:-70.65, type:'capital' },
+  { name:'Kair',         country:'Egipt',           lat:30.06,  lng:31.25,  type:'capital' },
+  { name:'Nairobi',      country:'Kenia',           lat:-1.29,  lng:36.82,  type:'capital' },
+  { name:'Lagos',        country:'Nigeria',         lat:6.45,   lng:3.40,   type:'capital' },
+  { name:'Kapsztad',     country:'RPA',             lat:-33.93, lng:18.42,  type:'capital' },
+  { name:'Addis Abeba',  country:'Etiopia',         lat:9.03,   lng:38.74,  type:'capital' },
+  { name:'Akra',         country:'Ghana',           lat:5.56,   lng:-0.20,  type:'capital' },
+  { name:'Pekin',        country:'Chiny',           lat:39.91,  lng:116.39, type:'capital' },
+  { name:'Tokio',        country:'Japonia',         lat:35.69,  lng:139.69, type:'capital' },
+  { name:'Seul',         country:'Korea Płd.',      lat:37.57,  lng:126.98, type:'capital' },
+  { name:'New Delhi',    country:'Indie',           lat:28.61,  lng:77.21,  type:'capital' },
+  { name:'Islamabad',    country:'Pakistan',        lat:33.72,  lng:73.06,  type:'capital' },
+  { name:'Teheran',      country:'Iran',            lat:35.69,  lng:51.42,  type:'capital' },
+  { name:'Bagdad',       country:'Irak',            lat:33.34,  lng:44.40,  type:'capital' },
+  { name:'Rijad',        country:'Arabia Saudyjska',lat:24.69,  lng:46.72,  type:'capital' },
+  { name:'Ankara',       country:'Turcja',          lat:39.93,  lng:32.85,  type:'capital' },
+  { name:'Tel Awiw',     country:'Izrael',          lat:32.08,  lng:34.78,  type:'capital' },
+  { name:'Bangkok',      country:'Tajlandia',       lat:13.75,  lng:100.52, type:'capital' },
+  { name:'Dżakarta',     country:'Indonezja',       lat:-6.21,  lng:106.85, type:'capital' },
+  { name:'Kuala Lumpur', country:'Malezja',         lat:3.14,   lng:101.69, type:'capital' },
+  { name:'Manila',       country:'Filipiny',        lat:14.60,  lng:120.98, type:'capital' },
+  { name:'Hanoi',        country:'Wietnam',         lat:21.03,  lng:105.85, type:'capital' },
+  { name:'Singapur',     country:'Singapur',        lat:1.35,   lng:103.82, type:'capital' },
+  { name:'Canberra',     country:'Australia',       lat:-35.28, lng:149.13, type:'capital' },
+  { name:'Wellington',   country:'Nowa Zelandia',   lat:-41.29, lng:174.78, type:'capital' },
 ];
 
-// --- Build Globe ---
-const container = document.getElementById('globe-container');
+const bigCities = [
+  { name:'Nowy Jork',    country:'USA',       lat:40.71,  lng:-74.01, type:'city', pop:'8.3M' },
+  { name:'Los Angeles',  country:'USA',       lat:34.05,  lng:-118.24,type:'city', pop:'4.0M' },
+  { name:'Chicago',      country:'USA',       lat:41.88,  lng:-87.63, type:'city', pop:'2.7M' },
+  { name:'Toronto',      country:'Kanada',    lat:43.65,  lng:-79.38, type:'city', pop:'2.9M' },
+  { name:'São Paulo',    country:'Brazylia',  lat:-23.55, lng:-46.63, type:'city', pop:'12.3M' },
+  { name:'Rio de Janeiro',country:'Brazylia', lat:-22.91, lng:-43.17, type:'city', pop:'6.7M' },
+  { name:'Hamburg',      country:'Niemcy',    lat:53.55,  lng:9.99,   type:'city', pop:'1.8M' },
+  { name:'Monachium',    country:'Niemcy',    lat:48.14,  lng:11.58,  type:'city', pop:'1.5M' },
+  { name:'Barcelona',    country:'Hiszpania', lat:41.39,  lng:2.15,   type:'city', pop:'1.6M' },
+  { name:'Mediolan',     country:'Włochy',    lat:45.46,  lng:9.19,   type:'city', pop:'1.4M' },
+  { name:'Manchester',   country:'UK',        lat:53.48,  lng:-2.24,  type:'city', pop:'553K' },
+  { name:'Sankt Petersburg',country:'Rosja',  lat:59.95,  lng:30.32,  type:'city', pop:'5.4M' },
+  { name:'Istanbul',     country:'Turcja',    lat:41.01,  lng:28.95,  type:'city', pop:'15.5M' },
+  { name:'Lagos',        country:'Nigeria',   lat:6.52,   lng:3.38,   type:'city', pop:'14.8M' },
+  { name:'Kinszasa',     country:'DRK',       lat:-4.32,  lng:15.32,  type:'city', pop:'14.3M' },
+  { name:'Johannesburg', country:'RPA',       lat:-26.20, lng:28.04,  type:'city', pop:'5.6M' },
+  { name:'Kalkuta',      country:'Indie',     lat:22.57,  lng:88.36,  type:'city', pop:'14.9M' },
+  { name:'Bombaj',       country:'Indie',     lat:19.08,  lng:72.88,  type:'city', pop:'20.7M' },
+  { name:'Bangalore',    country:'Indie',     lat:12.97,  lng:77.59,  type:'city', pop:'12.5M' },
+  { name:'Szanghaj',     country:'Chiny',     lat:31.23,  lng:121.47, type:'city', pop:'24.1M' },
+  { name:'Guangzhou',    country:'Chiny',     lat:23.13,  lng:113.26, type:'city', pop:'16.1M' },
+  { name:'Shenzhen',     country:'Chiny',     lat:22.54,  lng:114.06, type:'city', pop:'13.4M' },
+  { name:'Osaka',        country:'Japonia',   lat:34.69,  lng:135.50, type:'city', pop:'2.7M' },
+  { name:'Karachi',      country:'Pakistan',  lat:24.86,  lng:67.01,  type:'city', pop:'14.9M' },
+  { name:'Dhaka',        country:'Bangladesz',lat:23.72,  lng:90.41,  type:'city', pop:'21.0M' },
+  { name:'Ho Chi Minh',  country:'Wietnam',   lat:10.82,  lng:106.63, type:'city', pop:'8.9M' },
+  { name:'Chongqing',    country:'Chiny',     lat:29.56,  lng:106.55, type:'city', pop:'8.8M' },
+  { name:'Meksyk',       country:'Meksyk',    lat:19.43,  lng:-99.13, type:'city', pop:'9.2M' },
+  { name:'Sydney',       country:'Australia', lat:-33.87, lng:151.21, type:'city', pop:'5.3M' },
+  { name:'Melbourne',    country:'Australia', lat:-37.81, lng:144.96, type:'city', pop:'5.1M' },
+  { name:'Dubaj',        country:'ZEA',       lat:25.20,  lng:55.27,  type:'city', pop:'3.5M' },
+  { name:'Casablanca',   country:'Maroko',    lat:33.59,  lng:-7.62,  type:'city', pop:'3.7M' },
+  { name:'Aleksandria',  country:'Egipt',     lat:31.20,  lng:29.92,  type:'city', pop:'5.2M' },
+  { name:'Kraków',       country:'Polska',    lat:50.06,  lng:19.94,  type:'city', pop:'780K' },
+  { name:'Wrocław',      country:'Polska',    lat:51.11,  lng:17.04,  type:'city', pop:'640K' },
+];
 
-const globe = Globe()(container)
+const liveCameras = [
+  { name:'London CCTV Grid', country:'Wielka Brytania', lat:51.50, lng:-0.11, type:'camera', viewers:'1.4k', status:'LIVE' },
+  { name:'Berlin Traffic Cam', country:'Niemcy', lat:52.51, lng:13.37, type:'camera', viewers:'920', status:'LIVE' },
+  { name:'Paris Metro Hub', country:'Francja', lat:48.86, lng:2.34, type:'camera', viewers:'1.1k', status:'LIVE' },
+  { name:'Warsaw Center Cam', country:'Polska', lat:52.22, lng:21.02, type:'camera', viewers:'860', status:'LIVE' },
+  { name:'Tokyo Crossing Feed', country:'Japonia', lat:35.66, lng:139.70, type:'camera', viewers:'3.2k', status:'LIVE' },
+  { name:'Seoul Skyline Cam', country:'Korea Płd.', lat:37.56, lng:126.97, type:'camera', viewers:'1.6k', status:'LIVE' },
+  { name:'Singapore Port Cam', country:'Singapur', lat:1.29, lng:103.85, type:'camera', viewers:'2.3k', status:'LIVE' },
+  { name:'Dubai Marina Feed', country:'ZEA', lat:25.08, lng:55.14, type:'camera', viewers:'1.7k', status:'LIVE' },
+  { name:'Sydney Harbour Cam', country:'Australia', lat:-33.86, lng:151.21, type:'camera', viewers:'1.3k', status:'LIVE' },
+  { name:'New York Street Cam', country:'USA', lat:40.72, lng:-74.00, type:'camera', viewers:'2.9k', status:'LIVE' },
+  { name:'Toronto Union Cam', country:'Kanada', lat:43.64, lng:-79.38, type:'camera', viewers:'760', status:'LIVE' },
+  { name:'Sao Paulo Avenue Cam', country:'Brazylia', lat:-23.56, lng:-46.65, type:'camera', viewers:'1.2k', status:'LIVE' },
+  { name:'Cape Town Bay Cam', country:'RPA', lat:-33.92, lng:18.41, type:'camera', viewers:'680', status:'LIVE' },
+  { name:'Nairobi Junction Cam', country:'Kenia', lat:-1.28, lng:36.82, type:'camera', viewers:'540', status:'LIVE' },
+  { name:'Mumbai Rail Cam', country:'Indie', lat:19.07, lng:72.88, type:'camera', viewers:'1.8k', status:'LIVE' },
+  { name:'Shanghai Tower Cam', country:'Chiny', lat:31.23, lng:121.49, type:'camera', viewers:'2.6k', status:'LIVE' },
+  { name:'Mexico City Plaza Cam', country:'Meksyk', lat:19.43, lng:-99.14, type:'camera', viewers:'970', status:'LIVE' },
+  { name:'Istanbul Bosphorus Cam', country:'Turcja', lat:41.04, lng:29.00, type:'camera', viewers:'1.5k', status:'LIVE' },
+];
+
+const layerState = {
+  camera: true,
+  capital: true,
+  city: true,
+};
+
+const selectedCountryNameElement = document.getElementById('selected-country-name');
+const countryStatsElements = {
+  capitals: document.getElementById('s-capitals'),
+  cities: document.getElementById('s-cities'),
+  cameras: document.getElementById('s-cams'),
+  total: document.getElementById('s-total'),
+};
+
+const countryAliasEntries = [
+  ['poland', 'Polska'],
+  ['germany', 'Niemcy'],
+  ['france', 'Francja'],
+  ['united kingdom', 'Wielka Brytania'],
+  ['uk', 'Wielka Brytania'],
+  ['spain', 'Hiszpania'],
+  ['italy', 'Włochy'],
+  ['russia', 'Rosja'],
+  ['russian federation', 'Rosja'],
+  ['ukraine', 'Ukraina'],
+  ['sweden', 'Szwecja'],
+  ['norway', 'Norwegia'],
+  ['finland', 'Finlandia'],
+  ['denmark', 'Dania'],
+  ['netherlands', 'Holandia'],
+  ['belgium', 'Belgia'],
+  ['austria', 'Austria'],
+  ['czechia', 'Czechy'],
+  ['czech republic', 'Czechy'],
+  ['hungary', 'Węgry'],
+  ['romania', 'Rumunia'],
+  ['greece', 'Grecja'],
+  ['portugal', 'Portugalia'],
+  ['united states of america', 'USA'],
+  ['united states', 'USA'],
+  ['usa', 'USA'],
+  ['canada', 'Kanada'],
+  ['mexico', 'Meksyk'],
+  ['brazil', 'Brazylia'],
+  ['argentina', 'Argentyna'],
+  ['colombia', 'Kolumbia'],
+  ['peru', 'Peru'],
+  ['chile', 'Chile'],
+  ['egypt', 'Egipt'],
+  ['kenya', 'Kenia'],
+  ['nigeria', 'Nigeria'],
+  ['south africa', 'RPA'],
+  ['rpa', 'RPA'],
+  ['ethiopia', 'Etiopia'],
+  ['ghana', 'Ghana'],
+  ['china', 'Chiny'],
+  ['japan', 'Japonia'],
+  ['south korea', 'Korea Płd.'],
+  ['republic of korea', 'Korea Płd.'],
+  ['korea republic of', 'Korea Płd.'],
+  ['korea pld', 'Korea Płd.'],
+  ['india', 'Indie'],
+  ['pakistan', 'Pakistan'],
+  ['iran', 'Iran'],
+  ['iraq', 'Irak'],
+  ['saudi arabia', 'Arabia Saudyjska'],
+  ['turkey', 'Turcja'],
+  ['israel', 'Izrael'],
+  ['thailand', 'Tajlandia'],
+  ['indonesia', 'Indonezja'],
+  ['malaysia', 'Malezja'],
+  ['philippines', 'Filipiny'],
+  ['vietnam', 'Wietnam'],
+  ['singapore', 'Singapur'],
+  ['australia', 'Australia'],
+  ['new zealand', 'Nowa Zelandia'],
+  ['bangladesh', 'Bangladesz'],
+  ['morocco', 'Maroko'],
+  ['united arab emirates', 'ZEA'],
+  ['zea', 'ZEA'],
+  ['democratic republic of the congo', 'DRK'],
+  ['drk', 'DRK'],
+  ['polska', 'Polska'],
+  ['niemcy', 'Niemcy'],
+  ['francja', 'Francja'],
+  ['wielka brytania', 'Wielka Brytania'],
+  ['hiszpania', 'Hiszpania'],
+  ['wlochy', 'Włochy'],
+  ['rosja', 'Rosja'],
+  ['ukraina', 'Ukraina'],
+  ['szwecja', 'Szwecja'],
+  ['norwegia', 'Norwegia'],
+  ['finlandia', 'Finlandia'],
+  ['dania', 'Dania'],
+  ['holandia', 'Holandia'],
+  ['belgia', 'Belgia'],
+  ['austria', 'Austria'],
+  ['czechy', 'Czechy'],
+  ['wegry', 'Węgry'],
+  ['rumunia', 'Rumunia'],
+  ['grecja', 'Grecja'],
+  ['portugalia', 'Portugalia'],
+  ['kanada', 'Kanada'],
+  ['meksyk', 'Meksyk'],
+  ['brazylia', 'Brazylia'],
+  ['argentyna', 'Argentyna'],
+  ['kolumbia', 'Kolumbia'],
+  ['egipt', 'Egipt'],
+  ['kenia', 'Kenia'],
+  ['chiny', 'Chiny'],
+  ['japonia', 'Japonia'],
+  ['indie', 'Indie'],
+  ['arabia saudyjska', 'Arabia Saudyjska'],
+  ['malezja', 'Malezja'],
+  ['filipiny', 'Filipiny'],
+  ['wietnam', 'Wietnam'],
+  ['singapur', 'Singapur'],
+  ['nowa zelandia', 'Nowa Zelandia'],
+  ['bangladesz', 'Bangladesz'],
+  ['maroko', 'Maroko'],
+];
+
+const countryAliases = new Map(countryAliasEntries);
+const allDataPoints = [...capitals, ...bigCities, ...liveCameras];
+let countryFeatures = [];
+let selectedCountryKey = '';
+let selectedCountryLabel = 'Kliknij kraj';
+
+const layerConfig = {
+  camera: {
+    label: 'Camera',
+    emoji: '📹',
+    color: '#ff7a59',
+    pointRadius: 0.34,
+    pointAltitude: 0.018,
+    labelAltitude: 0.055,
+    labelSize: 0.95,
+    data: liveCameras,
+  },
+  capital: {
+    label: 'Capital',
+    emoji: '🏛️',
+    color: '#00ff88',
+    pointRadius: 0.45,
+    pointAltitude: 0.015,
+    labelAltitude: 0.05,
+    labelSize: 0.98,
+    data: capitals,
+  },
+  city: {
+    label: 'City',
+    emoji: '🏙️',
+    color: '#ff5f5f',
+    pointRadius: 0.3,
+    pointAltitude: 0.01,
+    labelAltitude: 0.042,
+    labelSize: 0.9,
+    data: bigCities,
+  },
+};
+
+const globe = Globe()(document.getElementById('globe-container'))
   .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
   .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
   .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
   .showAtmosphere(true)
   .atmosphereColor('#3a8aff')
   .atmosphereAltitude(0.18)
-  // Country polygons from GeoJSON
   .polygonsData([])
-  .polygonCapColor(() => 'rgba(30,60,120,0.35)')
-  .polygonSideColor(() => 'rgba(20,40,100,0.2)')
-  .polygonStrokeColor(() => 'rgba(80,160,255,0.5)')
+  .polygonCapColor(feature => isSelectedFeature(feature) ? 'rgba(61, 164, 255, 0.42)' : 'rgba(30,60,120,0.3)')
+  .polygonSideColor(feature => isSelectedFeature(feature) ? 'rgba(38, 111, 222, 0.28)' : 'rgba(20,40,100,0.15)')
+  .polygonStrokeColor(feature => isSelectedFeature(feature) ? 'rgba(160,228,255,0.95)' : 'rgba(80,160,255,0.45)')
+  .polygonAltitude(feature => isSelectedFeature(feature) ? 0.025 : 0.008)
   .polygonLabel(({ properties: d }) => `
-    <div style="background:rgba(5,10,30,0.9);border:1px solid rgba(80,160,255,0.4);padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:12px;color:#c8d8f0;">
-      <b style="color:#5bf">${d.ADMIN || d.name}</b>
+    <div style="background:rgba(5,10,30,0.92);border:1px solid rgba(80,160,255,0.4);padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:12px;color:#c8d8f0;">
+      <b style="color:#5bf">${canonicalCountryName(d.ADMIN || d.name || '')}</b>
     </div>
   `)
-  // Camera points
-  .pointsData(cameras)
+  .onPolygonClick(feature => selectCountry(feature))
+  .pointsData([])
   .pointLat('lat')
   .pointLng('lng')
-  .pointColor(() => '#ff4444')
-  .pointAltitude(0.01)
-  .pointRadius(0.4)
+  .pointAltitude(d => layerConfig[d.type].pointAltitude)
+  .pointRadius(d => layerConfig[d.type].pointRadius)
+  .pointColor(d => layerConfig[d.type].color)
+  .pointResolution(12)
+  .htmlElementsData([])
+  .htmlLat('lat')
+  .htmlLng('lng')
+  .htmlAltitude(d => layerConfig[d.type].pointAltitude + layerConfig[d.type].labelAltitude)
+  .htmlElement(d => {
+    const emoji = document.createElement('div');
+    emoji.className = 'globe-emoji';
+    emoji.textContent = layerConfig[d.type].emoji;
+    d._emojiElement = emoji;
+    return emoji;
+  })
   .pointLabel(d => `
-    <div style="background:rgba(5,10,30,0.9);border:1px solid rgba(80,160,255,0.4);padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:11px;color:#c8d8f0;">
-      📹 <b>${d.name}</b><br>
-      <span style="color:rgba(100,150,200,0.7);font-size:9px">${d.loc} · ${d.viewers.toLocaleString()} widzów</span>
+    <div style="background:rgba(5,10,30,0.92);border:1px solid ${layerConfig[d.type].color};padding:6px 12px;border-radius:6px;font-family:'Courier New',monospace;font-size:11px;color:#c8d8f0;">
+      <b style="color:${layerConfig[d.type].color}">${layerConfig[d.type].emoji} ${d.name}</b><br>
+      <span style="color:rgba(150,180,220,0.7);font-size:9px">${d.country}${d.pop ? ' · ' + d.pop : d.viewers ? ' · ' + d.viewers + ' widzów' : ' · stolica'}</span>
     </div>
-  `)
-  .onPointClick(d => openCamPanel('all'));
+  `);
 
-// Load country borders GeoJSON
+const layerButtons = Array.from(document.querySelectorAll('.layer-tile'));
+
+function toRadians(value) {
+  return value * Math.PI / 180;
+}
+
+function normalizeCountryKey(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function canonicalCountryName(value) {
+  const normalized = normalizeCountryKey(value);
+  return countryAliases.get(normalized) || value || 'Nieznany kraj';
+}
+
+function getFeatureCountryKey(feature) {
+  return normalizeCountryKey(canonicalCountryName(feature?.properties?.ADMIN || feature?.properties?.name || ''));
+}
+
+function isSelectedFeature(feature) {
+  return Boolean(selectedCountryKey) && getFeatureCountryKey(feature) === selectedCountryKey;
+}
+
+function getAngularDistance(latA, lngA, latB, lngB) {
+  const lat1 = toRadians(latA);
+  const lat2 = toRadians(latB);
+  const deltaLng = toRadians(lngA - lngB);
+  const cosine = Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(deltaLng);
+
+  return Math.acos(Math.min(1, Math.max(-1, cosine)));
+}
+
+function updateEmojiScale() {
+  const pov = globe.pointOfView();
+  const altitudeFactor = Math.max(0.82, Math.min(1.15, 1.16 - (((pov.altitude ?? 2) - 2) * 0.08)));
+
+  getVisiblePoints().forEach(point => {
+    if (!point._emojiElement) {
+      return;
+    }
+
+    const angle = getAngularDistance(point.lat, point.lng, pov.lat, pov.lng);
+    const visibility = Math.max(0, Math.cos(angle));
+    const scale = (0.5 + visibility * 0.7) * altitudeFactor;
+    const opacity = 0.18 + visibility * 0.82;
+
+    point._emojiElement.style.setProperty('--emoji-scale', scale.toFixed(3));
+    point._emojiElement.style.setProperty('--emoji-opacity', opacity.toFixed(3));
+  });
+}
+
+function startEmojiScaleLoop() {
+  const tick = () => {
+    updateEmojiScale();
+    requestAnimationFrame(tick);
+  };
+
+  requestAnimationFrame(tick);
+}
+
+function getVisiblePoints() {
+  return Object.entries(layerConfig)
+    .filter(([key]) => layerState[key])
+    .flatMap(([, config]) => config.data);
+}
+
+function getCountryPoints(countryName) {
+  const countryKey = normalizeCountryKey(countryName);
+  return allDataPoints.filter(point => normalizeCountryKey(canonicalCountryName(point.country)) === countryKey);
+}
+
+function updateCountryStats() {
+  const countryPoints = selectedCountryKey ? getCountryPoints(selectedCountryLabel) : [];
+  const capitalsCount = countryPoints.filter(point => point.type === 'capital').length;
+  const citiesCount = countryPoints.filter(point => point.type === 'city').length;
+  const camerasCount = countryPoints.filter(point => point.type === 'camera').length;
+
+  countryStatsElements.capitals.textContent = capitalsCount.toLocaleString('pl-PL');
+  countryStatsElements.cities.textContent = citiesCount.toLocaleString('pl-PL');
+  countryStatsElements.cameras.textContent = camerasCount.toLocaleString('pl-PL');
+  countryStatsElements.total.textContent = countryPoints.length.toLocaleString('pl-PL');
+  selectedCountryNameElement.textContent = selectedCountryLabel;
+}
+
+function refreshCountryHighlight() {
+  globe.polygonsData(countryFeatures);
+}
+
+function selectCountry(feature) {
+  if (!feature) {
+    return;
+  }
+
+  const clickedKey = getFeatureCountryKey(feature);
+  const clickedLabel = canonicalCountryName(feature.properties?.ADMIN || feature.properties?.name || '');
+
+  if (selectedCountryKey === clickedKey) {
+    selectedCountryKey = '';
+    selectedCountryLabel = 'Kliknij kraj';
+  } else {
+    selectedCountryKey = clickedKey;
+    selectedCountryLabel = clickedLabel;
+  }
+
+  updateCountryStats();
+  refreshCountryHighlight();
+}
+
+function syncLayerButtons() {
+  layerButtons.forEach(button => {
+    const layerKey = button.dataset.layer;
+    const enabled = layerState[layerKey];
+    button.classList.toggle('is-off', !enabled);
+    button.classList.toggle('is-on', enabled);
+    button.setAttribute('aria-pressed', String(enabled));
+    button.querySelector('.tile-state').textContent = enabled ? 'ON' : 'OFF';
+  });
+}
+
+function updateLayers() {
+  const visiblePoints = getVisiblePoints();
+  globe.pointsData(visiblePoints);
+  globe.htmlElementsData(visiblePoints);
+  syncLayerButtons();
+  requestAnimationFrame(updateEmojiScale);
+}
+
+layerButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const layerKey = button.dataset.layer;
+    layerState[layerKey] = !layerState[layerKey];
+    updateLayers();
+  });
+});
+
+updateLayers();
+startEmojiScaleLoop();
+
 fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
   .then(r => r.json())
   .then(data => {
-    globe.polygonsData(data.features);
+    countryFeatures = data.features;
+    refreshCountryHighlight();
   })
-  .catch(() => {
-    // fallback: no polygons, globe still works
-  });
+  .catch(() => {});
 
-// Auto-rotate
 globe.controls().autoRotate = true;
-globe.controls().autoRotateSpeed = 0.5;
+globe.controls().autoRotateSpeed = 0.4;
 globe.controls().enableDamping = true;
+globe.pointOfView({ lat: 20, lng: 15, altitude: 2.0 });
 
-// Resize
-function resizeGlobe() {
-  const area = document.getElementById('globe-area');
-  globe.width(area.offsetWidth).height(area.offsetHeight);
+function resize() {
+  globe.width(window.innerWidth).height(window.innerHeight);
 }
-window.addEventListener('resize', resizeGlobe);
-resizeGlobe();
+window.addEventListener('resize', resize);
+resize();
 
-// Initial camera position
-globe.pointOfView({ lat: 20, lng: 10, altitude: 2.2 });
-
-// --- Camera Panel ---
-const camColors = {
-  traffic:['#1a1200','#2d2100'],
-  nature: ['#001a08','#002d12'],
-  urban:  ['#00081a','#001030'],
-  beach:  ['#001a22','#002d38'],
-  airport:['#100020','#1e0035'],
-  square: ['#1a0008','#2d0012'],
-};
-
-function drawCamPreview(cvs, cam) {
-  const c = cvs.getContext('2d');
-  const W = cvs.width, H = cvs.height;
-  const cols = camColors[cam.tag] || camColors.urban;
-  const grd = c.createLinearGradient(0,0,W,H);
-  grd.addColorStop(0,cols[0]); grd.addColorStop(1,cols[1]);
-  c.fillStyle = grd; c.fillRect(0,0,W,H);
-  const t = Date.now()/1000;
-  if (['traffic','urban','square'].includes(cam.tag)) {
-    for (let i=0;i<8;i++) {
-      const x=((t*(20+i*7)+i*40)%(W+20))-10, y=H*0.5+(i%3-1)*20;
-      c.beginPath(); c.arc(x,y,2,0,Math.PI*2);
-      c.fillStyle=i%2===0?'rgba(255,240,180,0.8)':'rgba(255,80,80,0.8)'; c.fill();
-    }
-    c.fillStyle='rgba(0,0,0,0.4)';
-    for (let i=0;i<6;i++) c.fillRect(i*(W/5),H-40-(i*23)%60,30+(i*17)%40,40+(i*23)%60);
-  } else if (cam.tag==='nature') {
-    c.fillStyle='rgba(40,80,40,0.3)'; c.fillRect(0,H*0.6,W,H*0.4);
-  } else if (cam.tag==='beach') {
-    for (let w=0;w<4;w++) {
-      const wy=H*0.4+w*20+Math.sin(t*0.5+w)*4;
-      c.beginPath(); c.moveTo(0,wy);
-      for (let x=0;x<W;x+=10) c.lineTo(x,wy+Math.sin(x*0.05+t+w)*6);
-      c.lineTo(W,H); c.lineTo(0,H);
-      c.fillStyle=`rgba(0,80,120,${0.2+w*0.05})`; c.fill();
-    }
-  } else if (cam.tag==='airport') {
-    for (let i=0;i<12;i++) {
-      c.beginPath(); c.arc(i*(W/11),H*0.7,3,0,Math.PI*2);
-      c.fillStyle='rgba(255,200,0,0.6)'; c.fill();
-    }
-  }
-  for (let y=0;y<H;y+=3) { c.fillStyle='rgba(0,0,0,0.08)'; c.fillRect(0,y,W,1); }
-  c.font='9px Courier New'; c.fillStyle='rgba(0,255,100,0.7)';
-  c.fillText(new Date().toTimeString().slice(0,8),6,H-8);
-}
-
-function buildCamGrid(filter) {
-  const grid = document.getElementById('cam-grid');
-  const filtered = filter==='all' ? cameras : cameras.filter(c=>c.tag===filter);
-  grid.innerHTML = '';
-  const tagLabels = {traffic:'Ruch',nature:'Przyroda',urban:'Miasto',beach:'Plaża',airport:'Lotnisko',square:'Plac'};
-  for (const cam of filtered) {
-    const card = document.createElement('div');
-    card.className = 'cam-card';
-    card.innerHTML = `
-      <div class="cam-preview">
-        <canvas width="280" height="160"></canvas>
-        <div class="cam-status"><div class="dot-live"></div><span style="color:#f66;font-size:9px">LIVE</span></div>
-      </div>
-      <div class="cam-info">
-        <h4>${cam.name}</h4><p>${cam.loc}</p>
-        <div class="cam-meta">
-          <span class="cam-tag tag-${cam.tag}">${tagLabels[cam.tag]}</span>
-          <span class="cam-viewers">👁 ${cam.viewers.toLocaleString()}</span>
-        </div>
-      </div>`;
-    const cvs = card.querySelector('canvas');
-    drawCamPreview(cvs, cam);
-    setInterval(() => drawCamPreview(cvs, cam), 1000);
-    grid.appendChild(card);
-  }
-}
-
-function openCamPanel(filter) {
-  document.getElementById('cam-panel').classList.add('open');
-  buildCamGrid(filter);
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.filter-btn').classList.add('active');
-}
-function closeCamPanel() { document.getElementById('cam-panel').classList.remove('open'); }
-function filterCams(filter, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  buildCamGrid(filter);
-}
-
-// Stats animation
-setInterval(() => {
-  document.getElementById('s-cams').textContent = (2847+Math.floor(Math.random()*10-4)).toLocaleString();
-  document.getElementById('s-viewers').textContent = ((18400+Math.floor(Math.random()*200-100))/1000).toFixed(1)+'k';
-}, 3000);
+updateCountryStats();
 </script>
 </body>
 </html>
