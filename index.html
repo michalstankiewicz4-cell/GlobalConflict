@@ -739,6 +739,7 @@ function gfAutoEvent(){
 }
 
 window.openGlobalFace=function(playerCountryLabel){
+  document.getElementById('gf-overlay').classList.add('visible');
   const c=GF_COUNTRIES.find(c=>c.name===playerCountryLabel||c.name.toLowerCase()===playerCountryLabel?.toLowerCase());
   gfPlayerCountry=c||null;
   if(gfPlayerCountry){
@@ -750,8 +751,8 @@ window.openGlobalFace=function(playerCountryLabel){
   }
   gfViewingCountry=gfPlayerCountry;renderSidebar();if(gfViewingCountry)renderProfileCard(gfViewingCountry);
 };
-window.closeGlobalFace=function(){try{window.parent.postMessage('gf-close','*');}catch(e){}};
-document.getElementById('gf-back').addEventListener('click',closeGlobalFace);
+window.closeGlobalFace=function(){ document.getElementById('gf-overlay').classList.remove('visible'); };
+document.getElementById('gf-back').addEventListener('click', closeGlobalFace);
 document.getElementById('gf-my-profile').addEventListener('click',()=>{if(gfPlayerCountry)gfViewCountry(gfPlayerCountry.id);});
 
 // Seed posts
@@ -1164,7 +1165,7 @@ function cbReset(){cbPlaced=[];cbSelectedBuild=null;cbSelectedCell=null;cbHoverC
 
 
 function openGF(){
-  openGlobalFace(selectedCountryLabel||null);
+  window.openGlobalFace(selectedCountryLabel||null);
 }
 
 // ── BOOT
