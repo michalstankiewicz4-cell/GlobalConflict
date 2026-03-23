@@ -550,52 +550,6 @@ canvas{
           <div class="psize-btn" data-px="12">12</div>
         </div>
       </div>
-
-      <div>
-        <div class="rpanel-sub">paleta</div>
-        <div class="pal-opts">
-          <div class="pal-btn active" data-pal="none">
-            oryginalna
-            <div class="pal-swatches"></div>
-          </div>
-          <div class="pal-btn" data-pal="gameboy">
-            gameboy
-            <div class="pal-swatches">
-              <div class="psw" style="background:#0f380f"></div>
-              <div class="psw" style="background:#306230"></div>
-              <div class="psw" style="background:#8bac0f"></div>
-              <div class="psw" style="background:#9bbc0f"></div>
-            </div>
-          </div>
-          <div class="pal-btn" data-pal="cga">
-            CGA
-            <div class="pal-swatches">
-              <div class="psw" style="background:#000000"></div>
-              <div class="psw" style="background:#55ffff"></div>
-              <div class="psw" style="background:#ff55ff"></div>
-              <div class="psw" style="background:#ffffff"></div>
-            </div>
-          </div>
-          <div class="pal-btn" data-pal="nes">
-            NES
-            <div class="pal-swatches">
-              <div class="psw" style="background:#000000"></div>
-              <div class="psw" style="background:#fcfcfc"></div>
-              <div class="psw" style="background:#f83800"></div>
-              <div class="psw" style="background:#0058f8"></div>
-            </div>
-          </div>
-          <div class="pal-btn" data-pal="amber">
-            amber
-            <div class="pal-swatches">
-              <div class="psw" style="background:#1a0a00"></div>
-              <div class="psw" style="background:#7a3a00"></div>
-              <div class="psw" style="background:#e07800"></div>
-              <div class="psw" style="background:#ffcc44"></div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -1014,6 +968,7 @@ function mapStateForSketch() {
     glasses:  state.glasses,
     hairpin:  state.hairpin,
     mood:     state.mood,
+    earScale: state.earScale,
     fill:       SK.fill,
     jitter:     SK.jitter,
     weight:     SK.weight,
@@ -1163,21 +1118,23 @@ function drawSketchFace(ctx, W, H, S, transparentBg){
   ctx.lineJoin='round';
   ctx.lineWidth=WT;
 
-  const headTop= 30;
-  const headH  = f?215:232;
-  const headW  = f?82:96;
-  const chinY  = headTop+headH;
-  const eyeY   = headTop+headH*0.48;
-  const browY  = headTop+headH*0.40;
-  const noseY  = headTop+headH*0.64;
-  const mouthY = headTop+headH*0.76;
-  const eyeSpan= f?25:29;
+  // Use editable landmark geometry so sketch mode matches digital mode controls.
+  const headTop = P.crown.y;
+  const headH   = P.chin.y - P.crown.y;
+  const headW   = P.templeR.x - cx;
+  const chinY   = P.chin.y;
+  const eyeY    = P.eyeR.y;
+  const browY   = P.browR.y;
+  const noseY   = P.nose.y;
+  const mouthY  = P.mouth.y;
+  const eyeSpan = P.eyeR.x - cx;
 
-  const tempX  = headW*0.94, tempY=headTop+headH*0.20;
-  const cheekX = f?headW*0.92:headW*0.99;
-  const cheekY2= headTop+headH*0.56;
-  const jawX   = f?headW*0.60:headW*0.76;
-  const jawY2  = headTop+headH*0.82;
+  const tempX   = P.templeR.x - cx;
+  const tempY   = P.templeR.y;
+  const cheekX  = P.cheekR.x - cx;
+  const cheekY2 = P.cheekR.y;
+  const jawX    = P.jawR.x - cx;
+  const jawY2   = P.jawR.y;
 
   // NECK / SHOULDERS
   const nkW=f?22:30;
@@ -1189,11 +1146,12 @@ function drawSketchFace(ctx, W, H, S, transparentBg){
   sketchCurve(ctx,[[cx+nkW+4,chinY+78],[cx+60,chinY+90],[cx+W*0.4,chinY+72]],SK2,J);
 
   // EARS
-  const eaW=S.ears==='big'?13:S.ears==='small'?8:10;
-  const eaH=S.ears==='big'?22:S.ears==='small'?14:18;
-  const eaMY=(browY+noseY)*0.5+2;
+  const earScale = S.earScale || 1;
+  const eaW=(S.ears==='big'?13:S.ears==='small'?8:10) * earScale;
+  const eaH=(S.ears==='big'?22:S.ears==='small'?14:18) * earScale;
+  const eaMY=P.earR.y;
   [-1,1].forEach(s=>{
-    const ex=cx+s*(headW-eaW*0.2);
+    const ex=s>0?P.earR.x:(2*cx-P.earR.x);
     washFill(ctx,ex,eaMY,eaW,eaH,sk,0.20,S);
     ctx.strokeStyle=INK; ctx.lineWidth=WT*0.8;
     sketchEllipse(ctx,ex,eaMY,eaW,eaH,SK2,J);
@@ -1971,15 +1929,14 @@ function draw() {
 
   if (renderStyle === 'digital') {
     _digitalDraw();
-    applyPixel();
   } else if (renderStyle === 'sketch') {
     const ctx = canvas.getContext('2d');
     canvas.width = W_CV; canvas.height = H_CV;
     skSrng(((skDrawSeed * 6364136223846793005 + 1442695040888963407) | 0) || 1);
     drawSketchFace(ctx, W_CV, H_CV, mapStateForSketch(), false);
+    if (editMode) drawEditOverlay(ctx);
   } else { // overlay
     _digitalDraw();
-    applyPixel();
     // draw sketch to offscreen, composite with multiply
     const offscreen = document.createElement('canvas');
     offscreen.width = W_CV; offscreen.height = H_CV;
@@ -2000,6 +1957,9 @@ function draw() {
     });
     if(editMode) drawEditOverlay(ctx);
   }
+
+  // Apply pixel effect to the final active canvas output for all render styles.
+  applyPixel();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2228,25 +2188,6 @@ document.querySelectorAll('[data-fill]').forEach(btn=>{
 
 let pixelEnabled = false;
 let pixelSize = 6;
-let pixelPalette = 'none';
-
-const PALETTES = {
-  none: null,
-  gameboy: [[15,56,15],[48,98,48],[139,172,15],[155,188,15]],
-  cga:    [[0,0,0],[85,255,255],[255,85,255],[255,255,255]],
-  nes:    [[0,0,0],[252,252,252],[248,56,0],[0,88,248]],
-  amber:  [[26,10,0],[122,58,0],[224,120,0],[255,204,68]]
-};
-
-function nearestColor(r,g,b,palette){
-  let best=0, bestDist=1e9;
-  for(let i=0;i<palette.length;i++){
-    const [pr,pg,pb]=palette[i];
-    const d=(r-pr)**2+(g-pg)**2+(b-pb)**2;
-    if(d<bestDist){bestDist=d;best=i;}
-  }
-  return palette[best];
-}
 
 function applyPixel(){
   if(!pixelEnabled) return;
@@ -2254,7 +2195,6 @@ function applyPixel(){
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const px = pixelSize;
-  const pal = PALETTES[pixelPalette];
   const src = ctx.getImageData(0,0,W,H);
   const d = src.data;
   const out = ctx.createImageData(W,H);
@@ -2265,7 +2205,6 @@ function applyPixel(){
       const sy = Math.min(y + Math.floor(px/2), H-1);
       const idx = (sy*W + sx)*4;
       let r=d[idx], g=d[idx+1], b=d[idx+2], a=d[idx+3];
-      if(pal && a>10){ [r,g,b] = nearestColor(r,g,b,pal); }
       for(let by=y; by<Math.min(y+px,H); by++){
         for(let bx=x; bx<Math.min(x+px,W); bx++){
           const oi=(by*W+bx)*4;
@@ -2295,15 +2234,6 @@ document.querySelectorAll('.psize-btn[data-px]').forEach(btn=>{
   btn.addEventListener('click',()=>{
     pixelSize = parseInt(btn.dataset.px);
     document.querySelectorAll('.psize-btn[data-px]').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    draw();
-  });
-});
-
-document.querySelectorAll('.pal-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    pixelPalette = btn.dataset.pal;
-    document.querySelectorAll('.pal-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     draw();
   });
