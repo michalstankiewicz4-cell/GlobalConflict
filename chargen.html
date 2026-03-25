@@ -119,6 +119,20 @@ body{display:flex;align-items:center;justify-content:center;min-height:100vh;pad
 .sk-slider-row{display:flex;flex-direction:column;gap:3px}
 .sk-slider-lbl{display:flex;justify-content:space-between;font-family:var(--mono);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
 .sk-slider-lbl span:last-child{color:var(--acc)}
+.mix-order-btn{
+  cursor:pointer;
+  border:1px solid var(--border2);
+  background:transparent;
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:8px;
+  line-height:1;
+  width:16px;
+  height:14px;
+  padding:0;
+}
+.mix-order-btn:hover{border-color:var(--acc);color:var(--text)}
+.mix-order-btn:disabled{opacity:0.35;cursor:default}
 input[type=range]{width:100%;accent-color:var(--acc);height:3px;cursor:pointer;background:var(--border2)}
 
 /* PANEL */
@@ -529,49 +543,107 @@ canvas{
       </div>
     </div>
 
-    <!-- wszystkie — 3 layer opacity sliders -->
+    <!-- wszystkie — opacity sliders for mixed layers -->
     <div id="all-opts" style="display:none;flex-direction:column;gap:8px;">
-      <div class="sk-slider-row">
+      <div class="sk-slider-row" data-all-row="digital">
         <div class="sk-slider-lbl">
           <span style="display:flex;align-items:center;gap:5px">
             <span style="width:8px;height:8px;border-radius:50%;background:var(--acc);display:inline-block"></span>
             cyfrowy
           </span>
-          <span id="all-dig-v">100%</span>
+          <span style="display:flex;align-items:center;gap:3px">
+            <span id="all-dig-v">100%</span>
+            <button type="button" class="mix-order-btn" data-layer="digital" data-dir="up">▲</button>
+            <button type="button" class="mix-order-btn" data-layer="digital" data-dir="down">▼</button>
+          </span>
         </div>
         <input type="range" id="all-dig" min="0" max="100" value="100" step="5">
       </div>
-      <div class="sk-slider-row">
+      <div class="sk-slider-row" data-all-row="sketch">
         <div class="sk-slider-lbl">
           <span style="display:flex;align-items:center;gap:5px">
             <span style="width:8px;height:8px;border-radius:50%;background:#e8c840;display:inline-block"></span>
             szkic
           </span>
-          <span id="all-sk-v">70%</span>
+          <span style="display:flex;align-items:center;gap:3px">
+            <span id="all-sk-v">70%</span>
+            <button type="button" class="mix-order-btn" data-layer="sketch" data-dir="up">▲</button>
+            <button type="button" class="mix-order-btn" data-layer="sketch" data-dir="down">▼</button>
+          </span>
         </div>
         <input type="range" id="all-sk" min="0" max="100" value="70" step="5">
       </div>
-      <div class="sk-slider-row">
+      <div class="sk-slider-row" data-all-row="lowpoly">
         <div class="sk-slider-lbl">
           <span style="display:flex;align-items:center;gap:5px">
             <span style="width:8px;height:8px;border-radius:50%;background:#ff6b6b;display:inline-block"></span>
             low-poly
           </span>
-          <span id="all-lp-v">40%</span>
+          <span style="display:flex;align-items:center;gap:3px">
+            <span id="all-lp-v">40%</span>
+            <button type="button" class="mix-order-btn" data-layer="lowpoly" data-dir="up">▲</button>
+            <button type="button" class="mix-order-btn" data-layer="lowpoly" data-dir="down">▼</button>
+          </span>
         </div>
         <input type="range" id="all-lp" min="0" max="100" value="40" step="5">
       </div>
-      <div class="sk-slider-row">
+      <div class="sk-slider-row" data-all-row="voronoi">
         <div class="sk-slider-lbl">
           <span style="display:flex;align-items:center;gap:5px">
             <span style="width:8px;height:8px;border-radius:50%;background:#7a9cff;display:inline-block"></span>
             voronoi
           </span>
-          <span id="all-vr-v">35%</span>
+          <span style="display:flex;align-items:center;gap:3px">
+            <span id="all-vr-v">35%</span>
+            <button type="button" class="mix-order-btn" data-layer="voronoi" data-dir="up">▲</button>
+            <button type="button" class="mix-order-btn" data-layer="voronoi" data-dir="down">▼</button>
+          </span>
         </div>
         <input type="range" id="all-vr" min="0" max="100" value="35" step="5">
       </div>
-      <div style="height:1px;background:var(--border2);margin:2px 0"></div>
+      <div class="sk-slider-row" data-all-row="hatching">
+        <div class="sk-slider-lbl">
+          <span style="display:flex;align-items:center;gap:5px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#9a7a4a;display:inline-block"></span>
+            hatching
+          </span>
+          <span style="display:flex;align-items:center;gap:3px">
+            <span id="all-ha-v">30%</span>
+            <button type="button" class="mix-order-btn" data-layer="hatching" data-dir="up">▲</button>
+            <button type="button" class="mix-order-btn" data-layer="hatching" data-dir="down">▼</button>
+          </span>
+        </div>
+        <input type="range" id="all-ha" min="0" max="100" value="30" step="5">
+      </div>
+      <div class="sk-slider-row" data-all-row="pointillism">
+        <div class="sk-slider-lbl">
+          <span style="display:flex;align-items:center;gap:5px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#d68f5f;display:inline-block"></span>
+            pointylizm
+          </span>
+          <span style="display:flex;align-items:center;gap:3px">
+            <span id="all-pt-v">25%</span>
+            <button type="button" class="mix-order-btn" data-layer="pointillism" data-dir="up">▲</button>
+            <button type="button" class="mix-order-btn" data-layer="pointillism" data-dir="down">▼</button>
+          </span>
+        </div>
+        <input type="range" id="all-pt" min="0" max="100" value="25" step="5">
+      </div>
+      <div class="sk-slider-row" data-all-row="stippling">
+        <div class="sk-slider-lbl">
+          <span style="display:flex;align-items:center;gap:5px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#5f5a52;display:inline-block"></span>
+            stippling
+          </span>
+          <span style="display:flex;align-items:center;gap:3px">
+            <span id="all-st-v">20%</span>
+            <button type="button" class="mix-order-btn" data-layer="stippling" data-dir="up">▲</button>
+            <button type="button" class="mix-order-btn" data-layer="stippling" data-dir="down">▼</button>
+          </span>
+        </div>
+        <input type="range" id="all-st" min="0" max="100" value="20" step="5">
+      </div>
+      <div id="all-mix-divider" style="height:1px;background:var(--border2);margin:2px 0"></div>
       <div class="rpanel-sub">tryb mieszania</div>
       <div class="psize-opts" style="flex-direction:column;gap:3px">
         <div class="psize-btn active" data-blend="normal">normal</div>
@@ -997,7 +1069,17 @@ let renderStyle = 'digital'; // 'digital' | 'sketch' | 'overlay'
 let skDrawSeed  = 42;
 
 const SK  = { jitter:3, weight:1.6, sketchiness:2, fill:'wash', overlayOpacity:0.70 };
-const ALL = { digital:1.0, sketch:0.70, lowpoly:0.40, voronoi:0.35, blendMode:'normal' };
+const ALL = {
+  digital:1.0,
+  sketch:0.70,
+  lowpoly:0.40,
+  voronoi:0.35,
+  hatching:0.30,
+  pointillism:0.25,
+  stippling:0.20,
+  blendMode:'normal'
+};
+const ALL_LAYER_ORDER = ['digital','lowpoly','sketch','voronoi','hatching','pointillism','stippling'];
 
 const ALL_CACHE = {
   key: '',
@@ -1005,6 +1087,9 @@ const ALL_CACHE = {
   lowpoly: null,
   sketch: null,
   voronoi: null,
+  hatching: null,
+  pointillism: null,
+  stippling: null,
 };
 
 let drawQueued = false;
@@ -1059,9 +1144,51 @@ function ensureAllCache(){
   ALL_CACHE.voronoi = makeOffscreenCanvas();
   _voronoiDraw(ALL_CACHE.voronoi.getContext('2d'));
 
+  ALL_CACHE.hatching = makeOffscreenCanvas();
+  _hatchingDraw(ALL_CACHE.hatching.getContext('2d'));
+
+  ALL_CACHE.pointillism = makeOffscreenCanvas();
+  _pointillismDraw(ALL_CACHE.pointillism.getContext('2d'));
+
+  ALL_CACHE.stippling = makeOffscreenCanvas();
+  _stipplingDraw(ALL_CACHE.stippling.getContext('2d'));
+
   // Ensure no stale artifacts remain on main canvas before compositing below.
   mainCtx.clearRect(0,0,W_CV,H_CV);
   ALL_CACHE.key = key;
+}
+
+function moveMixLayer(layer, dir){
+  const idx = ALL_LAYER_ORDER.indexOf(layer);
+  if(idx < 0) return;
+  const next = dir === 'up' ? idx - 1 : idx + 1;
+  if(next < 0 || next >= ALL_LAYER_ORDER.length) return;
+  const tmp = ALL_LAYER_ORDER[idx];
+  ALL_LAYER_ORDER[idx] = ALL_LAYER_ORDER[next];
+  ALL_LAYER_ORDER[next] = tmp;
+}
+
+function refreshMixOrderButtons(){
+  document.querySelectorAll('.mix-order-btn').forEach(btn=>{
+    const layer = btn.dataset.layer;
+    const dir = btn.dataset.dir;
+    const idx = ALL_LAYER_ORDER.indexOf(layer);
+    if(idx < 0){
+      btn.disabled = true;
+      return;
+    }
+    btn.disabled = (dir === 'up' && idx === 0) || (dir === 'down' && idx === ALL_LAYER_ORDER.length - 1);
+  });
+}
+
+function refreshMixLayerRowOrder(){
+  const allOpts = document.getElementById('all-opts');
+  const divider = document.getElementById('all-mix-divider');
+  if(!allOpts || !divider) return;
+  ALL_LAYER_ORDER.forEach(layer=>{
+    const row = allOpts.querySelector(`.sk-slider-row[data-all-row="${layer}"]`);
+    if(row) allOpts.insertBefore(row, divider);
+  });
 }
 
 // haircolor mapping: chargen 0-9 → sketchgen 0-8
@@ -3573,35 +3700,19 @@ function draw() {
 
     ensureAllCache();
 
-    // Helper: composite a pre-rendered layer onto main canvas
-    function compositeLayer(layerCanvas, alpha) {
-      if (alpha <= 0 || !layerCanvas) return;
-      ctx.save();
-      ctx.globalCompositeOperation = blendMode;
-      ctx.globalAlpha = alpha;
-      ctx.drawImage(layerCanvas, 0, 0);
-      ctx.restore();
-    }
+    const orderedVisibleLayers = ALL_LAYER_ORDER.filter(layer => (ALL[layer] || 0) > 0 && ALL_CACHE[layer]);
 
-    // 1. Digital base (always source-over for the base layer)
-    if (ALL.digital > 0) {
-      ctx.save();
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = ALL.digital;
-      ctx.drawImage(ALL_CACHE.digital, 0, 0);
-      ctx.restore();
-    } else {
+    if (orderedVisibleLayers.length === 0) {
       ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W_CV,H_CV);
+    } else {
+      orderedVisibleLayers.forEach((layer, idx)=>{
+        ctx.save();
+        ctx.globalCompositeOperation = idx === 0 ? 'source-over' : blendMode;
+        ctx.globalAlpha = ALL[layer];
+        ctx.drawImage(ALL_CACHE[layer], 0, 0);
+        ctx.restore();
+      });
     }
-
-    // 2. Low-poly layer
-    compositeLayer(ALL_CACHE.lowpoly, ALL.lowpoly);
-
-    // 3. Sketch layer
-    compositeLayer(ALL_CACHE.sketch, ALL.sketch);
-
-    // 4. Voronoi layer
-    compositeLayer(ALL_CACHE.voronoi, ALL.voronoi);
 
     // HUD corners always on top
     ctx.globalCompositeOperation = 'source-over';
@@ -3870,6 +3981,31 @@ document.getElementById('all-vr').addEventListener('input',function(){
   document.getElementById('all-vr-v').textContent=this.value+'%';
   scheduleDraw();
 });
+document.getElementById('all-ha').addEventListener('input',function(){
+  ALL.hatching=parseInt(this.value)/100;
+  document.getElementById('all-ha-v').textContent=this.value+'%';
+  scheduleDraw();
+});
+document.getElementById('all-pt').addEventListener('input',function(){
+  ALL.pointillism=parseInt(this.value)/100;
+  document.getElementById('all-pt-v').textContent=this.value+'%';
+  scheduleDraw();
+});
+document.getElementById('all-st').addEventListener('input',function(){
+  ALL.stippling=parseInt(this.value)/100;
+  document.getElementById('all-st-v').textContent=this.value+'%';
+  scheduleDraw();
+});
+document.querySelectorAll('.mix-order-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    moveMixLayer(btn.dataset.layer, btn.dataset.dir);
+    refreshMixLayerRowOrder();
+    refreshMixOrderButtons();
+    scheduleDraw();
+  });
+});
+refreshMixLayerRowOrder();
+refreshMixOrderButtons();
 // blend mode buttons
 document.querySelectorAll('[data-blend]').forEach(btn=>{
   btn.addEventListener('click',()=>{
