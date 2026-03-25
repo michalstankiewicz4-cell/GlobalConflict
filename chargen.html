@@ -211,7 +211,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:3px;cursor:pointer;b
 
 canvas{
   border:1px solid var(--border2);
-  background:#000;
+  background:#fff;
   display:block;
 }
 
@@ -996,6 +996,71 @@ let skDrawSeed  = 42;
 const SK  = { jitter:3, weight:1.6, sketchiness:2, fill:'wash', overlayOpacity:0.70 };
 const ALL = { digital:1.0, sketch:0.70, lowpoly:0.40, voronoi:0.35, blendMode:'normal' };
 
+const ALL_CACHE = {
+  key: '',
+  digital: null,
+  lowpoly: null,
+  sketch: null,
+  voronoi: null,
+};
+
+let drawQueued = false;
+function scheduleDraw(){
+  if(drawQueued) return;
+  drawQueued = true;
+  requestAnimationFrame(()=>{
+    drawQueued = false;
+    draw();
+  });
+}
+
+function makeOffscreenCanvas(){
+  const c = document.createElement('canvas');
+  c.width = W_CV;
+  c.height = H_CV;
+  return c;
+}
+
+function mixCacheKey(){
+  return JSON.stringify({
+    state,
+    P,
+    SK,
+    skDrawSeed,
+  });
+}
+
+function ensureAllCache(){
+  const key = mixCacheKey();
+  if(ALL_CACHE.key === key) return;
+
+  const canvas = document.getElementById('face-canvas');
+  const mainCtx = canvas.getContext('2d');
+
+  // Digital is currently implemented against the main canvas, so render once and copy.
+  const prevEdit = editMode;
+  editMode = false;
+  _digitalDraw();
+  editMode = prevEdit;
+
+  ALL_CACHE.digital = makeOffscreenCanvas();
+  ALL_CACHE.digital.getContext('2d').drawImage(canvas, 0, 0);
+
+  ALL_CACHE.lowpoly = makeOffscreenCanvas();
+  _lowPolyDraw(ALL_CACHE.lowpoly.getContext('2d'));
+
+  ALL_CACHE.sketch = makeOffscreenCanvas();
+  skSrng(((skDrawSeed * 6364136223846793005 + 1442695040888963407) | 0) || 1);
+  drawSketchFace(ALL_CACHE.sketch.getContext('2d'), W_CV, H_CV, mapStateForSketch(), true);
+
+  ALL_CACHE.voronoi = makeOffscreenCanvas();
+  _voronoiDraw(ALL_CACHE.voronoi.getContext('2d'));
+
+  // Ensure no stale artifacts remain on main canvas before compositing below.
+  mainCtx.clearRect(0,0,W_CV,H_CV);
+  ALL_CACHE.key = key;
+}
+
 // haircolor mapping: chargen 0-9 → sketchgen 0-8
 const SKETCH_HC_MAP = [0,1,2,3,3,4,5,6,7,8];
 const SKETCH_SKINS  = ['#f5c89a','#e8a87c','#d4884e','#b5651d','#8b4513','#4a2008'];
@@ -1148,7 +1213,7 @@ function drawSketchFace(ctx, W, H, S, transparentBg){
   const J=S.jitter, SK2=S.sketchiness, WT=S.weight;
 
   if(!transparentBg){
-    ctx.fillStyle='#f4f0e8'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
     for(let i=0;i<600;i++){
       const gx=skRange(0,W), gy=skRange(0,H);
       ctx.fillStyle=`rgba(0,0,0,${skRange(0.01,0.04)})`;
@@ -1539,7 +1604,7 @@ function drawSketchFace(ctx, W, H, S, transparentBg){
 function _lowPolyDraw(ctx) {
   const W=W_CV, H=H_CV;
   // light paper BG
-  ctx.fillStyle='#ede8df'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
 
   const sk  = skinPalette[state.skin];
   const hc  = hairPalette[state.haircolor];
@@ -1732,6 +1797,22 @@ function _lowPolyDraw(ctx) {
     tri([ex,ey-eaH],[ex+s*eaW,ey+eaH*0.4],[ex,ey+eaH], skS, edgeCol);
     tri([ex,ey-eaH],[ex,ey+eaH],[ex-s*4,ey], skD, edgeThin);
   });
+
+  // Base face fill under the triangle mesh prevents tiny uncovered gaps
+  // around eyes, nose and mouth corners when landmark proportions change.
+  ctx.fillStyle = skM;
+  ctx.beginPath();
+  ctx.moveTo(cx, crownY);
+  ctx.bezierCurveTo(cx + headW*0.55, crownY, cx + tempX, crownY + (tempY-crownY)*0.3, cx + tempX, tempY);
+  ctx.bezierCurveTo(cx + tempX, tempY + (cheekY-tempY)*0.4, cx + cheekX, cheekY - (cheekY-tempY)*0.15, cx + cheekX, cheekY);
+  ctx.bezierCurveTo(cx + cheekX, cheekY + (jawY-cheekY)*0.55, cx + jawX + 6, jawY - (jawY-cheekY)*0.08, cx + jawX, jawY);
+  ctx.bezierCurveTo(cx + jawX*0.65, jawY + (chinY-jawY)*0.6, cx + (isFemale?16:22), chinY - 4, cx, chinY);
+  ctx.bezierCurveTo(cx - (isFemale?16:22), chinY - 4, cx - jawX*0.65, jawY + (chinY-jawY)*0.6, cx - jawX, jawY);
+  ctx.bezierCurveTo(cx - jawX - 6, jawY - (jawY-cheekY)*0.08, cx - cheekX, cheekY + (jawY-cheekY)*0.55, cx - cheekX, cheekY);
+  ctx.bezierCurveTo(cx - cheekX, cheekY - (cheekY-tempY)*0.15, cx - tempX, tempY + (cheekY-tempY)*0.4, cx - tempX, tempY);
+  ctx.bezierCurveTo(cx - tempX, crownY + (tempY-crownY)*0.3, cx - headW*0.55, crownY, cx, crownY);
+  ctx.closePath();
+  ctx.fill();
 
   // ═══════ FACE — symmetric poly mesh ════════════════════════
   // We define the right half, then mirror each triangle for left half.
@@ -1955,8 +2036,8 @@ function _digitalDraw() {
   const W=W_CV, H=H_CV;
   canvas.width=W; canvas.height=H;
 
-  ctx.fillStyle='#050505'; ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='rgba(0,245,200,0.010)';
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(0,0,0,0.015)';
   for(let y=0;y<H;y+=2) ctx.fillRect(0,y,W,1);
 
   const sk  = skinPalette[state.skin];
@@ -2589,8 +2670,8 @@ function _voronoiDraw(ctx) {
 
   // ── BG (canvas outside face) ─────────────────────────────────
   // Fill scanline BG first
-  ctx.fillStyle='#050505'; ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='rgba(0,245,200,0.010)';
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(0,0,0,0.012)';
   for(let y=0;y<H;y+=2) ctx.fillRect(0,y,W,1);
 
   // ── Draw ears (outside face clip, behind face) ───────────────
@@ -2776,56 +2857,37 @@ function draw() {
     canvas.width = W_CV; canvas.height = H_CV;
     const blendMode = ALL.blendMode;
 
-    // Helper: draw a style to offscreen, then composite onto main canvas
-    function compositeLayer(drawFn, alpha) {
-      if (alpha <= 0) return;
-      const off = document.createElement('canvas');
-      off.width = W_CV; off.height = H_CV;
-      const octx = off.getContext('2d');
-      drawFn(octx);
+    ensureAllCache();
+
+    // Helper: composite a pre-rendered layer onto main canvas
+    function compositeLayer(layerCanvas, alpha) {
+      if (alpha <= 0 || !layerCanvas) return;
       ctx.save();
       ctx.globalCompositeOperation = blendMode;
       ctx.globalAlpha = alpha;
-      ctx.drawImage(off, 0, 0);
+      ctx.drawImage(layerCanvas, 0, 0);
       ctx.restore();
     }
 
-    // 1. Digital base (always normal blend for the base layer)
+    // 1. Digital base (always source-over for the base layer)
     if (ALL.digital > 0) {
-      const off = document.createElement('canvas');
-      off.width = W_CV; off.height = H_CV;
-      const octx = off.getContext('2d');
-      // temporarily swap canvas so _digitalDraw writes to offscreen
-      const realCanvas = document.getElementById('face-canvas');
-      // _digitalDraw uses document.getElementById internally, so we draw to main first
-      _digitalDraw();
-      if (ALL.digital < 1) {
-        // re-read and re-apply alpha
-        const imgData = ctx.getImageData(0,0,W_CV,H_CV);
-        ctx.clearRect(0,0,W_CV,H_CV);
-        ctx.fillStyle='#050505'; ctx.fillRect(0,0,W_CV,H_CV);
-        off.getContext('2d').putImageData(imgData,0,0);
-        ctx.save(); ctx.globalAlpha=ALL.digital; ctx.drawImage(off,0,0); ctx.restore();
-      }
+      ctx.save();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = ALL.digital;
+      ctx.drawImage(ALL_CACHE.digital, 0, 0);
+      ctx.restore();
     } else {
-      ctx.fillStyle='#050505'; ctx.fillRect(0,0,W_CV,H_CV);
+      ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W_CV,H_CV);
     }
 
     // 2. Low-poly layer
-    compositeLayer(octx2 => {
-      _lowPolyDraw(octx2);
-    }, ALL.lowpoly);
+    compositeLayer(ALL_CACHE.lowpoly, ALL.lowpoly);
 
     // 3. Sketch layer
-    compositeLayer(octx3 => {
-      skSrng(((skDrawSeed * 6364136223846793005 + 1442695040888963407) | 0) || 1);
-      drawSketchFace(octx3, W_CV, H_CV, mapStateForSketch(), true);
-    }, ALL.sketch);
+    compositeLayer(ALL_CACHE.sketch, ALL.sketch);
 
     // 4. Voronoi layer
-    compositeLayer(octx4 => {
-      _voronoiDraw(octx4);
-    }, ALL.voronoi);
+    compositeLayer(ALL_CACHE.voronoi, ALL.voronoi);
 
     // HUD corners always on top
     ctx.globalCompositeOperation = 'source-over';
@@ -3062,22 +3124,22 @@ document.getElementById('sk-sketch').addEventListener('input',function(){
 document.getElementById('all-dig').addEventListener('input',function(){
   ALL.digital=parseInt(this.value)/100;
   document.getElementById('all-dig-v').textContent=this.value+'%';
-  draw();
+  scheduleDraw();
 });
 document.getElementById('all-sk').addEventListener('input',function(){
   ALL.sketch=parseInt(this.value)/100;
   document.getElementById('all-sk-v').textContent=this.value+'%';
-  draw();
+  scheduleDraw();
 });
 document.getElementById('all-lp').addEventListener('input',function(){
   ALL.lowpoly=parseInt(this.value)/100;
   document.getElementById('all-lp-v').textContent=this.value+'%';
-  draw();
+  scheduleDraw();
 });
 document.getElementById('all-vr').addEventListener('input',function(){
   ALL.voronoi=parseInt(this.value)/100;
   document.getElementById('all-vr-v').textContent=this.value+'%';
-  draw();
+  scheduleDraw();
 });
 // blend mode buttons
 document.querySelectorAll('[data-blend]').forEach(btn=>{
@@ -3085,7 +3147,7 @@ document.querySelectorAll('[data-blend]').forEach(btn=>{
     ALL.blendMode=btn.dataset.blend;
     document.querySelectorAll('[data-blend]').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    draw();
+    scheduleDraw();
   });
 });
 
