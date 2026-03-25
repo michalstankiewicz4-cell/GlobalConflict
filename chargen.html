@@ -499,6 +499,9 @@ canvas{
       <div class="style-btn" data-style="sketch">SZKIC</div>
       <div class="style-btn" data-style="lowpoly">LOW-POLY</div>
       <div class="style-btn" data-style="voronoi">VORONOI</div>
+      <div class="style-btn" data-style="hatching">HATCHING</div>
+      <div class="style-btn" data-style="pointillism">POINTYLIZM</div>
+      <div class="style-btn" data-style="stippling">STIPPLING</div>
       <div class="style-btn" data-style="all">MIX</div>
     </div>
 
@@ -2836,6 +2839,717 @@ function _voronoiDraw(ctx) {
   });
 }
 
+
+// ═══════════════════════════════════════════════════════════════
+// SHARED FACE UTILITY — clip path + luminance map
+// ═══════════════════════════════════════════════════════════════
+
+function _buildFaceClip(ctx, P2, isFemale) {
+  const cx = W_CV/2;
+  const crownY=P2.crown.y, chinY=P2.chin.y;
+  const headW=P2.templeR.x-cx;
+  const tempX=P2.templeR.x-cx, tempY=P2.templeR.y;
+  const cheekX=P2.cheekR.x-cx, cheekY=P2.cheekR.y;
+  const jawX=P2.jawR.x-cx, jawY=P2.jawR.y;
+  const nkW=isFemale?26:34;
+  ctx.beginPath();
+  ctx.moveTo(cx,crownY);
+  ctx.bezierCurveTo(cx+headW*0.55,crownY, cx+tempX,crownY+(tempY-crownY)*0.3, cx+tempX,tempY);
+  ctx.bezierCurveTo(cx+tempX,tempY+(cheekY-tempY)*0.4, cx+cheekX,cheekY-(cheekY-tempY)*0.15, cx+cheekX,cheekY);
+  ctx.bezierCurveTo(cx+cheekX,cheekY+(jawY-cheekY)*0.55, cx+jawX+6,jawY-(jawY-cheekY)*0.08, cx+jawX,jawY);
+  ctx.bezierCurveTo(cx+jawX*0.65,jawY+(chinY-jawY)*0.6, cx+(isFemale?16:22),chinY-3, cx,chinY);
+  // neck bottom
+  ctx.bezierCurveTo(cx+(isFemale?14:18),chinY+2, cx+nkW,chinY+10, cx+nkW,chinY+30);
+  ctx.lineTo(cx+nkW,chinY+90); ctx.lineTo(cx-nkW,chinY+90); ctx.lineTo(cx-nkW,chinY+30);
+  ctx.bezierCurveTo(cx-nkW,chinY+10, cx-(isFemale?14:18),chinY+2, cx,chinY);
+  ctx.bezierCurveTo(cx-(isFemale?16:22),chinY-3, cx-jawX*0.65,jawY+(chinY-jawY)*0.6, cx-jawX,jawY);
+  ctx.bezierCurveTo(cx-jawX-6,jawY-(jawY-cheekY)*0.08, cx-cheekX,cheekY+(jawY-cheekY)*0.55, cx-cheekX,cheekY);
+  ctx.bezierCurveTo(cx-cheekX,cheekY-(cheekY-tempY)*0.15, cx-tempX,tempY+(cheekY-tempY)*0.4, cx-tempX,tempY);
+  ctx.bezierCurveTo(cx-tempX,crownY+(tempY-crownY)*0.3, cx-headW*0.55,crownY, cx,crownY);
+  ctx.closePath();
+}
+
+// Returns luminance 0..1 at (px,py) on the face — 0=dark shadow, 1=bright highlight
+// Based on distance from key highlight zones and light from upper-right
+function _faceLuminance(px, py, cx, P2) {
+  const crownY=P2.crown.y, chinY=P2.chin.y, headH=chinY-crownY;
+  const eyeY=P2.eyeR.y, eyeX=P2.eyeR.x-cx;
+  const noseY=P2.nose.y, mouthY=P2.mouth.y;
+  const cheekX=P2.cheekR.x-cx, cheekY=P2.cheekR.y;
+  const jawX=P2.jawR.x-cx, jawY=P2.jawR.y;
+
+  // Normalised position on face
+  const normX=(px-cx)/(P2.templeR.x-cx);  // -1..1  left..right
+  const normY=(py-crownY)/headH;            // 0..1   crown..chin
+
+  // Base luminance from vertical gradient (forehead bright, chin dark)
+  let L = 0.75 - normY*0.5;
+
+  // Side shadow: edges of face are darker
+  const edgeDist = 1 - Math.abs(normX)*1.1;
+  L += edgeDist * 0.20;
+
+  // Highlight: upper-right forehead
+  const fhDist = Math.hypot(px-(cx+cheekX*0.25), py-(crownY+headH*0.18));
+  L += Math.max(0, (headH*0.22-fhDist)/(headH*0.22)) * 0.18;
+
+  // Highlight: nose bridge
+  const nbDist = Math.hypot(px-cx, py-(eyeY+(noseY-eyeY)*0.4));
+  L += Math.max(0, (headH*0.08-nbDist)/(headH*0.08)) * 0.15;
+
+  // Highlight: cheekbone right
+  const ckDist = Math.hypot(px-(cx+cheekX*0.52), py-(cheekY-headH*0.06));
+  L += Math.max(0, (headH*0.10-ckDist)/(headH*0.10)) * 0.12;
+
+  // Shadow: temples
+  [-1,1].forEach(s=>{
+    const tDist=Math.hypot(px-(cx+s*(P2.templeR.x-cx)*0.88), py-P2.templeR.y);
+    L -= Math.max(0,(headH*0.14-tDist)/(headH*0.14))*0.22;
+  });
+
+  // Shadow: under chin
+  const chinDist=Math.hypot(px-cx, py-(chinY-headH*0.04));
+  L -= Math.max(0,(headH*0.08-chinDist)/(headH*0.08))*0.18;
+
+  // Shadow: jaw sides
+  [-1,1].forEach(s=>{
+    const jDist=Math.hypot(px-(cx+s*jawX*0.75), py-jawY);
+    L -= Math.max(0,(headH*0.10-jDist)/(headH*0.10))*0.16;
+  });
+
+  // Eye sockets
+  [-1,1].forEach(s=>{
+    const eDist=Math.hypot(px-(cx+s*eyeX), py-eyeY);
+    L -= Math.max(0,(headH*0.07-eDist)/(headH*0.07))*0.14;
+  });
+
+  return Math.min(1, Math.max(0, L));
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HATCHING ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+function _hatchingDraw(ctx) {
+  const W=W_CV, H=H_CV, cx=W/2;
+  const isFemale=state.gender==='f';
+  const sk=skinPalette[state.skin];
+  const hc=hairPalette[state.haircolor];
+  const ec=eyePalette[state.eyecolor];
+
+  // Paper BG
+  ctx.fillStyle='#f2ede4'; ctx.fillRect(0,0,W,H);
+  // subtle paper grain
+  for(let i=0;i<400;i++){
+    ctx.fillStyle=`rgba(0,0,0,${0.01+Math.random()*0.025})`;
+    ctx.fillRect(Math.random()*W, Math.random()*H, 1, 1);
+  }
+
+  const crownY=P.crown.y, chinY=P.chin.y, headH=chinY-crownY;
+  const eyeY=P.eyeR.y, eyeX=P.eyeR.x-cx;
+  const browY=P.browR.y, noseY=P.nose.y, mouthY=P.mouth.y;
+  const jawX=P.jawR.x-cx, jawY=P.jawR.y;
+  const mood=state.mood, aT=mood==='angry'?1:mood==='focused'?0.5:0;
+
+  // ── Clip to face silhouette ──────────────────────────────────
+  ctx.save();
+  _buildFaceClip(ctx, P, isFemale);
+  ctx.clip();
+
+  // ── Light warm wash under hatching ──────────────────────────
+  ctx.fillStyle=sk; ctx.globalAlpha=0.18;
+  ctx.fillRect(0,0,W,H);
+  ctx.globalAlpha=1;
+
+  // ── Draw hatching lines in zones ────────────────────────────
+  // Strategy: scan horizontal strips, for each sample luminance,
+  // decide line spacing and direction, draw short oriented strokes
+  ctx.lineCap='round';
+
+  const STEP=5;   // spatial resolution of hatch samples
+  const INK='rgba(22,14,6,';
+
+  function drawHatchStroke(x,y,angle,len,alpha){
+    ctx.strokeStyle=INK+alpha+')';
+    ctx.beginPath();
+    ctx.moveTo(x-Math.cos(angle)*len*0.5, y-Math.sin(angle)*len*0.5);
+    ctx.lineTo(x+Math.cos(angle)*len*0.5, y+Math.sin(angle)*len*0.5);
+    ctx.stroke();
+  }
+
+  for(let py=crownY-10; py<chinY+92; py+=STEP){
+    for(let px=cx-(P.templeR.x-cx)-20; px<cx+(P.templeR.x-cx)+20; px+=STEP){
+      const L=_faceLuminance(px,py,cx,P);
+
+      // Density: darker zones get more hatching
+      const density=1-L;  // 0=bright (no hatch), 1=dark (dense hatch)
+      if(density<0.12) continue;
+
+      // Probability of drawing a stroke here
+      if(Math.random()>density*1.4) continue;
+
+      // Direction: primary hatching diagonal, cross-hatch in very dark zones
+      const angle1 = Math.PI*0.38;  // ~68° — classic engraving angle
+      const angle2 = Math.PI*0.62;  // cross-hatch direction
+
+      const len=STEP*1.6;
+      const alpha=Math.min(0.75, density*0.9+0.05);
+      ctx.lineWidth=0.55+density*0.45;
+
+      drawHatchStroke(px,py,angle1,len,alpha.toFixed(2));
+
+      // Cross-hatch in dark zones
+      if(density>0.55 && Math.random()<(density-0.5)*2){
+        drawHatchStroke(px+STEP*0.5,py,angle2,len,(alpha*0.7).toFixed(2));
+      }
+      // Triple-hatch in deepest shadows
+      if(density>0.78 && Math.random()<(density-0.7)*3){
+        drawHatchStroke(px,py+STEP*0.5,Math.PI*0.5,len,(alpha*0.5).toFixed(2));
+      }
+    }
+  }
+
+  ctx.restore();
+
+  // ── Face outline ─────────────────────────────────────────────
+  ctx.save();
+  _buildFaceClip(ctx, P, isFemale);
+  ctx.strokeStyle='rgba(20,12,4,0.7)'; ctx.lineWidth=1.8; ctx.stroke();
+  ctx.restore();
+
+  // ── Features on top ──────────────────────────────────────────
+  ctx.lineCap='round'; ctx.strokeStyle='rgba(18,10,4,0.85)';
+
+  // Eyebrows
+  if(state.eyebrows){
+    const ebOff=isFemale?26:29, ebHW=isFemale?24:28;
+    ctx.lineWidth=isFemale?2.0:3.2;
+    [-1,1].forEach(s=>{
+      ctx.beginPath();
+      ctx.moveTo(cx+s*(ebOff-ebHW), browY+3+aT*9*s*0.65);
+      ctx.quadraticCurveTo(cx+s*ebOff, browY+(isFemale?-5:-2)-aT*9*s*0.4, cx+s*(ebOff+ebHW), browY+aT*9*s*0.5);
+      ctx.stroke();
+    });
+  }
+
+  // Eyes
+  const eW=state.eyes==='wide'?17:state.eyes==='narrow'?11:state.eyes==='round'?15:13;
+  const eH=state.eyes==='narrow'?5:state.eyes==='round'?10:state.eyes==='wide'?9:7;
+  const sq=mood==='angry'?0.48:mood==='focused'?0.70:1.0;
+  const eH2=eH*sq;
+  [-1,1].forEach(s=>{
+    const ex=cx+s*eyeX;
+    // white
+    ctx.fillStyle='#f0ece4'; ctx.beginPath(); ctx.ellipse(ex,eyeY,eW,eH2,0,0,Math.PI*2); ctx.fill();
+    // iris — hatched look: dark ring + dot
+    ctx.fillStyle=ec; ctx.beginPath(); ctx.ellipse(ex,eyeY,eW*0.60,eH2*0.86,0,0,Math.PI*2); ctx.fill();
+    // iris hatching
+    ctx.save(); ctx.beginPath(); ctx.ellipse(ex,eyeY,eW*0.60,eH2*0.86,0,0,Math.PI*2); ctx.clip();
+    ctx.strokeStyle='rgba(10,5,0,0.35)'; ctx.lineWidth=0.5;
+    for(let i=0;i<7;i++){
+      const a=i/7*Math.PI*2;
+      ctx.beginPath(); ctx.moveTo(ex+Math.cos(a)*eW*0.1,eyeY+Math.sin(a)*eH2*0.15);
+      ctx.lineTo(ex+Math.cos(a)*eW*0.58,eyeY+Math.sin(a)*eH2*0.84); ctx.stroke();
+    }
+    ctx.restore();
+    ctx.fillStyle='#080808'; ctx.beginPath(); ctx.ellipse(ex,eyeY,eW*0.27,eH2*0.45,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.beginPath(); ctx.arc(ex+eW*0.14,eyeY-eH2*0.18,1.8,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba(18,10,4,0.9)'; ctx.lineWidth=isFemale?1.8:1.4;
+    ctx.beginPath(); ctx.ellipse(ex,eyeY,eW*1.02,eH2,0,Math.PI+0.1,2*Math.PI-0.1); ctx.stroke();
+    ctx.strokeStyle='rgba(18,10,4,0.4)'; ctx.lineWidth=0.8;
+    ctx.beginPath(); ctx.ellipse(ex,eyeY,eW,eH2*0.92,0,0.06,Math.PI-0.06); ctx.stroke();
+  });
+
+  // Nose
+  const nW2=state.nose==='wide'?19:state.nose==='small'?11:state.nose==='pointed'?9:14;
+  const nDistX=nW2*(state.nose==='wide'?0.78:0.68);
+  ctx.strokeStyle='rgba(18,10,4,0.5)'; ctx.lineWidth=1.2;
+  [-1,1].forEach(s=>{
+    ctx.beginPath(); ctx.moveTo(cx+s*3.5,eyeY+headH*0.12);
+    ctx.quadraticCurveTo(cx+s*nW2*0.55,noseY-8,cx+s*nW2*0.88,noseY-2); ctx.stroke();
+  });
+  ctx.strokeStyle='rgba(18,10,4,0.45)'; ctx.lineWidth=1;
+  [-1,1].forEach(s=>{
+    ctx.beginPath(); ctx.moveTo(cx+s*nW2*0.56,noseY-8);
+    ctx.quadraticCurveTo(cx+s*(nW2+4),noseY-3,cx+s*nW2*0.88,noseY); ctx.stroke();
+  });
+  ctx.fillStyle='rgba(18,10,4,0.65)';
+  [-1,1].forEach(s=>{ ctx.beginPath(); ctx.ellipse(cx+s*nDistX,noseY-1,nW2*0.22,nW2*0.17,s*0.38,0,Math.PI*2); ctx.fill(); });
+
+  // Mouth
+  const mW=state.mouth==='wide'?33:state.mouth==='full'?26:state.mouth==='thin'?19:27;
+  const lipH=state.mouth==='full'?5.5:state.mouth==='thin'?2:3.5;
+  ctx.strokeStyle='rgba(18,10,4,0.75)'; ctx.lineWidth=1.5;
+  if(mood==='smile'){
+    ctx.beginPath(); ctx.moveTo(cx-mW,mouthY); ctx.quadraticCurveTo(cx,mouthY+14,cx+mW,mouthY); ctx.stroke();
+    ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(cx-mW,mouthY); ctx.quadraticCurveTo(cx,mouthY-lipH*1.8,cx+mW,mouthY); ctx.stroke();
+  } else if(mood==='angry'){
+    ctx.beginPath(); ctx.moveTo(cx-mW,mouthY+6); ctx.bezierCurveTo(cx-mW*0.4,mouthY-1,cx+mW*0.4,mouthY-1,cx+mW,mouthY+6); ctx.stroke();
+  } else {
+    ctx.beginPath(); ctx.moveTo(cx-mW,mouthY); ctx.bezierCurveTo(cx-mW*0.4,mouthY+1.5,cx+mW*0.4,mouthY+1.5,cx+mW,mouthY); ctx.stroke();
+    ctx.lineWidth=0.8; ctx.beginPath(); ctx.moveTo(cx-mW,mouthY); ctx.bezierCurveTo(cx-mW*0.36,mouthY+lipH*3,cx+mW*0.36,mouthY+lipH*3,cx+mW,mouthY); ctx.stroke();
+  }
+
+  // Hair — dense hatching in hair color
+  if(state.hair!=='bald'){
+    const [hr,hg,hb]=[parseInt(hc.slice(1,3),16),parseInt(hc.slice(3,5),16),parseInt(hc.slice(5,7),16)];
+    const hairInk=`rgba(${Math.max(0,hr-20)},${Math.max(0,hg-20)},${Math.max(0,hb-20)},`;
+    ctx.save();
+    // hair cap clip
+    const skRX=P.templeR.x-cx+(state.hair==='curly'?14:6);
+    const skRY=(chinY-crownY)*0.48;
+    ctx.beginPath(); ctx.ellipse(cx,crownY+skRY*0.44,skRX,skRY*0.84,0,Math.PI,2*Math.PI);
+    ctx.clip();
+    ctx.lineWidth=0.55;
+    for(let py2=crownY-10;py2<crownY+skRY;py2+=3.5){
+      for(let px2=cx-skRX-4;px2<cx+skRX+4;px2+=3.5){
+        if(Math.random()>0.55) continue;
+        const a=Math.PI*0.30+Math.random()*0.15;
+        ctx.strokeStyle=hairInk+'0.8)';
+        ctx.beginPath();
+        ctx.moveTo(px2,py2); ctx.lineTo(px2+Math.cos(a)*4,py2+Math.sin(a)*4); ctx.stroke();
+        if(Math.random()<0.4){
+          ctx.strokeStyle=hairInk+'0.5)';
+          ctx.beginPath(); ctx.moveTo(px2,py2); ctx.lineTo(px2+Math.cos(a+0.7)*3,py2+Math.sin(a+0.7)*3); ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
+    ctx.strokeStyle=hairInk+'0.8)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.ellipse(cx,crownY+skRY*0.44,skRX-0.5,skRY*0.84-0.5,0,Math.PI+0.05,2*Math.PI-0.05); ctx.stroke();
+  }
+
+  // Glasses
+  if(state.glasses){
+    const gW=eW+8,gH=eH2+8;
+    ctx.strokeStyle='rgba(18,10,4,0.8)'; ctx.lineWidth=1.8;
+    ctx.fillStyle='rgba(160,200,255,0.06)';
+    [-1,1].forEach(s=>{
+      const gx=cx+s*eyeX;
+      ctx.beginPath(); ctx.roundRect(gx-gW,eyeY-gH*0.64,gW*2,gH*1.12,5); ctx.fill(); ctx.stroke();
+    });
+    ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.moveTo(cx-eyeX+eW,eyeY-3); ctx.quadraticCurveTo(cx,eyeY-gH*0.32,cx+eyeX-eW,eyeY-3); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx-eyeX-gW,eyeY-1); ctx.lineTo(cx-eyeX-gW-17,eyeY+8); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx+eyeX+gW,eyeY-1); ctx.lineTo(cx+eyeX+gW+17,eyeY+8); ctx.stroke();
+  }
+
+  // HUD
+  ctx.strokeStyle='rgba(0,245,200,0.26)'; ctx.lineWidth=1;
+  const dh=14;
+  [[0,0,1,1],[W,0,-1,1],[0,H,1,-1],[W,H,-1,-1]].forEach(([x,y,dx,dy])=>{
+    ctx.beginPath(); ctx.moveTo(x+dx*dh,y); ctx.lineTo(x,y); ctx.lineTo(x,y+dy*dh); ctx.stroke();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// POINTILLISM
+// ═══════════════════════════════════════════════════════════════
+
+function _pointillismDraw(ctx) {
+  const W=W_CV, H=H_CV, cx=W/2;
+  const isFemale=state.gender==='f';
+  const sk=skinPalette[state.skin];
+  const hc=hairPalette[state.haircolor];
+  const ec=eyePalette[state.eyecolor];
+
+  // Cream/white BG
+  ctx.fillStyle='#faf6f0'; ctx.fillRect(0,0,W,H);
+
+  const crownY=P.crown.y, chinY=P.chin.y, headH=chinY-crownY;
+  const eyeY=P.eyeR.y, eyeX=P.eyeR.x-cx;
+  const browY=P.browR.y, noseY=P.nose.y, mouthY=P.mouth.y;
+  const mood=state.mood, aT=mood==='angry'?1:mood==='focused'?0.5:0;
+
+  // Parse skin color for dot variation
+  function hexToRgb(hex){ return [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)]; }
+  const [sr,sg,sb]=hexToRgb(sk);
+  const [hr,hg,hb]=hexToRgb(hc);
+  const [er,eg,eb]=hexToRgb(ec);
+
+  // ── Clip to face silhouette ──────────────────────────────────
+  ctx.save();
+  _buildFaceClip(ctx, P, isFemale);
+  ctx.clip();
+
+  // ── Place dots across face ───────────────────────────────────
+  const JITTER=3.5;
+  for(let py=crownY-8; py<chinY+92; py+=4.8){
+    for(let px=cx-(P.templeR.x-cx)-18; px<cx+(P.templeR.x-cx)+18; px+=4.8){
+      // jitter position (pointillist dots aren't on a grid)
+      const jx=px+(Math.random()-0.5)*JITTER*2;
+      const jy=py+(Math.random()-0.5)*JITTER*2;
+
+      const L=_faceLuminance(jx,jy,cx,P);
+
+      // Dot size: larger in shadows, smaller in highlights
+      const radius=Math.max(0.5, 1.0+(1-L)*2.8);
+
+      // Colour mixing: pointillism uses adjacent dots of slightly different hues
+      // We vary between skin, warm (reddish), cool (slightly blue), shadow (darker)
+      const roll=Math.random();
+      let dr,dg,db;
+      // Determine zone
+      const normY=(jy-crownY)/headH;
+      const absNormX=Math.abs(jx-cx)/(P.templeR.x-cx);
+
+      // Hair zone
+      const skRY=headH*0.48, skRX=(P.templeR.x-cx)+6;
+      const inHairZone=(jy-crownY-skRY*0.44)**2/((skRY*0.84)**2)+(jx-cx)**2/(skRX**2)<1 && jy<browY;
+
+      if(inHairZone){
+        // Hair dots: mix of hair color variants
+        const v=Math.random()*40-20;
+        dr=Math.min(255,Math.max(0,hr+v)); dg=Math.min(255,Math.max(0,hg+v)); db=Math.min(255,Math.max(0,hb+v));
+      } else {
+        // Face dots: skin with optical colour mixing
+        if(roll<0.55){
+          // Base skin tone ± variation
+          const v=(Math.random()-0.5)*30;
+          dr=Math.min(255,Math.max(0,sr+v));
+          dg=Math.min(255,Math.max(0,sg+v*0.7));
+          db=Math.min(255,Math.max(0,sb+v*0.5));
+        } else if(roll<0.72){
+          // Warm complement (yellowish-red)
+          dr=Math.min(255,sr+25+Math.random()*15);
+          dg=Math.min(255,sg+8+Math.random()*10);
+          db=Math.max(0,sb-20+Math.random()*10);
+        } else if(roll<0.84){
+          // Cool complement (slightly violet/blue in shadows)
+          dr=Math.max(0,sr-15+Math.random()*10);
+          dg=Math.max(0,sg-5+Math.random()*8);
+          db=Math.min(255,sb+20+Math.random()*15);
+        } else {
+          // Shadow dot (darker)
+          const darken=0.4+Math.random()*0.25;
+          dr=sr*darken; dg=sg*darken; db=sb*darken;
+        }
+        // Darker dots in shadow zones
+        const shadow=(1-L)*0.6;
+        dr=Math.max(0,dr*(1-shadow));
+        dg=Math.max(0,dg*(1-shadow));
+        db=Math.max(0,db*(1-shadow));
+      }
+
+      const alpha=0.72+Math.random()*0.22;
+      ctx.fillStyle=`rgba(${Math.round(dr)},${Math.round(dg)},${Math.round(db)},${alpha.toFixed(2)})`;
+      ctx.beginPath(); ctx.arc(jx,jy,radius,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  ctx.restore();
+
+  // ── Outline ──────────────────────────────────────────────────
+  ctx.save();
+  _buildFaceClip(ctx, P, isFemale);
+  ctx.strokeStyle='rgba(40,20,10,0.30)'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.restore();
+
+  // ── Features: larger dots forming features ───────────────────
+  const eW=state.eyes==='wide'?17:state.eyes==='narrow'?11:state.eyes==='round'?15:13;
+  const eH=state.eyes==='narrow'?5:state.eyes==='round'?10:state.eyes==='wide'?9:7;
+  const sq=mood==='angry'?0.48:mood==='focused'?0.70:1.0;
+  const eH2=eH*sq;
+
+  // Eyes
+  [-1,1].forEach(s=>{
+    const ex=cx+s*eyeX;
+    // White of eye: white dots
+    for(let i=0;i<55;i++){
+      const a=Math.random()*Math.PI*2, rx=Math.random()*eW, ry=Math.random()*eH2;
+      ctx.fillStyle=`rgba(240,236,228,${0.7+Math.random()*0.25})`;
+      ctx.beginPath(); ctx.arc(ex+Math.cos(a)*rx, eyeY+Math.sin(a)*ry, 1.2, 0, Math.PI*2); ctx.fill();
+    }
+    // Iris dots
+    for(let i=0;i<55;i++){
+      const a=Math.random()*Math.PI*2, r=Math.random()*eW*0.58;
+      const v=(Math.random()-0.5)*25;
+      ctx.fillStyle=`rgba(${Math.min(255,er+v)},${Math.min(255,eg+v)},${Math.min(255,eb+v)},0.85)`;
+      ctx.beginPath(); ctx.arc(ex+Math.cos(a)*r, eyeY+Math.sin(a)*r*eH2/eW, 1.4, 0, Math.PI*2); ctx.fill();
+    }
+    // Pupil
+    for(let i=0;i<30;i++){
+      const a=Math.random()*Math.PI*2, r=Math.random()*eW*0.26;
+      ctx.fillStyle='rgba(8,8,8,0.9)';
+      ctx.beginPath(); ctx.arc(ex+Math.cos(a)*r,eyeY+Math.sin(a)*r*eH2/eW,1.2,0,Math.PI*2); ctx.fill();
+    }
+    // Catchlight
+    ctx.fillStyle='rgba(255,255,255,0.95)';
+    ctx.beginPath(); ctx.arc(ex+eW*0.14, eyeY-eH2*0.18, 2.2, 0, Math.PI*2); ctx.fill();
+    // Eye outline dots
+    for(let i=0;i<30;i++){
+      const a=Math.PI+Math.random()*Math.PI;
+      ctx.fillStyle='rgba(18,10,4,0.75)';
+      ctx.beginPath(); ctx.arc(ex+Math.cos(a)*eW, eyeY+Math.sin(a)*eH2, 1.0, 0, Math.PI*2); ctx.fill();
+    }
+  });
+
+  // Eyebrows as dot clusters
+  if(state.eyebrows){
+    const [bhr,bhg,bhb]=hexToRgb(hc==='#e8e8e8'||hc==='#F0E0C0'?'#888888':hc);
+    const ebOff=isFemale?26:29, ebHW=isFemale?24:28;
+    [-1,1].forEach(s=>{
+      for(let t=0;t<=1;t+=0.06){
+        const bx=cx+s*(ebOff-ebHW)+t*s*ebHW*2;
+        const by=browY+3-t*(isFemale?8:5)+aT*9*s*(t-0.5);
+        for(let k=0;k<3;k++){
+          const v=(Math.random()-0.5)*20;
+          ctx.fillStyle=`rgba(${Math.max(0,bhr+v)},${Math.max(0,bhg+v)},${Math.max(0,bhb+v)},0.85)`;
+          ctx.beginPath(); ctx.arc(bx+(Math.random()-0.5)*3, by+(Math.random()-0.5)*(isFemale?1.8:2.5), isFemale?1.3:1.8, 0, Math.PI*2); ctx.fill();
+        }
+      }
+    });
+  }
+
+  // Nose nostrils as dark dots
+  const nW2=state.nose==='wide'?19:state.nose==='small'?11:state.nose==='pointed'?9:14;
+  const nDistX=nW2*(state.nose==='wide'?0.78:0.68);
+  [-1,1].forEach(s=>{
+    for(let i=0;i<12;i++){
+      ctx.fillStyle=`rgba(${Math.max(0,sr-60)},${Math.max(0,sg-60)},${Math.max(0,sb-60)},0.7)`;
+      ctx.beginPath(); ctx.arc(cx+s*nDistX+(Math.random()-0.5)*nW2*0.3, noseY+(Math.random()-0.5)*nW2*0.2, 1.1, 0, Math.PI*2); ctx.fill();
+    }
+  });
+
+  // Mouth
+  const mW=state.mouth==='wide'?33:state.mouth==='full'?26:state.mouth==='thin'?19:27;
+  const mSteps=Math.floor(mW/2.5);
+  const lipDark=[Math.max(0,sr-30),Math.max(0,sg-40),Math.max(0,sb-30)];
+  for(let i=0;i<=mSteps;i++){
+    const t=i/mSteps;
+    const mx=cx-mW+t*mW*2;
+    let my=mouthY;
+    if(mood==='smile') my+=Math.sin(t*Math.PI)*14;
+    else if(mood==='angry') my+=6-Math.sin(t*Math.PI)*7;
+    else my+=Math.sin(t*Math.PI)*3;
+    for(let k=0;k<4;k++){
+      ctx.fillStyle=`rgba(${lipDark[0]},${lipDark[1]},${lipDark[2]},0.65)`;
+      ctx.beginPath(); ctx.arc(mx+(Math.random()-0.5)*3, my+(Math.random()-0.5)*3, 1.2, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  // Glasses
+  if(state.glasses){
+    const gW=eW+8,gH=eH2+8;
+    [-1,1].forEach(s=>{
+      const gx=cx+s*eyeX;
+      const perim=2*(gW*2+gH*1.12);
+      for(let i=0;i<Math.floor(perim/3);i++){
+        const t=i/Math.floor(perim/3), angle=t*Math.PI*2;
+        const gfx=gx+Math.cos(angle)*gW, gfy=eyeY-gH*0.64+gH*0.56+Math.sin(angle)*gH*0.56;
+        ctx.fillStyle='rgba(40,35,30,0.7)';
+        ctx.beginPath(); ctx.arc(gfx,gfy,1.0,0,Math.PI*2); ctx.fill();
+      }
+    });
+  }
+
+  // HUD
+  ctx.strokeStyle='rgba(0,245,200,0.26)'; ctx.lineWidth=1;
+  const dp=14;
+  [[0,0,1,1],[W,0,-1,1],[0,H,1,-1],[W,H,-1,-1]].forEach(([x,y,dx,dy])=>{
+    ctx.beginPath(); ctx.moveTo(x+dx*dp,y); ctx.lineTo(x,y); ctx.lineTo(x,y+dy*dp); ctx.stroke();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STIPPLING
+// ═══════════════════════════════════════════════════════════════
+
+function _stipplingDraw(ctx) {
+  const W=W_CV, H=H_CV, cx=W/2;
+  const isFemale=state.gender==='f';
+  const hc=hairPalette[state.haircolor];
+
+  // Pure white paper — stippling is monochrome
+  ctx.fillStyle='#fdfaf5'; ctx.fillRect(0,0,W,H);
+  // Fine grain
+  for(let i=0;i<300;i++){
+    ctx.fillStyle=`rgba(0,0,0,${0.008+Math.random()*0.018})`;
+    ctx.fillRect(Math.random()*W,Math.random()*H,1,1);
+  }
+
+  const crownY=P.crown.y, chinY=P.chin.y, headH=chinY-crownY;
+  const eyeY=P.eyeR.y, eyeX=P.eyeR.x-cx;
+  const browY=P.browR.y, noseY=P.nose.y, mouthY=P.mouth.y;
+  const mood=state.mood, aT=mood==='angry'?1:mood==='focused'?0.5:0;
+
+  // ── Clip to face silhouette ──────────────────────────────────
+  ctx.save();
+  _buildFaceClip(ctx, P, isFemale);
+  ctx.clip();
+
+  // ── Stipple dots — pure black, density = shadow ──────────────
+  // Poisson-disk-inspired: vary spacing per luminance zone
+  // Use a deterministic-ish scan with random perturbation
+  for(let py=crownY-10; py<chinY+92; py+=3.2){
+    for(let px=cx-(P.templeR.x-cx)-18; px<cx+(P.templeR.x-cx)+18; px+=3.2){
+      const L=_faceLuminance(px,py,cx,P);
+      const density=1-L;  // dark = high density
+
+      // Base probability
+      if(Math.random()>density*2.2) continue;
+
+      // Jitter position (characteristic of stippling — no grid visible)
+      const jx=px+(Math.random()-0.5)*3.8;
+      const jy=py+(Math.random()-0.5)*3.8;
+
+      // Dot size: 0.5..2px, larger in darker areas
+      const r=0.5+density*1.5;
+      // Slight alpha variation to simulate ink pressure
+      const alpha=0.55+density*0.40+Math.random()*0.08;
+
+      ctx.fillStyle=`rgba(12,8,4,${alpha.toFixed(2)})`;
+      ctx.beginPath(); ctx.arc(jx,jy,r,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  ctx.restore();
+
+  // ── Face outline as stippled border ──────────────────────────
+  ctx.save();
+  _buildFaceClip(ctx, P, isFemale);
+  // Stroke with dashed stipple feel
+  ctx.setLineDash([0.5,2.5]);
+  ctx.strokeStyle='rgba(12,8,4,0.55)'; ctx.lineWidth=1.2; ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // ── Features ──────────────────────────────────────────────────
+  const eW=state.eyes==='wide'?17:state.eyes==='narrow'?11:state.eyes==='round'?15:13;
+  const eH=state.eyes==='narrow'?5:state.eyes==='round'?10:state.eyes==='wide'?9:7;
+  const sq=mood==='angry'?0.48:mood==='focused'?0.70:1.0;
+  const eH2=eH*sq;
+
+  // Eyes
+  [-1,1].forEach(s=>{
+    const ex=cx+s*eyeX;
+    // Eye socket dense stipple
+    for(let i=0;i<120;i++){
+      const a=Math.random()*Math.PI*2;
+      const rr=Math.random();
+      const dx2=Math.cos(a)*eW*(rr**0.5), dy2=Math.sin(a)*eH2*(rr**0.5);
+      const dist=Math.sqrt((dx2/eW)**2+(dy2/eH2)**2);
+      if(dist>1) continue;
+      // Density increases toward edge (iris ring) and center (pupil)
+      const irisDist=Math.abs(dist-0.58);
+      const inPupil=dist<0.28;
+      let prob=irisDist<0.12?0.85:inPupil?0.95:0.2;
+      if(Math.random()>prob) continue;
+      const r=inPupil?1.2:0.9;
+      const alph=inPupil?0.9:0.7;
+      ctx.fillStyle=`rgba(12,8,4,${alph})`;
+      ctx.beginPath(); ctx.arc(ex+dx2, eyeY+dy2, r, 0, Math.PI*2); ctx.fill();
+    }
+    // Catchlight (white gap in stipple)
+    ctx.fillStyle='rgba(250,246,240,1)';
+    ctx.beginPath(); ctx.arc(ex+eW*0.14, eyeY-eH2*0.18, 2.8, 0, Math.PI*2); ctx.fill();
+    // Upper lash outline
+    ctx.strokeStyle='rgba(12,8,4,0.85)'; ctx.lineWidth=isFemale?1.9:1.5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.ellipse(ex,eyeY,eW*1.02,eH2,0,Math.PI+0.1,2*Math.PI-0.1); ctx.stroke();
+  });
+
+  // Eyebrows — stippled bar
+  if(state.eyebrows){
+    const ebOff=isFemale?26:29, ebHW=isFemale?24:28;
+    [-1,1].forEach(s=>{
+      for(let i=0;i<60;i++){
+        const t=Math.random();
+        const bx=cx+s*(ebOff-ebHW+t*ebHW*2);
+        const by=browY + 3 - t*(isFemale?7:4) + aT*9*s*(t-0.5) + (Math.random()-0.5)*(isFemale?2.5:3.5);
+        const r=isFemale?0.8+Math.random()*0.7:1.0+Math.random()*0.9;
+        ctx.fillStyle=`rgba(12,8,4,${0.7+Math.random()*0.25})`;
+        ctx.beginPath(); ctx.arc(bx,by,r,0,Math.PI*2); ctx.fill();
+      }
+    });
+  }
+
+  // Nose — stippled nostrils + bridge shadow
+  const nW2=state.nose==='wide'?19:state.nose==='small'?11:state.nose==='pointed'?9:14;
+  const nDistX=nW2*(state.nose==='wide'?0.78:0.68);
+  // Bridge shadow stipple
+  [-1,1].forEach(s=>{
+    for(let i=0;i<25;i++){
+      const t=Math.random();
+      const bx=cx+s*(3.5+t*nW2*0.5);
+      const by=eyeY+headH*0.12+t*(noseY-eyeY-headH*0.12);
+      ctx.fillStyle=`rgba(12,8,4,${0.3+Math.random()*0.3})`;
+      ctx.beginPath(); ctx.arc(bx+(Math.random()-0.5)*2.5,by,0.7,0,Math.PI*2); ctx.fill();
+    }
+  });
+  // Nostrils
+  [-1,1].forEach(s=>{
+    for(let i=0;i<18;i++){
+      const a=Math.random()*Math.PI*2;
+      ctx.fillStyle=`rgba(12,8,4,${0.65+Math.random()*0.3})`;
+      ctx.beginPath(); ctx.arc(cx+s*nDistX+Math.cos(a)*nW2*0.20,noseY-1+Math.sin(a)*nW2*0.15,0.8,0,Math.PI*2); ctx.fill();
+    }
+  });
+
+  // Mouth — stippled line
+  const mW=state.mouth==='wide'?33:state.mouth==='full'?26:state.mouth==='thin'?19:27;
+  const lipH=state.mouth==='full'?5.5:state.mouth==='thin'?2:3.5;
+  for(let i=0;i<100;i++){
+    const t=Math.random();
+    const mx=cx-mW+t*mW*2;
+    let my=mouthY;
+    if(mood==='smile') my+=Math.sin(t*Math.PI)*14;
+    else if(mood==='angry') my+=6-Math.sin(t*Math.PI)*7;
+    else my+=Math.sin(t*Math.PI)*3;
+    const thickness=(mood==='smile'||mood==='angry')?lipH*1.5:lipH*1.2;
+    ctx.fillStyle=`rgba(12,8,4,${0.5+Math.random()*0.45})`;
+    ctx.beginPath(); ctx.arc(mx+(Math.random()-0.5)*2,my+(Math.random()-0.5)*thickness,0.9+Math.random()*0.7,0,Math.PI*2); ctx.fill();
+  }
+
+  // Hair — denser stipple in hair zone, slightly warm
+  if(state.hair!=='bald'){
+    const [bhr,bhg,bhb]=[parseInt(hc.slice(1,3),16),parseInt(hc.slice(3,5),16),parseInt(hc.slice(5,7),16)];
+    const darkH=Math.max(0,(bhr+bhg+bhb)/3-20);
+    const skRX=(P.templeR.x-cx)+6, skRY=headH*0.48;
+    ctx.save();
+    ctx.beginPath(); ctx.ellipse(cx,crownY+skRY*0.44,skRX,skRY*0.84,0,Math.PI,2*Math.PI); ctx.clip();
+    const hairDensity=0.6+Math.min(0.35,(255-(bhr+bhg+bhb)/3)/255*0.5);
+    for(let py2=crownY-10;py2<crownY+skRY;py2+=2.8){
+      for(let px2=cx-skRX-4;px2<cx+skRX+4;px2+=2.8){
+        if(Math.random()>hairDensity*1.6) continue;
+        const jx2=px2+(Math.random()-0.5)*3;
+        const jy2=py2+(Math.random()-0.5)*3;
+        const r=0.55+Math.random()*1.1;
+        const lum=darkH/255;
+        ctx.fillStyle=`rgba(${bhr<60?20:35},${bhg<60?15:25},${bhb<60?10:15},${0.55+hairDensity*0.35})`;
+        ctx.beginPath(); ctx.arc(jx2,jy2,r,0,Math.PI*2); ctx.fill();
+      }
+    }
+    ctx.restore();
+    // Hair outline
+    ctx.strokeStyle='rgba(12,8,4,0.4)'; ctx.lineWidth=1.2;
+    ctx.setLineDash([0.5,3]);
+    ctx.beginPath(); ctx.ellipse(cx,crownY+skRY*0.44,skRX-0.5,skRY*0.84-0.5,0,Math.PI+0.06,2*Math.PI-0.06); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Glasses
+  if(state.glasses){
+    const gW=eW+8,gH=eH2+8;
+    ctx.strokeStyle='rgba(12,8,4,0.75)'; ctx.lineWidth=1.8;
+    ctx.fillStyle='transparent';
+    [-1,1].forEach(s=>{
+      const gx=cx+s*eyeX;
+      ctx.beginPath(); ctx.roundRect(gx-gW,eyeY-gH*0.64,gW*2,gH*1.12,5); ctx.stroke();
+    });
+    ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.moveTo(cx-eyeX+eW,eyeY-3); ctx.quadraticCurveTo(cx,eyeY-gH*0.32,cx+eyeX-eW,eyeY-3); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx-eyeX-gW,eyeY-1); ctx.lineTo(cx-eyeX-gW-17,eyeY+8); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx+eyeX+gW,eyeY-1); ctx.lineTo(cx+eyeX+gW+17,eyeY+8); ctx.stroke();
+  }
+
+  // HUD
+  ctx.strokeStyle='rgba(0,245,200,0.26)'; ctx.lineWidth=1;
+  const ds=14;
+  [[0,0,1,1],[W,0,-1,1],[0,H,1,-1],[W,H,-1,-1]].forEach(([x,y,dx,dy])=>{
+    ctx.beginPath(); ctx.moveTo(x+dx*ds,y); ctx.lineTo(x,y); ctx.lineTo(x,y+dy*ds); ctx.stroke();
+  });
+}
+
 // ═══════════════════════════════════════════════════════════════
 // MASTER DRAW
 // ═══════════════════════════════════════════════════════════════
@@ -2906,6 +3620,21 @@ function draw() {
     const ctx = canvas.getContext('2d');
     canvas.width = W_CV; canvas.height = H_CV;
     _voronoiDraw(ctx);
+    if (editMode) drawEditOverlay(ctx);
+  } else if (renderStyle === 'hatching') {
+    const ctx = canvas.getContext('2d');
+    canvas.width = W_CV; canvas.height = H_CV;
+    _hatchingDraw(ctx);
+    if (editMode) drawEditOverlay(ctx);
+  } else if (renderStyle === 'pointillism') {
+    const ctx = canvas.getContext('2d');
+    canvas.width = W_CV; canvas.height = H_CV;
+    _pointillismDraw(ctx);
+    if (editMode) drawEditOverlay(ctx);
+  } else if (renderStyle === 'stippling') {
+    const ctx = canvas.getContext('2d');
+    canvas.width = W_CV; canvas.height = H_CV;
+    _stipplingDraw(ctx);
     if (editMode) drawEditOverlay(ctx);
   }
 
